@@ -284,6 +284,7 @@ module.exports = {
     testConfig
 }
 ```
+
 在 `tests/lib/rules/no-inner-style.js` 中引入和使用:
 
 ```js
@@ -301,7 +302,7 @@ ruleTester.run("no-inner-style", rule, {
     valid: [],
     invalid: [
         {
-         // 因为没变化所以此处省略
+            // 因为没变化所以此处省略
         }
     ]
 });
@@ -314,6 +315,7 @@ ruleTester.run("no-inner-style", rule, {
 如果验证失败则会打印出原因
 
 ### 添加特殊情况
+
 之前我们就说到了 style 的特殊情况, 在这种有变量的情况下, 我们是不会再抛出错误信息的
 
 现在将代码复制到测试用例文件中的 `valid` 中:
@@ -345,7 +347,7 @@ ruleTester.run("no-inner-style", rule, {
     ],
     invalid: [
         {
-         // 因为没变化所以此处省略
+            // 因为没变化所以此处省略
         }
     ]
 });
@@ -405,12 +407,13 @@ module.exports = {
     }
 };
 ```
+
 再度执行指令, 可以发现正常通过了
 
 再添加一些函数的组件, 扩大测试范围, 保证我们的规则万无一失, 这部分可以看我结尾的仓库, 文章里就不赘述了
 
-
 ### 测试工具
+
 在我们项目中初始化的时候, 他内置了测试工具 `mocha`, 我们可以直接运行:
 
 ```
@@ -418,7 +421,8 @@ yarn test
 // 或者
 npm run test
 ```
->如果项目中报错 `sh: mocha: command not found`  
+
+> 如果项目中报错 `sh: mocha: command not found`  
 可以使用这个指令: `"test": "node_modules/.bin/mocha tests --recursive",` 替代之前的旧指令
 
 它可以测试 `tests` 文件中的所有事例, 当然调试也可以, 只要你不嫌他麻烦
@@ -428,6 +432,7 @@ npm run test
 在我们使用指令新建规则的时候, 他还有一个新建文件就是文档文件: `docs/rules/no-inner-style.md`
 
 在此文件中, 我们可以详细写一下需要注意的事项, 有些待填写区域可以删除
+
 ```
 # jsx render cannot write style (no-inner-style)
 
@@ -443,14 +448,13 @@ function TestView(){
         </View>
     )
 }
-
 ```
 
 Examples of **correct** code for this rule:
 
 ```js
 
-function TestView(){
+function TestView() {
     const mode = 'dark';
     return (
         <View style={{flex: 1, width: 200, color: mode === 'dark' ? '#000' : '#fff'}}>
@@ -458,7 +462,6 @@ function TestView(){
     )
 }
 ```
-
 
 ## When Not To Use It
 
