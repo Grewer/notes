@@ -28,16 +28,16 @@ function readFileList(dir, filesList = []) {
                 return
             }
             if (item.endsWith('.md')) {
-                filesList.push({name: item});
+                filesList.push({name: item.slice(0, -3)});
             }
         }
     });
     return filesList;
 }
 
-const filesList = [];
+const filesLists = [];
 
-readFileList(__dirname, filesList);
+readFileList(__dirname, filesLists);
 
 // console.log(JSON.stringify(filesList, null, '\t'));
 
@@ -53,7 +53,7 @@ const transform = (fileList, gap = 0) => {
 }
 
 
-const mdFiles = transform(filesList)
+const mdFiles = transform(filesLists)
 
 const nowMD = fs.readFileSync('./README.md', 'utf-8')
 

@@ -3,35 +3,35 @@
 ## 目录
 - JS 知识点
     - eslint
-        - 项目中的 eslint 插件.md
+        - 项目中的 eslint 插件
 
 - 浏览器
 
 - 算法
-    - 二叉查找树.md
+    - 二叉查找树
 
-    - 二叉树相关.md
+    - 二叉树相关
 
-    - 二叉树遍历.md
+    - 二叉树遍历
 
 - 网络相关
-    - OSI七层模型和TCPIP四层模型.md
+    - OSI七层模型和TCPIP四层模型
 
-    - http 各版本.md
+    - http 各版本
 
-    - http 状态码.md
+    - http 状态码
 
-    - http 缓存.md
+    - http 缓存
 
-    - https 的优点.md
+    - https 的优点
 
-    - tcp 有效传输及拥塞控制原理.md
+    - tcp 有效传输及拥塞控制原理
 
-    - tcp 滑动窗口.md
+    - tcp 滑动窗口
 
-    - 握手和挥手.md
+    - 握手和挥手
 
-    - 长链接.md
+    - 长链接
 
 ## TODO
 

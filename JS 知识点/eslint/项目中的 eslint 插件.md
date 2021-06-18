@@ -434,44 +434,113 @@ npm run test
 在此文件中, 我们可以详细写一下需要注意的事项, 有些待填写区域可以删除
 
 ```
-# jsx render cannot write style (no-inner-style)
+    # jsx render cannot write style (no-inner-style)
+    
+    ## Rule Details
+    
+    Examples of **incorrect** code for this rule:
+    
+    ```js
+    
+    function TestView(){
+        return (
+            <View style={{flex:1, width: 200}} >
+            </View>
+        )
+    }
+    ```
+    
+    Examples of **correct** code for this rule:
+    
+    ```js
+    
+    function TestView() {
+        const mode = 'dark';
+        return (
+            <View style={{flex: 1, width: 200, color: mode === 'dark' ? '#000' : '#fff'}}>
+            </View>
+        )
+    }
+    ```
+    
+    ## When Not To Use It
+    
+    规范项目的行内样式, 如果不需要可以关闭
+```
 
-## Rule Details
+**并且同样地需要更新下 `README.md` 文档**
 
-Examples of **incorrect** code for this rule:
+## 项目集成
 
-```js
+现在的项目可以直接就发布了
 
-function TestView(){
-    return (
-        <View style={{flex:1, width: 200}} >
-        </View>
-    )
+在我的项目发布之后, 可以看到他的全名是: [@grewer/eslint-plugin-rn](https://www.npmjs.com/package/@grewer/eslint-plugin-rn)
+
+在主项目中添加之后, `package.json` 这样加入:
+```json
+  "eslintConfig": {
+    "extends": [
+      // 省略
+    ],
+    "plugins": ["@grewer/rn"], // 将我们的插件插入这边
+    "rules": {
+        // 编写规则的危险等级
+      "@grewer/rn/no-inner-style": 1
+    },
+    "env": {
+      "react-native/react-native": true
+    }
+  },
+```
+
+在 eslint 中, 规则的值可以是以下值之一:
+
+*   `"off"` 或 `0` - 关闭规则
+*   `"warn"` 或 `1` - 开启规则，使用警告级别的错误：`warn` (不会导致程序退出)
+*   `"error"` 或 `2` - 开启规则，使用错误级别的错误：`error` (当被触发的时候，程序会退出)
+
+
+当然上述配置在 `.eslintrc` 文件中也一样配置
+
+假如你的插件全名没有前缀(scoped), 则是这样添加:
+
+(假如插件全名是: eslint-plugin-rn)
+
+```json
+{
+  "plugins": [
+    "rn"
+  ],
+  "rules": {
+    "rn/rule-name": 2
+  }
 }
 ```
+就需要这样添加, 差距也就是一个前缀
 
-Examples of **correct** code for this rule:
+**注意**
 
-```js
+在更改 eslint 配置之后, 想要起效,需要重启下 eslint  
+比如在 webstorm 中, 需要打开配置中的 eslint 模块, 显示 `Disabled Eslint`, 选择 ok 关闭之后
 
-function TestView() {
-    const mode = 'dark';
-    return (
-        <View style={{flex: 1, width: 200, color: mode === 'dark' ? '#000' : '#fff'}}>
-        </View>
-    )
-}
-```
 
-## When Not To Use It
+再度打开该模块回复原状, 当然重启编辑器也是可以解决的
 
-规范项目的行内样式, 如果不需要可以关闭
+## 规则默认值
 
-```
+问题来临: 但我们的规则越来越多的时候, 我们每次将插件接入项目中, 都需要添加 `rules` 这个属性
+这里我们就需要优化下了
 
-## 项目默认值
+
+
 
 ## 结语
 
-### 引用
+本项目中创建的 eslint 插件库: https://github.com/Grewer/eslint-plugin-rn
 
+### 引用参考
+
+- https://lihautan.com/babel-ast-explorer
+- https://astexplorer.net/
+- http://eslint.cn/docs/user-guide/configuring
+- https://www.zoo.team/article/eslint-rules
