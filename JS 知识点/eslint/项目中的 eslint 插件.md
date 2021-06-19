@@ -531,10 +531,196 @@ npm run test
 问题来临: 但我们的规则越来越多的时候, 我们每次将插件接入项目中, 都需要添加 `rules` 这个属性
 这里我们就需要优化下了
 
+在项目中我们需要写上默认值, 一种方案是可以直接写:
+在 `lib/index.js` 文件
+
+```js
+module.exports = {
+    rules: requireIndex(__dirname + '/rules'),
+    configs: {
+        recommended: {
+            plugins: ["@grewer/rn"],
+            rules: {
+                "@grewer/rn/no-inner-style": 1
+            },
+        }
+    }
+}
+```
+
+这个时候 eslint 的配置修改做出修改:
+
+```json
+{
+  "eslintConfig": {
+    "extends": [
+      "xxx 之前另外的 config",
+      "plugin:@grewer/rn/recommended"
+    ],
+    "plugins": [], // 删除 "@grewer/rn"
+    "rules": {},// 删除, 但是我们也可以加上, 来覆盖默认值
+    "env": {
+      "react-native/react-native": true
+    }
+  }
+}
+```
+
+当然, 因为规则的增多, 在 `lib/index.js` 文件中直接写也是比较麻烦的, 我们可以新建一个脚本来自动新增规则的默认值:
+
+在根目录下创建文件 `create.js`
+```js
+const requireIndex = require("requireindex");
+const fs = require('fs')
+
+const pluginName = '@grewer/rn'
+
+const rules = requireIndex(__dirname + "/lib/rules")
+
+const keys = Object.keys(rules)
+
+const defaultLevel = keys.map(key => {
+    // 这里可以进行更加详细的判断
+    return `'${pluginName}/${key}': 1`
+})
 
 
+const data = `
+const requireIndex = require("requireindex");
+
+module.exports = {
+    rules: requireIndex('./rules'),
+    configs:{
+        recommended: {
+          plugins: ['${pluginName}'],
+          rules: {
+            ${defaultLevel.join(',')}
+          },
+        }
+    }
+}`
+
+
+fs.writeFileSync('./lib/index.js', data, 'utf8')
+```
+
+这样生成的 `lib/index.js` 文件是这个样子的:
+
+```js
+const requireIndex = require("requireindex");
+
+module.exports = {
+    rules: requireIndex('./rules'),
+    configs:{
+        recommended: {
+          plugins: ['@grewer/rn'],
+          rules: {
+            '@grewer/rn/no-inner-style': 1
+          },
+        }
+    }
+}
+```
+
+### 更更进一步优化
+现在项目依赖于 `requireindex` 这个库, 有许多插件库都不依赖于这个库, 这个时候我们也需要略微优化下:
+
+修改 `package.json`: 
+```diff
+{
+  "dependencies": {
+    // 原来 requireindex 的位置, 删除
+-     "requireindex": "~1.1.0",
+  },
+  "devDependencies": {
++    "requireindex": "~1.1.0", // 现在的位置
+    "eslint": "^7.1.0",
+    "generator-eslint": "^2.0.0",
+    "mocha": "^8.3.0"
+  },
+}
+```
+修改刚刚的 `create.js` 脚本:
+
+```diff
+    const requireIndex = require("requireindex");
+    const fs = require('fs')
+    
+    const pluginName = '@grewer/rn'
+    
+    const rules = requireIndex(__dirname + "/lib/rules")
+    
+    const keys = Object.keys(rules)
+    
+    const defaultLevel = keys.map(key => {
+        // 这里可以进行更加详细的判断
+        return `'${pluginName}/${key}': 1`
+    })
+    
+    
++    const temp = keys.map(key => {
++        return `'${key}': require('./lib/rules/${key}.js')`
++    })
+    
+    
+    const data = `
+-    const requireIndex = require("requireindex");
+    
+    module.exports = {
+        rules:{
++             ${temp.join(',')}
+        },
+        configs:{
+            recommended: {
+              plugins: ['${pluginName}'],
+              rules: {
+                ${defaultLevel.join(',')}
+              },
+            }
+        }
+    }`
+    
+    
+    fs.writeFileSync('./lib/index.js', data, 'utf8')
+```
+运行之后的文件:
+
+```js
+module.exports = {
+    rules:{
+         'no-inner-style': require('./rules/no-inner-style.js')
+    },
+    configs:{
+        recommended: {
+          plugins: ['@grewer/rn'],
+          rules: {
+            '@grewer/rn/no-inner-style': 1
+          },
+        }
+    }
+}
+```
+
+现在的插件更 `pure` 了, 只依赖于 node
+
+最后修改我们的发包指令:
+
+```diff
+{
+    "scripts": {
+        "test": "node_modules/.bin/mocha tests --recursive",
+        "create:rule": "npx yo eslint:rule",
+-       "pub": "npm publish",
++       "pub": "node create.js && npm publish",          
+    },
+}
+```
 
 ## 结语
+
+本文介绍了 eslint 插件, 从项目创建到插件创建,再到发包最后是优化
+
+在团队里,为了我们会议的决定,共识能够落实到项目中去, eslint 插件是必不可少的 
 
 本项目中创建的 eslint 插件库: https://github.com/Grewer/eslint-plugin-rn
 
