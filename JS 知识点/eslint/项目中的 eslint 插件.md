@@ -41,11 +41,11 @@ npx -p yo -p generator-eslint yo eslint:plugin
 
 将指令 `npx yo eslint:plugin` 放入 `scripts` 中:
 
-```json
+```diff
 {
   "scripts": {
     "test": "mocha tests --recursive",
-    "create:rule": "npx yo eslint:rule"
++    "create:rule": "npx yo eslint:rule"
   }
 }
 ```
@@ -530,27 +530,29 @@ npm run test
 
 ## 规则默认值
 
-问题来临: 但我们的规则越来越多的时候, 我们每次将插件接入项目中, 都需要添加 `rules` 这个属性
+问题来临: 当我们的规则越来越多的时候, 我们每次将插件接入项目中, 都需要添加 `rules` 这个属性.  
 这里我们就需要优化下了
 
 在项目中我们需要写上默认值, 一种方案是可以直接写:
-在 `lib/index.js` 文件
+在 `lib/index.js` 文件中修改 `module.exports`
 
-```js
-module.exports = {
-    rules: requireIndex(__dirname + '/rules'),
-    configs: {
-        recommended: {
-            plugins: ["@grewer/rn"],
-            rules: {
-                "@grewer/rn/no-inner-style": 1
-            },
-        }
-    }
-}
+```diff
+-module.exports.rules = requireIndex(__dirname + '/rules')
+
++module.exports = {
++    rules: requireIndex(__dirname + '/rules'),
++    configs: {
++        recommended: {
++            plugins: ["@grewer/rn"],
++            rules: {
++                "@grewer/rn/no-inner-style": 1
++            },
++        }
++    }
++}
 ```
 
-这个时候 eslint 的配置修改做出修改:
+当然主项目中 eslint 的配置也需要做出修改:
 
 ```diff
 {
@@ -608,6 +610,8 @@ module.exports = {
 fs.writeFileSync('./lib/index.js', data, 'utf8')
 ```
 
+运行脚本: `node create.js`  
+
 这样生成的 `lib/index.js` 文件是这个样子的:
 
 ```js
@@ -626,7 +630,7 @@ module.exports = {
 }
 ```
 
-### 更更进一步优化
+### 更进一步优化
 现在项目依赖于 `requireindex` 这个库, 有许多插件库都不依赖于这个库, 这个时候我们也需要略微优化下:
 
 修改 `package.json`: 
