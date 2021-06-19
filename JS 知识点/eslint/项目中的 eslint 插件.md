@@ -42,10 +42,12 @@ npx -p yo -p generator-eslint yo eslint:plugin
 将指令 `npx yo eslint:plugin` 放入 `scripts` 中:
 
 ```json
-    "scripts": {
-"test": "mocha tests --recursive",
-"create:rule": "npx yo eslint:rule"
-},
+{
+  "scripts": {
+    "test": "mocha tests --recursive",
+    "create:rule": "npx yo eslint:rule"
+  }
+}
 ```
 
 开始执行指令: `yarn create:rule`:
@@ -477,15 +479,15 @@ npm run test
 在我的项目发布之后, 可以看到他的全名是: [@grewer/eslint-plugin-rn](https://www.npmjs.com/package/@grewer/eslint-plugin-rn)
 
 在主项目中添加之后, `package.json` 这样加入:
-```json
+```diff
   "eslintConfig": {
     "extends": [
       // 省略
     ],
-    "plugins": ["@grewer/rn"], // 将我们的插件插入这边
++    "plugins": ["@grewer/rn"], // 将我们的插件插入这边
     "rules": {
         // 编写规则的危险等级
-      "@grewer/rn/no-inner-style": 1
++      "@grewer/rn/no-inner-style": 1
     },
     "env": {
       "react-native/react-native": true
@@ -550,15 +552,17 @@ module.exports = {
 
 这个时候 eslint 的配置修改做出修改:
 
-```json
+```diff
 {
   "eslintConfig": {
     "extends": [
       "xxx 之前另外的 config",
-      "plugin:@grewer/rn/recommended"
++      "plugin:@grewer/rn/recommended"
     ],
-    "plugins": [], // 删除 "@grewer/rn"
-    "rules": {},// 删除, 但是我们也可以加上, 来覆盖默认值
+-    "plugins": ["@grewer/rn"], // 删除 "@grewer/rn"
+-    "rules": {
+-        "@grewer/rn/no-inner-style": 1
+-    },// 删除, 但是我们也可以加上, 来覆盖默认值
     "env": {
       "react-native/react-native": true
     }
