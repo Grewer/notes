@@ -24,9 +24,13 @@ GET /mypage.html
 *   引入了HTTP头的概念，无论是对于请求还是响应，允许传输元数据，使协议变得非常灵活，更具扩展性。
 *   在新HTTP头的帮助下，具备了传输除纯文本HTML文件以外其他类型文档的能力（[Content-Type](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Type) 头）。
 
+![](./images/http1.0.png)
+
+
 ## http 1.1 - 标准化的协议
 
-默认采用持续连接（Connection: keep-alive），能很好地配合代理服务器工作。还支持以[管道方式](https://zh.wikipedia.org/wiki/HTTP%E7%AE%A1%E7%BA%BF%E5%8C%96 "HTTP管线化")在同时发送多个请求，以便降低线路负载，提高传输速度。
+默认采用持续连接（Connection: keep-alive），能很好地配合代理服务器工作。
+还支持以[管道方式](https://zh.wikipedia.org/wiki/HTTP%E7%AE%A1%E7%BA%BF%E5%8C%96 "HTTP管线化")在同时发送多个请求，以便降低线路负载，提高传输速度。
 
 HTTP/1.1 消除了大量歧义内容并引入了多项改进：
 
@@ -36,6 +40,9 @@ HTTP/1.1 消除了大量歧义内容并引入了多项改进：
 *   引入额外的缓存控制机制。
 *   引入内容协商机制，包括语言，编码，类型等，并允许客户端和服务器之间约定以最合适的内容进行交换。
 *   [Host](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Host) 头，能够使不同域名配置在同一个IP地址的服务器上。
+
+![](./images/http1.1.png)
+
 
 ## http 2.0 - 为了更优异的表现
 
