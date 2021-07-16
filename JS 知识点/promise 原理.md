@@ -14,16 +14,23 @@ function MyPromise(fn) {
     this.pool = []
 
     function resolve(data) {
-        console.log('run resolve')
         this.data = data
         this.status = 'resolve'
-        this.pool.forEach(_fn => fn())
+        setTimeout(() => {
+            this.pool.forEach(_fn => {
+                _fn();
+            })
+        }, 0)
     }
 
     function reject(data) {
         this.data = data
         this.status = 'reject'
-        this.pool.forEach(_fn => fn())
+        setTimeout(() => {
+            this.pool.forEach(_fn => {
+                _fn();
+            })
+        }, 0)
     }
 
     fn(resolve.bind(this), reject.bind(this))
@@ -31,7 +38,6 @@ function MyPromise(fn) {
 
 MyPromise.prototype.then = function (fn) {
     this.pool.push(() => {
-        console.log('qwert run')
         if (this.status === 'resolve') {
             this.status = 'fulfilled'
             fn(this.data)
@@ -53,3 +59,21 @@ MyPromise.prototype.catch = function (fn) {
 }
 
 ```
+
+用来测试的代码:
+
+```js
+var test = new MyPromise((resolve, reject) => {
+    setTimeout(resolve, 1000, 'qwer')
+})
+    .then(res => console.log('run1', res))
+    .then(res => console.log('run2', res))
+
+var test2 = new MyPromise((resolve, reject) => {
+    resolve('asdf')
+})
+    .then(res => console.log('run1', res))
+    .then(res => console.log('run2', res))
+```
+
+基本是实现的他的需求, 但是针对 eventLoop 来说也是有些不太对的
