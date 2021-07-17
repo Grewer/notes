@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>grid</title>
+    <style>
+        .dis-grid {
+            display: grid;
+        }
+
+        .demo1 {
+            grid-template-columns: 100px 33.33% 33.33%;
+            grid-template-rows: 100px 100px 100px;
+        }
+
+        .demo2 {
+            grid-template-columns: repeat(auto-fill, 100px);
+        }
+
+        .demo3 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .demo4 {
+            grid-template-columns: 150px 1fr 2fr;
+        }
+
+        .demo5 {
+            grid-template-columns: 1fr 1fr;
+            grid-row-gap: 20px;
+            grid-column-gap: 20px;
+
+        }
+    </style>
+</head>
+<body>
+<div>demo1:</div>
+<div class="dis-grid demo1">
+    <div><p>1</p></div>
+    <div><p>2</p></div>
+    <div><p>3</p></div>
+    <div><p>4</p></div>
+</div>
+
+<div>demo2:</div>
+
+
+<div class="dis-grid demo2">
+    <div><p>1</p></div>
+    <div><p>2</p></div>
+    <div><p>3</p></div>
+    <div><p>4</p></div>
+</div>
+
+<div>demo3:</div>
+<div class="dis-grid demo3">
+    <div><p>1</p></div>
+    <div><p>2</p></div>
+    <div><p>3</p></div>
+    <div><p>4</p></div>
+</div>
+
+<div>demo4:</div>
+<div class="dis-grid demo4">
+    <div><p>1</p></div>
+    <div><p>2</p></div>
+    <div><p>3</p></div>
+    <div><p>4</p></div>
+</div>
+
+<div>demo5:</div>
+<div class="dis-grid demo5">
+    <div><p>1</p></div>
+    <div><p>2</p></div>
+    <div><p>3</p></div>
+    <div><p>4</p></div>
+</div>
+
+</body>
+</html>
