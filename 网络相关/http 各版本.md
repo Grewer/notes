@@ -36,10 +36,11 @@ HTTP/1.1 消除了大量歧义内容并引入了多项改进：
 
 *   连接可以复用，节省了多次打开TCP连接加载网页文档资源的时间。
 *   增加管线化技术，允许在第一个应答被完全发送之前就发送第二个请求，以降低通信延迟。
-*   支持响应分块。
+*   支持响应分块。 https://www.bwangel.me/2018/11/01/http-chunked/
 *   引入额外的缓存控制机制。
 *   引入内容协商机制，包括语言，编码，类型等，并允许客户端和服务器之间约定以最合适的内容进行交换。
-*   [Host](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Host) 头，能够使不同域名配置在同一个IP地址的服务器上。
+*   [Host](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Host) 头，能够使不同域名配置在同一个IP地址的服务器上。  
+    所有HTTP/1.1 请求报文中必须包含一个Host头字段。对于缺少Host头或者含有超过一个Host头的HTTP/1.1 请求，可能会收到400（Bad Request）状态码。
 
 ![](./images/http1.1.png)
 
