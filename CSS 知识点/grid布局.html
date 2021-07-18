@@ -31,6 +31,42 @@
             grid-column-gap: 20px;
 
         }
+
+        .demo6 {
+            grid-template-columns: 100px 100px 100px;
+            grid-template-rows: 100px 100px 100px;
+            grid-template-areas: 'a b c'
+                       'd e f'
+                       'g h i';
+
+
+        }
+
+        .demo7 {
+            grid-template-columns: 100px 100px 100px;
+            grid-template-rows: 100px 100px 100px;
+
+            grid-template-areas: "header header header"
+                                "main main sidebar"
+                                "footer footer footer";
+        }
+
+        .demo8 {
+            grid-template-columns: 100px 100px 100px;
+            grid-template-rows: 100px 100px 100px;
+            justify-content: space-around;
+        }
+
+        .demo8 {
+            grid-template-columns: 100px 100px 100px;
+            grid-template-rows: 100px 100px 100px;
+            justify-content: space-around;
+        }
+
+        .item-1 {
+            grid-column-start: 2;
+            grid-column-end: 4;
+        }
     </style>
 </head>
 <body>
@@ -74,6 +110,40 @@
     <div><p>2</p></div>
     <div><p>3</p></div>
     <div><p>4</p></div>
+</div>
+
+<div>demo6:</div>
+<div class="dis-grid demo6">
+    <div><p>1</p></div>
+    <div><p>2</p></div>
+    <div><p>3</p></div>
+    <div><p>4</p></div>
+</div>
+
+<div>demo7:</div>
+<div class="dis-grid demo7">
+    <div><p>1</p></div>
+    <div><p>2</p></div>
+    <div><p>3</p></div>
+    <div><p>4</p></div>
+</div>
+
+<div>demo8:</div>
+<div class="dis-grid demo8">
+    <div><p>1</p></div>
+    <div><p>2</p></div>
+    <div><p>3</p></div>
+    <div><p>4</p></div>
+</div>
+
+<div>demo9:</div>
+<div class="dis-grid demo9">
+    <div class="item-1"><p>1</p></div>
+    <div><p>2</p></div>
+    <div><p>3</p></div>
+    <div><p>4</p></div>
+    <div><p>5</p></div>
+    <div><p>6</p></div>
 </div>
 
 </body>
