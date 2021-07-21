@@ -9,15 +9,20 @@ function insertSort(array) {
         // 当前值
         let value = array[i]
 
-        let j = 0
         // 和左边所有的比较
-        for (j = i - 1; j > -1 && array[j] > value; j--) {
-            //     console.log({j, jvalue: array[j], value})
-            array[j + 1] = array[j]
+        let j = i - 1;
+
+        while (j >= 0 && array[j] > value) {
+
+            // 将该元素移到下一位置；
+            array[j + 1] = array[j];
+            j--;
+
         }
 
-        console.log({j, val: array[j + 1], value, vali: array[i]})
+        // console.log({val: array[j + 1], value, j, array})
 
+        // 插入
         array[j + 1] = value
     }
 
@@ -29,3 +34,8 @@ let arr = [3, 44, 38, 5, 47, 15, 36, 26]
 
 insertSort(arr)
 console.log(arr)
+
+// 3 38 44 5 47 ...
+
+// 时间复杂度：比较次数：(1+2+…+n-2+n-1)=n(n-1)/2,即O(n^2)
+// 空间复杂度：O(1)
