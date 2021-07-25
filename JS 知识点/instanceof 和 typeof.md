@@ -38,6 +38,24 @@ null instanceof null // TypeError: Right-hand side of 'instanceof' is not an obj
 `null` 直接被判断为不是 object，这也是 JavaScript 的历史遗留bug，可以参考 [typeof](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/typeof)
 
 
+
+### instanceof 原理
+
+例子:
+
+```js
+function Foo(){};
+var f1=new Foo();
+alert(f1 instanceof Foo) //会返回true
+```
+
+instanceof运算符的第一个变量是一个对象，暂时称为A;第二个变量一般是函数，称为B。
+
+沿着A的__proto__这条线来找，同时沿着B的prototype这条线来找，如果两条线能找到同一个引用，就是返回true，如果找到终点都没有重合就返回false。
+
+
+在这里例子中就是判断 f1.__proto__ === Foo.prototype
+
 ## Object.prototype.toString
 
 用这个来判断类型也是一个不错的选择:
@@ -61,6 +79,9 @@ Object.prototype.toString.call(undefined) // "[object Undefined]"
 
 Object.prototype.toString.call(Symbol(1)) // "[object Symbol]"
 ```
+
+
+
 
 
 参考

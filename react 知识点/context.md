@@ -74,5 +74,10 @@ return isPrimaryRenderer ? context._currentValue : context._currentValue2;
 ```
 
 
+如果context value变化，Ctx.Provider内部会执行一次向下深度优先遍历子树的操作，寻找与该Provider配套的Consumer。
+
+在上文的例子中会最终找到useContext(Ctx)的Child组件对应的fiber，并为该fiber触发一次更新。
+
 参考:
 - https://xie.infoq.cn/article/d56577c78e76508722e37025f
+- https://zhuanlan.zhihu.com/p/337952324
