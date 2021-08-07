@@ -12,6 +12,7 @@ var foo = {
 };
 
 function bar() {
+    this.name = 'name is bar'
     console.log(arguments)
     console.log(this.value);
 }
@@ -25,10 +26,10 @@ function bar() {
 
 ```js
 
-Function.prototype.myBind = function(obj, ...rest) {
+Function.prototype.myBind = function (obj, ...rest) {
     const that = this
     return function (...params) {
-        that.call(obj, ...params, ...rest)
+        that.apply(obj, params.concat(rest))
     }
 }
 
@@ -42,3 +43,42 @@ bindBar('5678')
 ```
 
 可以看到, 已经实现了这几个基本特性
+
+### 版本二
+
+因为bind还有一个特点，就是
+
+> 一个绑定函数也能使用new操作符创建对象：这种行为就像把原函数当成构造器。提供的 this 值被忽略，同时调用时的参数被提供给模拟函数。
+
+也就是说当bind返回的函数作为构造函数的时候，bind时指定的this值会失效，但传入的参数依然生效。
+
+实现:
+
+```js
+Function.prototype.myBind = function (obj, ...rest) {
+    const that = this
+    
+    const bound = function (...params) {
+        that.apply(this instanceof that ? this : obj, params.concat(rest))
+    }
+    
+    bound.prototype = this.prototype
+    
+    return bound
+    
+}
+
+var bindBar = bar.myBind(foo, '1234')
+
+var ins = new bindBar('2345')
+
+
+// ins: {name: "name is bar"}
+// Arguments(2) ["5678", "1234"]
+```
+
+通过 bound 我们可以很好地解决这个问题, 但是究竟是什么原因可以改变呢
+
+我们要搭配 `new 的实现` 来理解, 大家可以先看这篇文章: [点击查看](./new%20%E7%9A%84%E5%AE%9E%E7%8E%B0.md)
+
+现在假设这里大家已经明白了 `new` 的实现原理
