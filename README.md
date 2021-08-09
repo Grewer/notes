@@ -55,7 +55,7 @@
 - [x] 装箱
 - [x] new 的实现
 - [x] 二叉树的其他算法
-- [ ] bind
+- [x] bind
 - [ ] 柯里化
 - [ ] 批量请求函数 multiRequest(urls, maxNum)
 - [ ] 节流与防抖 的实现, 多种方案以及合并方案
