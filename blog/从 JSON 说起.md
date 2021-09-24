@@ -74,26 +74,28 @@ eval(`(${a})`)
 
 其实他利用的就是 js 的解析能力, 但是 使用 eval 同样也会存在隐患(主要是在性能, 安全性上问题很大)
 
-
-
 ### 相关 JSON 库
 
-https://github.com/douglascrockford/JSON-js
-兼容 ie8, 类似于官方提供的 JSON API mock
+这边就将一些 json 相关的, 可能会使用到的库介绍下
+
+[JSON-js](https://github.com/douglascrockford/JSON-js)  
+用来兼容 ie8, 类似于官方提供的 JSON API mock, 现在应该不常用到
 
 
-parse-json
-解析 json 的时候, 会提供更有用的错误
-https://github.com/sindresorhus/parse-json
+
+[parse-json](https://github.com/sindresorhus/parse-json)  
+解析 json 的时候, 会提供更有用的错误, 这个库在搭建基础环境的时候更有作用
+
+在某些业务场景下(自定义字段, 自定义表单等等)也能发挥巨大作用
 
 
-strip-json-comments 
-允许在 json 中使用注释, 在解析时删除
-https://www.npmjs.com/package/strip-json-comments
+[strip-json-comments](https://www.npmjs.com/package/strip-json-comments)  
 
-JSONStream
-JSON 解析库
-https://www.npmjs.com/package/JSONStream
+允许在 json 中使用注释, 在解析时删除, 在配置文件, 或者基础库中可以作为使用
+
+
+[JSONStream](https://www.npmjs.com/package/JSONStream)  
+一个解析库, 可以根据一些配置来解析 json
 
 
 #### node 中操作 JSON
