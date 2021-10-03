@@ -48,6 +48,15 @@ const transform = (fileList, gap = 0) => {
         if (file.children) {
             child = transform(file.children, gap + 1)
         }
+        if(gap === 0){
+            return `- ${file.name}\n
+    <details>
+      <summary>点我展开</summary>
+
+${`    `.repeat(gap) + `${child || ''}`}
+    </details>
+            `
+        }
         return `    `.repeat(gap) + `- ${file.name}\n${child || ''}`
     }).join('\n')
 }
