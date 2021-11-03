@@ -77,3 +77,9 @@ var test2 = new MyPromise((resolve, reject) => {
 ```
 
 基本是实现的他的需求, 但是针对 eventLoop 来说也是有些不太对的
+
+
+## Promise.all
+
+
+## Promise.race
