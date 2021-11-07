@@ -81,5 +81,61 @@ var test2 = new MyPromise((resolve, reject) => {
 
 ## Promise.all
 
+首先是 `Promise.all` 的使用:
 
-## Promise.race
+```js
+const foo = new Promise(function (resolve) { 
+    setTimeout(resolve, 1000, 1234)
+})
+
+const bar = Promise.resolve('my')
+
+const baz = '123'
+
+
+const result = Promise.all([foo,bar,baz])
+
+```
+
+polyfill:
+
+```js
+myPromise.all = function (promises) {
+    let responses = []
+    let errors = []
+    
+    return new Promise( (resolve, reject) => { 
+        promises.forEach(async (siglePromise,i)=>{
+            
+            try {
+                const res = await  siglePromise
+                responses.push(res)
+                if(i == promises.length - 1){
+                    if(errors.length>0){
+                        reject(errors)
+                    }else{
+                        resolve(responses)
+                    }
+                }
+            }catch (err) {
+                errors.push(err)
+                reject(err)
+            }
+        })
+    })
+    
+}
+```
+
+```js
+const foo = new Promise(function (resolve) {
+    setTimeout(resolve, 1000)
+})
+
+const bar = Promise.resolve()
+
+const baz = '123'
+
+
+const result = myPromise.all([foo,bar,baz])
+```
