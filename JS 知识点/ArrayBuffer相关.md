@@ -174,6 +174,8 @@ function typefile(file) {
 
 ## 总结
 
+这里还有很多东西没讲, 比如 `SharedArrayBuffers`, 大小端问题等等, 想要深入的话可以自行了解
+
 在前端使用到 buffer 的场景确实非常少见, 但涉及到比较底层或者偏门一点点的时候就会看到他了, 这个时候也要求我们要了解他, 比如文件, canvas, WebGL, WASM, EXCEL 处理
 
 ## 引用
