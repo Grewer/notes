@@ -63,14 +63,14 @@ Float64Array();
 ```
 
 - Unit8Array 指的是，把 ArrayBuffer 的每个 byte(8-bit) 当作一个单独的无符号整型数字 (0 - 255)
-  ![img.png](img.png)
+  ![img.png](arrayBuffer1.png)
 - Unit16Array 表示为使用 16 bits (2 bytes) 表示一个无符号整型 (0 ~ 2^16-1) 的数的数组
-  ![img_1.png](img_1.png)
+  ![img_1.png](arrayBuffer2.png)
 - Int8Array 表示使用 8 bits 表示一个有符号整型 (-128 ~ 127)
 - Float32Array 表示使用 32 bits 表示一个浮点数
 - Unit7ClampedArray 在 0 ～ 255 范围内和 Unit8Array 是一样的，对超出范围的处理有所不同，和图像处理相关（一般像素范围也是 0 ～ 255）
 
-![img.png](images/img.png)
+![img.png](images/arraybuffer.png)
 
 
 ## 使用场景:
