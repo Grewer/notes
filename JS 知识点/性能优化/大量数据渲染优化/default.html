@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="content"></div>
+<script>
+    console.time('render time')
+    const html = new Array(10000).fill(0).map((it, index)=>{
+        return `<div>item ${index}</div>`
+    }).join('')
+    content.innerHTML = html
+    console.timeEnd('render time')
+</script>
+</body>
+</html>

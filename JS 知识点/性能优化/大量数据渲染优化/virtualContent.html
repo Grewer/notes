@@ -14,8 +14,8 @@
 <script>
     let html = ''
     html = new Array(1000).fill(0).map((it, index)=>{
-        return `<div>${index}</div>`
-    }).join(' ')
+        return `<div>item ${index}</div>`
+    }).join('')
 
     scroller.innerHTML = html
 
