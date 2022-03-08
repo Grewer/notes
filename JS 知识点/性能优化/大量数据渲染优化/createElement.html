@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="content"></div>
+<script>
+    console.time('render time');
+    [...new Array(10)].forEach((_,i) => {
+        requestAnimationFrame(()=>{
+            [...new Array(10000)].forEach((_,index)=>{
+                const item = document.createElement("div")
+                item.textContent = `item ${i}${index}`
+                content.append(item)
+            })
+        })
+    })
+    // 10w 的级别 花费大概 500ms 左右
+    console.timeEnd('render time')
+</script>
+</body>
+</html>

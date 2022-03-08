@@ -8,11 +8,12 @@
 <div id="content"></div>
 <script>
     console.time('render time')
-    const html = new Array(10000).fill(0).map((it, index)=>{
+    const html = new Array(100000).fill(0).map((it, index)=>{
         return `<div>item ${index}</div>`
     }).join('')
     content.innerHTML = html
     console.timeEnd('render time')
+    // 10w 级别的数据渲染在 220 ms 左右
 </script>
 </body>
 </html>
