@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div style="max-height: 256px;max-width:256px;overflow: scroll;">
+    <canvas id="canvas"></canvas>
+</div>
+<script>
+    let ctx = canvas.getContext('2d');
+    const pixelRatio = window.devicePixelRatio;
+    const backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
+        ctx.mozBackingStorePixelRatio ||
+        ctx.msBackingStorePixelRatio ||
+        ctx.oBackingStorePixelRatio ||
+        ctx.backingStorePixelRatio || 1;
+    const ratio = pixelRatio / backingStoreRatio;
+    canvas.height = 60000;
+    ctx.scale(ratio, ratio);
+
+    [...new Array(100000)].map((it, index)=>{
+        ctx.fillText(`item ${index}`, 0, index * 30)
+    })
+</script>
+</body>
+</html>
