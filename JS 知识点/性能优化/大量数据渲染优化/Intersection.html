@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="container" style="height: 300px;overflow: auto">
+
+</div>
+
+<script>
+    const data = [...new Array(10000)]
+
+    const intersectionObserver = new IntersectionObserver(function (entries) {
+            // If intersectionRatio is 0, the target is out of view
+            // and we do not need to do anything.
+            console.log(entries)
+            entries.forEach(item => {
+                // 0 表示消失
+                if (item.intersectionRatio === 0) {
+                    if(item.isIntersecting === false && item.target.dataset.flag){ // 表示在上面消失
+                        // 我们就在最后末尾添加
+                        intersectionObserver.unobserve(item.target)
+                        item.target.remove()
+                        const dom = document.createElement("div")
+                        dom.style.height = '30px'
+                        dom.textContent = `item ${'test'}`
+                        dom.dataset.index = 11
+                        container.append(dom)
+                        intersectionObserver.observe(dom);
+                    }
+                }else{
+                    console.log(item.target.dataset)
+                    item.target.dataset.flag = true
+                }
+            })
+        },
+        {
+            root: container,
+            threshold: [0, 1]
+        });
+
+    const firstRender = data.slice(0, 20)
+
+    firstRender.forEach((item, index) => {
+        const dom = document.createElement("div")
+        dom.style.height = '30px'
+        dom.textContent = `item ${index}`
+        dom.dataset.index = index
+        container.append(dom)
+        intersectionObserver.observe(dom);
+    })
+
+</script>
+</body>
+</html>
