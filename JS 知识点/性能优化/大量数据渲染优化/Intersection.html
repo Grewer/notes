@@ -18,7 +18,6 @@
     }
 
     const intersectionObserver = new IntersectionObserver(function (entries) {
-            console.log(entries)
             entries.forEach(item => {
                 // 0 表示消失
                 if (item.intersectionRatio === 0) {
