@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="container" style="height: 300px;overflow: auto">
+
+</div>
+
+<script>
+    const data = [...new Array(10000)]
+
+    const dataArr = {
+        start: 0,
+        end: 30,
+    }
+
+    const intersectionObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(item => {
+                // 0 表示消失
+                if (item.intersectionRatio === 0) {
+                    if (item.isIntersecting === false && item.target.dataset.flag) { // 表示在上面消失
+                        // 我们就在最后末尾添加
+                        console.log(item)
+                        // 0,29
+                        // 去除前 15 个, 后面再添加 15 个
+                        // 15-45  监听在第 30 个
+
+
+                        // intersectionObserver.unobserve(item.target)
+                        // item.target.remove()
+                        // dataArr.start += 1
+                        // dataArr.end += 1
+                        // if (dataArr.end >= data.length) {
+                        //     return
+                        // }
+                        // addGroup(dataArr.end)
+                    }
+                } else {
+                    console.log(item.target.dataset)
+                    item.target.dataset.flag = true
+                }
+            })
+        },
+        {
+            root: container,
+            threshold: [0, 1]
+        });
+
+    function addGroup(start, end, mark) {
+        const arr = data.slice(start,end)
+        let fragment = document.createDocumentFragment();
+        arr.forEach((item, index) => {
+            const dom = document.createElement("div")
+            dom.style.height = '30px'
+            dom.textContent = `item ${index}`
+            dom.dataset.index = index
+            fragment.appendChild(dom)
+            if (index === mark) {
+                intersectionObserver.observe(dom);
+            }
+        })
+        container.appendChild(fragment)
+    }
+    // 第一次的渲染
+    addGroup(dataArr.start, dataArr.end, dataArr.start+15)
+</script>
+</body>
+</html>

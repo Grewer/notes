@@ -27,6 +27,9 @@
                         item.target.remove()
                         dataArr.start += 1
                         dataArr.end += 1
+                        if(dataArr.end>=data.length){
+                            return
+                        }
                         addDom(dataArr.end)
                     }
                 } else {
