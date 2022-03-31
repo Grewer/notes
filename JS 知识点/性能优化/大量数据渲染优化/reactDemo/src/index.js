@@ -1,9 +1,9 @@
 import React, {useRef, useState} from "react";
 import ReactDOM from "react-dom/client";
 
-const totalData = [...new Array(10000)].map((item, index)=>({
+const totalData = [...new Array(10000)].map((item, index)=>(Object.freeze({
     index
-}))
+})))
 
 const total = totalData.length
 

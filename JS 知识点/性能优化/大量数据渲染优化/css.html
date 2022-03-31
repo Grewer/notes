@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="content"></div>
+<style>
+    #content {
+        content-visibility: auto;
+        height: 500px;
+        contain-intrinsic-size: 500px;
+        overflow: scroll;
+    }
+</style>
+<script>
+    console.time('render time')
+    const html = new Array(100000).fill(0).map((it, index)=>{
+        return `<div>item ${index}</div>`
+    }).join('')
+    content.innerHTML = html
+    console.timeEnd('render time')
+</script>
+</body>
+</html>
+
