@@ -52,6 +52,66 @@ API 的删除:
 API 新增:
 单纯的新增并不影响现有的升级
 
+同时 API 我们需要有所区分
+1. 配置型 API, 这种一般只会使用一次, 比如 `<Router>`, 只在路由配置页面使用, 那我们升级的时候直接修改便可以了
+2. 使用型 API, 这类 api 覆盖比较广泛, 比如说 `router.push` 改成了 `history.push`
+
+## 升级
+
+现在开始我们的升级
+
+### redux 升级
+
+需要升级 redux 相关库:
+- react-redux^6.0.0
+- redux-first-history
+
+可以删除库: `react-router-redux`
+
+> `connected-react-router` 只支持 v4 和 v5,  这里我们使用 `redux-first-history`, 更小, 更快的替代方案
+
+store.js:
+```js
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import { createReduxHistoryContext } from "redux-first-history";
+import { createBrowserHistory } from 'history';
+
+const { createReduxHistory, routerMiddleware, routerReducer } = createReduxHistoryContext({ 
+  history: createBrowserHistory(),
+  //other options if needed 
+});
+
+export const store = createStore(
+  combineReducers({
+    router: routerReducer
+    //... reducers //your reducers!
+  }),
+  composeWithDevTools(
+    applyMiddleware(routerMiddleware)
+  )
+);
+
+export const history = createReduxHistory(store);
+```
+app.js:
+
+```js
+import { Provider } from "react-redux";
+import { HistoryRouter as Router } from "redux-first-history/rr6";
+import { store, history } from "./store";
+
+const App = () => (
+    <Provider store={store}>
+        <Router history={history}>
+            //.....
+        </Router>
+    </Provider>
+);
+```
+
+//TODO  import {Link} from 'react-router' 
+
 ## 总结
 升级的总结
 
