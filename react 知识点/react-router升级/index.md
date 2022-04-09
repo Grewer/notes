@@ -110,6 +110,36 @@ const App = () => (
 );
 ```
 
+### router
+
+经过上面 redux 的替换, 我们已经拥有了 `store`, `history`, `Router` 等几个重要属性了
+
+接下来只需要对 routes 进行控制即可:
+
+```jsx
+<Routes path={url} component={App}> // TODO check
+    <Route path={url2} element={<Foo/>} />
+</Routes>
+```
+
+
+之后就是
+
+
+在 hooks 中的用法:
+
+```js
+import { useNavigate } from "react-router-dom";
+
+// hooks 
+const navigate = useNavigate();
+//这会将新路线推送到导航堆栈的顶部
+navigate("/new-route");
+
+//这会将当前路线替换为导航堆栈中的新路由
+navigate("/new-route", { replace: true });
+```
+
 //TODO  import {Link} from 'react-router' 
 
 ## 总结
