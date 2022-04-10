@@ -77,6 +77,8 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import { createReduxHistoryContext } from "redux-first-history";
 import { createBrowserHistory } from 'history';
 
+
+// 原有 routerMiddleware 来自于 react-router-redux
 const { createReduxHistory, routerMiddleware, routerReducer } = createReduxHistoryContext({ 
   history: createBrowserHistory(),
   //other options if needed 
@@ -94,6 +96,36 @@ export const store = createStore(
 
 export const history = createReduxHistory(store);
 ```
+
+关于 `redux-first-history` 仓库, 如果有依赖 `redux-devtools`, `redux-devtools-log-monitor` 等库, 可以不使用它
+
+这样使用:
+
+```js
+import { compose, createStore, combineReducers, applyMiddleware } from 'redux';
+import DevTools from '../utils/DevTools';
+
+// 省略 createReduxHistoryContext
+
+const enhancer = compose(
+    applyMiddleware(
+        // ...省略
+        logger,
+        routerMiddleware
+    ),
+    DevTools.instrument({maxAge: 10})
+);
+
+export const store = createStore(
+    combineReducers({
+        router: routerReducer
+        // ...省略
+    }),
+    enhancer
+);
+
+```
+
 app.js:
 
 ```js
