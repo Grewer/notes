@@ -144,14 +144,33 @@ const App = () => (
 
 ### router
 
+添加新的库:
+- react-router-dom^6.3.0  
+react-router的依赖可以直接去掉
+
 经过上面 redux 的替换, 我们已经拥有了 `store`, `history`, `Router` 等几个重要属性了
 
 接下来只需要对 routes 进行控制即可:
 
 ```jsx
-<Routes path={url} component={App}> // TODO check
+<Routes path={url} element={<App/>}>
     <Route path={url2} element={<Foo/>} />
 </Routes>
+```
+
+想要在 `<APP>` 组件中显示 `<Foo>` 组件, 则需要另一个操作:
+
+```js
+import { Outlet } from "react-router-dom";
+
+function App(props) {
+    // 其中 Outlet 就是类似于 children 的占位符
+    return <>
+        // ...
+        <Outlet />
+    </>
+}
+
 ```
 
 
@@ -172,7 +191,13 @@ navigate("/new-route");
 navigate("/new-route", { replace: true });
 ```
 
-//TODO  import {Link} from 'react-router' 
+## api 的改动
+
+从 v3 升级之后, 常用的 `withRouter`, `Link` 都会从 `react-router` 移除, 放进 `react-router-dom` 中, 那么怎么修改会比较方便呢
+
+直接全部替换, 但是这也会碰到我们的问题所在: 当这些 API, 在某一些子文件包, 或者第三方组件中的时候,
+API 的更新就变得异常艰难了, 这也是直接修改的问题点所在
+
 
 ## 总结
 升级的总结
