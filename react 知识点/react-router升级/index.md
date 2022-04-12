@@ -153,10 +153,15 @@ react-router的依赖可以直接去掉
 接下来只需要对 routes 进行控制即可:
 
 ```jsx
-<Routes path={url} element={<App/>}>
-    <Route path={url2} element={<Foo/>} />
+<Routes>
+    <Route path={url} element={<App/>}>
+        <Route path={url2} element={<Foo/>} />
+    </Route>
 </Routes>
 ```
+
+> 有一点需要注意, 不管在 `<App>` 组件还是 `<Foo>` 组件中都无法通过 props 来获取路由对象了
+
 
 想要在 `<APP>` 组件中显示 `<Foo>` 组件, 则需要另一个操作:
 
@@ -193,14 +198,123 @@ navigate("/new-route", { replace: true });
 
 ## api 的改动
 
-从 v3 升级之后, 常用的 `withRouter`, `Link` 都会从 `react-router` 移除, 放进 `react-router-dom` 中, 那么怎么修改会比较方便呢
+从 v3 升级之后, 常用的  `Link` 会从 `react-router` 移除, 放进 `react-router-dom` 中, 那么怎么修改会比较方便呢
+
+
+### 关于 withRouter
+
+在 v6 中, 官方包不会自带这个组件了, 因为我们可以通过他的 api 自由组合:
+
+```js
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+
+function withRouter(Component) {
+  function ComponentWithRouterProp(props) {
+    let location = useLocation();
+    let navigate = useNavigate();
+    let params = useParams();
+    return (
+      <Component
+        {...props}
+        router={{ location, navigate, params }}
+      />
+    );
+  }
+
+  return ComponentWithRouterProp;
+}
+```
+
+### 方案一
 
 直接全部替换, 但是这也会碰到我们的问题所在: 当这些 API, 在某一些子文件包, 或者第三方组件中的时候,
 API 的更新就变得异常艰难了, 这也是直接修改的问题点所在
 
+### 方案二
+
+当前的一个思路就是, 使用 `alias` 加上文件的兼容来解决这个问题, 比如我在项目中新建文件:
+
+routerProxy.js
+```js
+import * as ReactRouter from '../node_modules/react-router';
+import {Link} from 'react-router-dom';
+
+function withRouter(Component) {
+    //省略
+}
+
+export * from '../node_modules/react-router';
+export {Link,withRouter}
+export default ReactRouter;
+```
+
+搭配 webpack 配置:
+```js
+    alias: {
+      'react-router': path.resolve(__dirname, './source/react-router-proxy.js'),
+    }
+```
+
+这样运行的时候, 引用 `react-router` 的东西都会走到此文件中, 而此文件中从 node_modules 中引入, 并且加上兼容, 最终完成升级的过度
+
+### 方案三
+使用 babel 的转换来解决:
+```js
+module.exports = function ({ types: t }) {
+    const namespace = __dirname + '/../node_modules/react-router/es/';
+
+    const canReplace = ({ specifiers }) => {
+        return (
+            specifiers.length > 0 &&
+            specifiers.every((specifier) => {
+                return (
+                    t.isImportSpecifier(specifier) &&
+                    (specifier.imported.name === 'Link' ||
+                        specifier.imported.name === 'withRouter')
+                );
+            })
+        );
+    };
+
+    const replace = (specifiers) => {
+        return specifiers.map(({ local, imported }) => {
+            if (imported.name === 'Link') {
+                return t.importDeclaration(
+                    [t.importDefaultSpecifier(local)],
+                    t.stringLiteral(`react-router-dom/${imported.name}`),
+                );
+            }
+
+            return t.importDeclaration(
+                [t.importDefaultSpecifier(local)],
+                t.stringLiteral(`${namespace}${imported.name}`),
+            );
+        });
+    };
+
+    return {
+        visitor: {
+            ImportDeclaration(path) {
+                if (path.node.source.value === 'react-router') {
+                    if (canReplace(path.node)) {
+                        // 替换
+                        path.replaceWithMultiple(replace(path.node.specifiers));
+                    }
+                }
+            },
+        },
+    };
+};
+```
+通过检测 `import {Link} from 'react-router'`等语句, 将其替换成 `react-router-dom` 仓库
 
 ## 总结
 升级的总结
 
 ## 参考
 - https://juejin.cn/post/6966242922278682632
+- https://reactrouter.com/docs/en/v6
