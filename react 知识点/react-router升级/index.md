@@ -329,3 +329,4 @@ module.exports = function ({ types: t }) {
 ## 参考
 - https://juejin.cn/post/6966242922278682632
 - https://reactrouter.com/docs/en/v6
+- https://github.com/salvoravida/redux-first-history
