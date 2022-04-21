@@ -31,6 +31,9 @@
 
     - instanceof 和 typeof
 
+    - node_modules 瘦身
+        - index
+
     - 代码实现
         - bind 实现
 
