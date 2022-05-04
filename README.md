@@ -11,6 +11,8 @@
     <details>
       <summary>点我展开</summary>
 
+    - CSS自定义属性
+
     - grid布局
 
     - 行内元素和块元素
