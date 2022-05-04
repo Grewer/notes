@@ -27,6 +27,78 @@ element {
 }
 ```
 
+> 注意：自定义属性名是大小写敏感的，--my-color 和 --My-color 会被认为是两个不同的自定义属性。
+> 
+
+## 使用
+
+```css
+element {
+  background-color: var(--main-bg-color);
+}
+```
+
+这些自定义属性，仅当需要的时候才会计算，而并不会按其他规则进行保存。比如，你不能为元素设置一个属性，然后让它从兄弟或旁支子孙规则上获取值。属性仅用于匹配当前选择器及其子孙，这和通常的CSS是一样的。
+
+
+### 默认值
+
+用 var() 函数可以定义多个备用值(fallback value)，当给定值未定义时将会用备用值替换。
+
+
+```css
+/*如果提供了第二个参数，则表示备用值，当自定义属性值无效时生效。第二个参数可以嵌套，但是不能继续平铺展开下去了，例如：*/
+.two {
+  color: var(--my-var, red); /* Red if --my-var is not defined */
+}
+
+.three {
+    background-color: var(--my-var, var(--my-background, pink)); /* pink if --my-var and --my-background are not defined */
+}
+
+.three {
+    background-color: var(--my-var, --my-background, pink); /* Invalid: "--my-background, pink" */
+}
+```
+
+第二个例子展示了如何处理一个以上的 fallback。**该技术可能会导致性能问题**，因为它花了更多的时间在处理这些变量上。
+
+### 在 js 中操作
+
+在 JavaScript 中获取或者修改 CSS  变量和操作普通 CSS 属性是一样的：
+
+```js
+// 获取一个 Dom 节点上的 CSS 变量
+element.style.getPropertyValue("--my-var");
+
+// 获取任意 Dom 节点上的 CSS 变量
+getComputedStyle(element).getPropertyValue("--my-var");
+
+// 修改一个 Dom 节点上的 CSS 变量
+element.style.setProperty("--my-var", jsVar + 4);
+```
+
+## 兼容性
+
+目前 css 变量的兼容是最低 Chrome49:
+![](images/cssVarCompatible.png)
+
+### polyfill
+
+https://github.com/jhildenbiddle/css-vars-ponyfill  
+
+使用此兼容直接可以达到的兼容:
+
+[![](https://camo.githubusercontent.com/fe6757016c6b1b5034f1fe291a84398d784e62f71a29b3bec29c936324ce08d9/68747470733a2f2f6a68696c64656e626964646c652e6769746875622e696f2f6373732d766172732d706f6e7966696c6c2f6173736574732f696d672f6368726f6d652e737667)](https://camo.githubusercontent.com/fe6757016c6b1b5034f1fe291a84398d784e62f71a29b3bec29c936324ce08d9/68747470733a2f2f6a68696c64656e626964646c652e6769746875622e696f2f6373732d766172732d706f6e7966696c6c2f6173736574732f696d672f6368726f6d652e737667) Chrome 19+
+
+[![](https://camo.githubusercontent.com/096ff9eb91e64f05658b929ea84e463078cb0eea07aecf8a3eaf12f78bb3e5f2/68747470733a2f2f6a68696c64656e626964646c652e6769746875622e696f2f6373732d766172732d706f6e7966696c6c2f6173736574732f696d672f656467652e737667)](https://camo.githubusercontent.com/096ff9eb91e64f05658b929ea84e463078cb0eea07aecf8a3eaf12f78bb3e5f2/68747470733a2f2f6a68696c64656e626964646c652e6769746875622e696f2f6373732d766172732d706f6e7966696c6c2f6173736574732f696d672f656467652e737667) Edge 12+
+
+[![](https://camo.githubusercontent.com/ab580f13347596e6d101be99b1347313cfa2b71db767bc9ae211577cc1c120e7/68747470733a2f2f6a68696c64656e626964646c652e6769746875622e696f2f6373732d766172732d706f6e7966696c6c2f6173736574732f696d672f66697265666f782e737667)](https://camo.githubusercontent.com/ab580f13347596e6d101be99b1347313cfa2b71db767bc9ae211577cc1c120e7/68747470733a2f2f6a68696c64656e626964646c652e6769746875622e696f2f6373732d766172732d706f6e7966696c6c2f6173736574732f696d672f66697265666f782e737667) Firefox 6+
+
+[![](https://camo.githubusercontent.com/12a468ea86edf5b5ff117efe4e5e76f7fabebc218daef9915cdeb10530d6bb5a/68747470733a2f2f6a68696c64656e626964646c652e6769746875622e696f2f6373732d766172732d706f6e7966696c6c2f6173736574732f696d672f69652e737667)](https://camo.githubusercontent.com/12a468ea86edf5b5ff117efe4e5e76f7fabebc218daef9915cdeb10530d6bb5a/68747470733a2f2f6a68696c64656e626964646c652e6769746875622e696f2f6373732d766172732d706f6e7966696c6c2f6173736574732f696d672f69652e737667) IE 9+
+
+[![](https://camo.githubusercontent.com/fbcdbf0e01fadd88c81f03b0422bd93f25a757664789eed05ede4b0c81cbca6d/68747470733a2f2f6a68696c64656e626964646c652e6769746875622e696f2f6373732d766172732d706f6e7966696c6c2f6173736574732f696d672f7361666172692e737667)](https://camo.githubusercontent.com/fbcdbf0e01fadd88c81f03b0422bd93f25a757664789eed05ede4b0c81cbca6d/68747470733a2f2f6a68696c64656e626964646c652e6769746875622e696f2f6373732d766172732d706f6e7966696c6c2f6173736574732f696d672f7361666172692e737667) Safari 6+
+
 
 ## 引用
 
