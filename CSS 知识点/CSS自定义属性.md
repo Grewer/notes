@@ -19,16 +19,29 @@ element {
 声明一个自定义属性，属性名需要以两个减号（--）开始，属性值则可以是任何有效的CSS值。
 如前言中的 `--main-bg-color` 属性
 
+
 **通常**的最佳实践是定义在根伪类 `:root` 下，这样就可以在HTML文档的任何地方访问到它了：
 
 ```css
+/*:root 选择器匹配文档根元素。*/
+/*在 HTML 中，根元素始终是 html 元素。*/
+/*也就是说：root 表示的是根元素*/
+
 :root {
   --main-bg-color: brown;
 }
 ```
 
-> 注意：自定义属性名是大小写敏感的，--my-color 和 --My-color 会被认为是两个不同的自定义属性。
-> 
+> 注意：自定义属性名是大小写敏感的，--my-color 和 --My-color 会被认为是两个不同的自定义属性。  
+>  同时不能包含$，[，^，(，%等字符，普通字符局限在只要是“数字[0-9]”“字母[a-zA-Z]”“下划线_”和“短横线-”这些组合，但是可以是中文，日文或者韩文，例如
+
+
+```css
+body {
+  --深蓝: #369;
+  background-color: var(--深蓝);
+}
+```
 
 ## 使用
 
@@ -78,10 +91,51 @@ getComputedStyle(element).getPropertyValue("--my-var");
 element.style.setProperty("--my-var", jsVar + 4);
 ```
 
+### CSS变量的空格尾随特性
+
+```css
+body {
+  --size: 20;   
+  font-size: var(--size)px;
+}
+```
+此处`font-size:var(--size)px`等同于`font-size:20 px`，注意，`20`后面有个空格，所以，这里的`font-size`使用的是`<body>`元素默认的大小。
+
+## 使用场景
+
+
+
+
+更多场景可参考此文章: https://www.zhangxinxu.com/wordpress/2020/07/css-var-improve-components/
+
 ## 兼容性
 
 目前 css 变量的兼容是最低 Chrome49:
 ![](images/cssVarCompatible.png)
+
+在 CSS 中我们也可以进行兼容性处理:
+```css
+.selector: {}
+@supports ( (--a: 0)) {
+  /* supported */ 
+    .selector: {}
+}
+@supports ( not (--a: 0)) {
+  /* not supported */
+    .selector: {}
+}
+```
+
+在 js 中也可以进行对应判断
+
+```js
+const isSupported =
+    window.CSS &&
+    window.CSS.supports &&
+    window.CSS.supports('--a', 0);
+
+```
+
 
 ### polyfill
 
@@ -100,6 +154,20 @@ https://github.com/jhildenbiddle/css-vars-ponyfill
 [![](https://camo.githubusercontent.com/fbcdbf0e01fadd88c81f03b0422bd93f25a757664789eed05ede4b0c81cbca6d/68747470733a2f2f6a68696c64656e626964646c652e6769746875622e696f2f6373732d766172732d706f6e7966696c6c2f6173736574732f696d672f7361666172692e737667)](https://camo.githubusercontent.com/fbcdbf0e01fadd88c81f03b0422bd93f25a757664789eed05ede4b0c81cbca6d/68747470733a2f2f6a68696c64656e626964646c652e6769746875622e696f2f6373732d766172732d706f6e7966696c6c2f6173736574732f696d672f7361666172692e737667) Safari 6+
 
 
+## 目前的情况
+
+### less/sass
+
+在大多数的项目中, 是使用 less/sass/scss 的, 但是在这几种 css 预处理工具中已经有了变量的功能, 如果再加上 CSS 原生变量, 就会显得很冗余
+
+而且在预处理器中 还有更加强大的能力, 所以对于这些, 原生 css 变量的用处很小
+
+
+### 
+
 ## 引用
 
 - https://developer.mozilla.org/zh-CN/docs/Web/CSS/Using_CSS_custom_properties
+- https://www.zhangxinxu.com/wordpress/2016/11/css-css3-variables-var/
+- https://juejin.cn/post/6937530846471520287
+- https://www.zhangxinxu.com/wordpress/2020/07/css-var-improve-components/
