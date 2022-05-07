@@ -103,7 +103,45 @@ body {
 
 ## 使用场景
 
+简单的实现一种进度条:
 
+![](images/img.png)
+
+
+外面有一层背景层，然后里面有进度条，还有进度值。
+
+在过去，会使用两层div元素，然后JS去改变里面有颜色条条的宽度，同时设置进度值。
+
+
+```html
+<label>图片1：</label>
+<div class="bar" style="--percent: 60;"></div>
+<label>图片2：</label>
+<div class="bar" style="--percent: 40;"></div>
+<label>图片3：</label>
+<div class="bar" style="--percent: 20;"></div>
+```
+
+```css
+.bar {
+    height: 20px; width: 300px;
+    background-color: #f5f5f5;
+}
+.bar::before {
+    display: block;
+    counter-reset: progress var(--percent);
+    content: counter(progress) '%\2002';
+    width: calc(1% * var(--percent));
+    color: #fff;
+    background-color: #2486ff;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+```
+
+可以看到，我们只需要一层div标签，DOM层级简单了，然后，需要修改的HTML变化项仅仅是一个--percent自定义属性而已。
 
 
 更多场景可参考此文章: https://www.zhangxinxu.com/wordpress/2020/07/css-var-improve-components/
@@ -162,8 +200,16 @@ https://github.com/jhildenbiddle/css-vars-ponyfill
 
 而且在预处理器中 还有更加强大的能力, 所以对于这些, 原生 css 变量的用处很小
 
+### css in js
 
-### 
+在 root 中定义完毕基础 CSS 后, 就可以在 js 中使用了, 在这种框架有他是有一定发挥空间的
+
+
+### 原子css
+
+现在常用的一种原子化 CSS 框架: tailwindcss
+
+在这种框架中, 内部就广泛使用CSS变量，所以如果你能使用Tailwind，你就能使用本地CSS变量
 
 ## 引用
 
