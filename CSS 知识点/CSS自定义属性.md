@@ -146,6 +146,37 @@ body {
 
 更多场景可参考此文章: https://www.zhangxinxu.com/wordpress/2020/07/css-var-improve-components/
 
+## 扩展
+
+现在我们可以通过 `@property` 来扩展, CSS 变量的功能:
+
+他的语法:
+```css
+@property --property-name {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #c0ffee;
+}
+```
+
+@property 规则中 syntax 和 inherits 描述符是必需的; 如果其中任何一项缺失, 整条规则都将失效并且会被忽略。 initial-value 描述符仅在syntax描述符为通用syntax定义时是可选的，否则initial-value也是必需的——如果此时该描述符缺失,整条规则都将失效且被忽略。
+
+当然我们也可以使用 js 来创建:
+
+```js
+window.CSS.registerProperty({
+  name: '--my-color',
+  syntax: '<color>',
+  inherits: false,
+  initialValue: '#c0ffee',
+});
+```
+
+他的作用, 很多情况是为了实现了一些以往无法简单实现的动画效果
+
+详细可以参考此文章, 里面举了几个例子: https://juejin.cn/post/6951201528543707150
+
+
 ## 兼容性
 
 目前 css 变量的兼容是最低 Chrome49:
@@ -173,6 +204,11 @@ const isSupported =
     window.CSS.supports('--a', 0);
 
 ```
+
+
+而 `@property` 还只是一个实验中的属性, 他的兼容要求是十分高的:
+
+![](images/cssVarPropertyCompatible.png)
 
 
 ### polyfill
@@ -210,7 +246,6 @@ https://github.com/jhildenbiddle/css-vars-ponyfill
 
 在这种框架中, 内部就广泛使用CSS变量, 所以如果你能使用 Tailwind, 你就能使用 CSS变量
 
-
 ## 总结
 
 CSS 变量这一功能, 现在的浏览器支持度已经足够了, 同时针对现有的 CSS 多种预处理器, 有了一定的适配度, 如果有使用的打算, 可以尝试引入了
@@ -223,3 +258,4 @@ CSS 变量这一功能, 现在的浏览器支持度已经足够了, 同时针对
 - https://www.zhangxinxu.com/wordpress/2016/11/css-css3-variables-var/
 - https://juejin.cn/post/6937530846471520287
 - https://www.zhangxinxu.com/wordpress/2020/07/css-var-improve-components/
+- https://developer.mozilla.org/zh-CN/docs/Web/CSS/@property#browser_compatibility
