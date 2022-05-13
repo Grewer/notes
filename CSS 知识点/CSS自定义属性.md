@@ -105,7 +105,7 @@ body {
 
 简单的实现一种进度条:
 
-![](images/img.png)
+![](images/cssVarDemo.png)
 
 
 外面有一层背景层，然后里面有进度条，还有进度值。
