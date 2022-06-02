@@ -36,6 +36,8 @@
     - node_modules 瘦身
         - index
 
+        - src
+
     - 代码实现
         - bind 实现
 
