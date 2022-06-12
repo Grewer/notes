@@ -34,9 +34,13 @@
     - instanceof 和 typeof
 
     - node_modules 瘦身
+        - bin
+
         - index
 
         - src
+
+        - static
 
     - 代码实现
         - bind 实现
