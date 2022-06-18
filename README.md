@@ -34,6 +34,8 @@
     - instanceof 和 typeof
 
     - node_modules 瘦身
+        - README-v2
+
         - bin
 
         - index
