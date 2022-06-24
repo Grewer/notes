@@ -3,21 +3,23 @@ const path = require('path')
 
 function getStatus(fullPath) {
     const stat = fs.statSync(fullPath);
-
+    
     return {
         isDirectory: stat.isDirectory()
     }
 }
 
+const ignoreDir = ['bin', 'build', 'src', 'images']
+
 
 function readFileList(dir, filesList = []) {
     const files = fs.readdirSync(dir);
-
+    
     files.forEach((item, index) => {
         const fullPath = path.join(dir, item);
         const stat = getStatus(fullPath);
         if (stat.isDirectory) {
-            if (item.startsWith('.') || item === 'images') {
+            if(ignoreDir.includes(item) || item.startsWith('.')){
                 return
             }
             const obj = {name: item, children: []}
@@ -48,7 +50,7 @@ const transform = (fileList, gap = 0) => {
         if (file.children) {
             child = transform(file.children, gap + 1)
         }
-        if(gap === 0){
+        if (gap === 0) {
             return `- ${file.name}\n
     <details>
       <summary>点我展开</summary>
