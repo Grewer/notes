@@ -36,13 +36,7 @@
     - node_modules 瘦身
         - README-v2
 
-        - bin
-
         - index
-
-        - src
-
-        - static
 
     - 代码实现
         - bind 实现
@@ -73,11 +67,6 @@
 
     - 性能优化
         - 大量数据渲染优化
-            - reactDemo
-                - public
-
-                - src
-
             - 多数据下的性能优化
 
     - 源码阅读
