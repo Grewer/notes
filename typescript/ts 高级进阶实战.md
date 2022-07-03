@@ -7,6 +7,8 @@
 逆变、协变、双向协变和不变
 
 
+
+
 ### 互斥键的类型
 
 在 ts 官网的联合类型文档中有这样一种情况:
@@ -41,6 +43,8 @@ function area(s: Shape) {
   }
 }
 ```
+[点此在线查看](https://www.typescriptlang.org/play?#code/C4TwDgpgBAygFgQ0lAvAKClAPlA3lAawEsA7AEwC4oAiAYyICdaAbCagbigYTKIFcAzlRJ8AtgCMIDKAF8M2PIVKUaAgI58EDNpwAewsZOlzMOfMXJVqwBkQQkA5qw5R9UERKmcQBz8fYYaABmfCS0wEQA9iRQWhAIABRCsIiQAJR48kRBUEkAdNy8ghn4APSlUNlQgLRygCRKgLWmgHfygJym8pjawHwMMQCyCMBweQAKAJJQAFRQAgU8-AITUzNFAgGYMlAQzALQVfkWZKgoKKoacdQlbVwQnd2LugvTuquyG1vQuJcdXTH595PTIAyFQATM85DIgA)
+
 或者是这样, 没有 type 的情况:
 
 ```ts
@@ -57,8 +61,9 @@ function area(s: Shape) {
     }
 }
 ```
+[点此在线查看](https://www.typescriptlang.org/play?#code/C4TwDgpgBAygFgQ0lAvAKClAPlA3lAJwQBMBLAVwGcAuKAO3IFsAjCAgGigGMEAbWgBQBKFAD4GLNgF8M2PFAAetCawJQZaNADNydLsFIB7OlAQEICATViJIQvLMyktVgHQ9eQ3I8y-zwcgITSnc+YR8pCF5KCG9feMIIAKCoEIUoACpU1wUAbgi0KSA)
 
-这里就会报这样的错误:
+这里就会报如下的错误:
 
 ```
 Property 'cal' does not exist on type 'Shape'.
@@ -70,3 +75,10 @@ ts 在联合类型中, 我们直接通过 `.` 获取的属性, 是必须在所�
 
 这里我们需要做特殊处理:
 
+
+
+## 静态属性
+
+### 普通属性静态
+
+### 静态枚举
