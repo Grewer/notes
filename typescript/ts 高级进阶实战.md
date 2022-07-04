@@ -75,10 +75,56 @@ ts 在联合类型中, 我们直接通过 `.` 获取的属性, 是必须在所�
 
 这里我们需要做特殊处理:
 
+// TODO
 
 
-## 静态属性
+## 函数类型
 
-### 普通属性静态
+在 react 库中常用的一种用法是这样的:
+
+```tsx
+const a = (props) => {
+    //...
+    return <div></div>
+}
+
+a.defaultProps = {
+    key: 'id'
+}
+
+```
+
+
+
+## 文字类型
+
+```ts
+// @errors: 2345
+declare function handleRequest(url: string, method: "GET" | "POST"): void;
+// ---cut---
+const req = { url: "https://example.com", method: "GET" };
+handleRequest(req.url, req.method);
+```
+[点此在线查看](https://www.typescriptlang.org/play?#code/PTAEAEFMCdoe2gZwFygEwGYAsBWAsAFAAmkAxgDYCG0koAZgK4B2pALgJZxOgAWlTRcpABKkAI4NIiVgAoG0cqmnR2TAOYAaUAFtIrHnCKoARAHEAogBVjoAD6hjABQDyAZWsBKVADc47IgDchCCgALThpAys4aGEpFzSoDRioAC8oADeoPKKDjysrAAOKCCQAB6U2oVCAHTx2sZauvqGJhbWoAC+QQR8AkKiElKyyTU5WqPNBkQeAUA)
+
+### 解决方案
+
+1. 使用泛型:
+
+```ts
+// Change 1:
+const req = { url: "https://example.com", method: "GET" as "GET" };
+// Change 2
+handleRequest(req.url, req.method as "GET");
+```
+
+2. `as const`
+
+```ts
+const req = { url: "https://example.com", method: "GET" } as const;
+handleRequest(req.url, req.method);
+```
+
+此例子在官网文档中也有提到: https://www.typescriptlang.org/docs/handbook/2/everyday-types.html
 
 ### 静态枚举
