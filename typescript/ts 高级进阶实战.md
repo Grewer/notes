@@ -80,20 +80,51 @@ ts 在联合类型中, 我们直接通过 `.` 获取的属性, 是必须在所�
 
 ## 函数类型
 
-在 react 库中常用的一种用法是这样的:
+有时候函数我们也会当做对象来使用:
 
-```tsx
-const a = (props) => {
-    //...
-    return <div></div>
+```ts
+interface IFN {
+    (): number;
+    name: string
 }
 
-a.defaultProps = {
-    key: 'id'
+const a: IFN = () => {
+    //...
+    return 1
+}
+
+a.name = 'test'
+```
+
+同样地, 会有一些特殊的函数, 如 `Date`, 他有多套不同的函数:
+
+```ts
+new Date(1656953943886)
+// Tue Jul 05 2022 00:59:03 GMT+0800 (中国标准时间)
+// Date 对象
+
+new Date('2022-12-1')
+// Thu Dec 01 2022 00:00:00 GMT+0800 (中国标准时间)
+// 也是 Date 对象
+
+// ...
+```
+
+在 ts 的声明中他是这样被描述的
+
+```ts
+interface DateConstructor {
+    new(): Date;
+    new(value: number | string): Date;
+    new(year: number, month: number, date?: number, hours?: number, minutes?: number, seconds?: number, ms?: number): Date;
+    (): string;
+    readonly prototype: Date;
+    parse(s: string): number;
+    UTC(year: number, month: number, date?: number, hours?: number, minutes?: number, seconds?: number, ms?: number): number;
+    now(): number;
 }
 
 ```
-
 
 
 ## 文字类型
