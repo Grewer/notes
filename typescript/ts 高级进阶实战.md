@@ -158,4 +158,51 @@ handleRequest(req.url, req.method);
 
 此例子在官网文档中也有提到: https://www.typescriptlang.org/docs/handbook/2/everyday-types.html
 
+## 对象
+
+
+### 重新映射
+
+通过对象 as 重新映射出类型:
+
+```ts
+type Getters<Type> = {
+    [Property in keyof Type as `get${Capitalize<string & Property>}`]: () => Type[Property]
+};
+ 
+interface Person {
+    name: string;
+    age: number;
+    location: string;
+}
+ 
+type LazyPerson = Getters<Person>;
+
+// type LazyPerson = {
+//  getName: () => string;
+//  getAge: () => number;
+//  getLocation: () => string;
+// }
+```
+
+[点此在线查看](https://www.typescriptlang.org/play?ssl=2&ssc=38&pln=2&pc=48#code/C4TwDgpgBA4hzAgJwM4B4Aq4ID4oF4oBvAKCnKgG0AFJAe0iVCgEsA7KAawhDoDMoWSFACGKKAAMA5vAAkRAMIiwLYCIA2LAF4Q0KYEnZSoAMii0GyUDgC+EgLoAuKAAoAlATxCINeo1D2JDYA3CQk7IhIfCIAxtDUyCh0HKQUUGwiALYQzvqGbFKhaSIyzmwArpkARshFFOp0MSLALMm5BkahNmGgwgAyIlogCajJBLDwkegjSWw4oQD0CxQAegD8QA)
+
+### 过滤
+
+有两种方案可以过滤
+1 按照 key 过滤
+
+
+
+## 枚举
+
 ### 静态枚举
+
+```ts
+const enum INamesEnum {
+    
+}
+```
+
+
+### 枚举的选择
