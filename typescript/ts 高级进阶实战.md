@@ -6,7 +6,7 @@
 
 逆变、协变、双向协变和不变
 
-
+https://www.typescriptlang.org/docs/handbook/type-compatibility.html
 
 
 ### 互斥键的类型
@@ -219,8 +219,12 @@ const enum INamesEnum {
 }
 ```
 
+https://www.typescriptlang.org/docs/handbook/enums.html
 
 ### 枚举的选择
+
+什么情况下选择枚举, 而什么情况下会选择对象
+
 
 
 
@@ -234,3 +238,16 @@ const enum INamesEnum {
 ```ts
 const data: import('./data').data
 ```
+
+## 函数重载的问题:
+
+https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html
+
+
+## 三方库类型
+
+https://www.typescriptlang.org/docs/handbook/declaration-files/templates/module-plugin-d-ts.html
+
+
+## 用户组合
+https://www.typescriptlang.org/docs/handbook/declaration-files/deep-dive.html
