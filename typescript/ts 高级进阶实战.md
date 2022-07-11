@@ -1,14 +1,6 @@
 ## 前言
 本文主要讲述有关 typescript 的高级用法及知识点, 在阅读之前最好有 ts 的基础
 
-
-## 类型
-
-逆变、协变、双向协变和不变
-
-https://www.typescriptlang.org/docs/handbook/type-compatibility.html
-
-
 ### 互斥键的类型
 
 在 ts 官网的联合类型文档中有这样一种情况:
@@ -72,10 +64,27 @@ Property 'cal' does not exist on type 'Shape'.
 
 ts 在联合类型中, 我们直接通过 `.` 获取的属性, 是必须在所有子类型中共有的
 
+这里我们有 2 种结局方案
 
-这里我们需要做特殊处理:
+1. 使用 `in` 操作符
 
-// TODO
+```ts
+type Shape =
+    | { radius: number, cal: ()=>number}
+    | { x: number }
+
+
+function area(s: Shape) {
+    if ('cal' in s) {
+        return s.cal()
+    } else {
+        return s.x * s.x;
+    }
+}
+```
+[点此在线查看](https://www.typescriptlang.org/play?ssl=12&ssc=2&pln=1&pc=1#code/C4TwDgpgBAygFgQ0lAvAKClAPlA3lAJwQBMBLAVwGcAuKAO3IFsAjCAgGigGMEAbWgBQBKFAD4GLNgF8M2PFAAetCawJQZaNADNydLsFIB7OlAQEICATViJIQvLMyktUAQHIevN1FInK93EdMYPNgcgI-ADpPYSCpKAheSmhA4LTCCDCIqEpIhSgAKhy8gG44tCkgA)
+
+2. 使用特殊的类型库来包装
 
 
 ## 函数类型
@@ -127,7 +136,7 @@ interface DateConstructor {
 ```
 
 
-## 文字类型
+## 字面量类型
 
 ```ts
 // @errors: 2345
@@ -233,7 +242,7 @@ https://www.typescriptlang.org/docs/handbook/enums.html
 // Parameters
 
 
-## 类型快速引用
+## 导入类型
 
 ```ts
 const data: import('./data').data
@@ -249,5 +258,81 @@ https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.h
 https://www.typescriptlang.org/docs/handbook/declaration-files/templates/module-plugin-d-ts.html
 
 
-## 用户组合
-https://www.typescriptlang.org/docs/handbook/declaration-files/deep-dive.html
+## 组合
+
+### 简单组合
+
+简单的组合, 一个名字, 多种含义.
+
+```ts
+// 文件 A
+export var Bar: { a: Bar };
+export interface Bar {
+  count: number;
+}
+
+// 文件 B
+import { Bar } from "./foo";
+let x: Bar = Bar.a;
+console.log(x.count);
+// 此时 x 即使用了 Bar 的声明, 也使用了 Bar 的初始值
+```
+
+### 高级组合
+
+有些种类的声明可以在多个声明中组合。例如 `classC { }` 和 `interface C { }` 可以同时存在，并且都为C类型贡献属性。
+
+```ts
+interface Foo {
+  x: number;
+}
+interface Foo {
+  y: number;
+}
+let a: Foo = {}; // 省略
+console.log(a.x + a.y);
+// 常用的用法 类似函数重载
+```
+
+在 class 中也可以这样:
+
+```ts
+class Foo {
+  x: number;
+}
+interface Foo {
+  y: number;
+}
+let a: Foo = {};
+console.log(a.x + a.y);
+```
+
+#### 命名空间组合
+
+```ts
+class C {}
+namespace C {
+  export let x: number;
+}
+let y = C.x; // OK
+
+// or
+class C {}
+namespace C {
+    export interface D {}
+}
+let y: C.D; // OK
+```
+
+
+## 类型兼容性
+
+逆变、协变、双向协变和不变
+
+https://www.typescriptlang.org/docs/handbook/type-compatibility.html
+
+
+引用:
+
+- https://jkchao.github.io/typescript-book-chinese/#why
+- https://www.typescriptlang.org/docs/
