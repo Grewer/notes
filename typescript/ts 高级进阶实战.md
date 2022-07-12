@@ -223,18 +223,88 @@ type ObjectsNeedingGDPRDeletion = ExtractPII<DBFields>;
 ### 静态枚举
 
 ```ts
-const enum INamesEnum {
-    
+const enum ITypeEnums {
+    Input ,
+    Select
+}
+
+// 普通枚举:
+ 
+enum ITypeEnums {
+    Input ,
+    Select
 }
 ```
 
-https://www.typescriptlang.org/docs/handbook/enums.html
+经过编译后:
+
+```ts
+var ITypeEnums2;
+(function (ITypeEnums2) {
+    ITypeEnums2[ITypeEnums2["Input"] = 0] = "Input";
+    ITypeEnums2[ITypeEnums2["Select"] = 1] = "Select";
+})(ITypeEnums2 || (ITypeEnums2 = {}));
+```
+
+很明显的是静态枚举消失了
+
+这是 ts 为了避免在访问枚举值时额外的生成代码的代价
+
+### 静态枚举的编译
+
+```ts
+const enum ITypeEnums {
+    Input ,
+    Select
+}
+
+let types = [
+  ITypeEnums.Input,
+  ITypeEnums.Select
+];
+
+const type: ITypeEnums.Input = 1
+```
+
+```ts
+let types = [
+    0 /* ITypeEnums.Input */,
+    1 /* ITypeEnums.Select */
+];
+const type = 1;
+```
 
 ### 枚举的选择
 
 什么情况下选择枚举, 而什么情况下会选择对象
 
+在一般情况下, 我们使用静态对象就够了:
 
+```ts
+const enum EDirection {
+  Up,
+  Down,
+  Left,
+  Right,
+}
+ 
+const ODirection = {
+  Up: 0,
+  Down: 1,
+  Left: 2,
+  Right: 3,
+} as const
+
+let a = ODirection.Up
+// 提示 Up: 0
+```
+
+
+对状态进行多种判断时, 我们用到枚举的情况会更多(尤其是静态枚举)
+
+```ts
+
+```
 
 
 ## 接口请求
