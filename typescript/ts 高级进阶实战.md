@@ -304,7 +304,43 @@ let a = ODirection.Up
 
 ```ts
 
+const enum EDirection {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+const getStatus = (status: EDirection) => {
+    switch(status){
+        case EDirection.Up:
+            return 'success'
+        case EDirection.Down:
+            return 'fail'
+        default:
+            return null
+    }
+}
 ```
+
+编译之后的结果:
+
+```ts
+const getStatus = (status) => {
+    switch (status) {
+        case 0 /* EDirection.Up */:
+            return 'success';
+        case 1 /* EDirection.Down */:
+            return 'fail';
+        default:
+            return null;
+    }
+};
+// TODO
+```
+
+通过此种静态枚举的方案来判断类型, 比较 `Object['name']` 的方式和普通枚举的方式来说, 
+性能更好, 可维护性也更高
 
 
 ## 接口请求
@@ -401,6 +437,10 @@ let y: C.D; // OK
 
 https://www.typescriptlang.org/docs/handbook/type-compatibility.html
 
+
+## 类型仓库
+
+## 类型体操 挑战
 
 引用:
 
