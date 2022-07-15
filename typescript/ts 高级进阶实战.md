@@ -336,11 +336,65 @@ const getStatus = (status) => {
             return null;
     }
 };
-// TODO
+```
+
+[点击在线查看](https://www.typescriptlang.org/play?#code/FAYw9gdgzgLgBAUwgVwLZwKIBECWAnBEGHSOAb2DjgFUAHAGkrizAHcJGqAZBAMxk5wASjgDmACwHAAvpVCRYcUQhgBlGAEMYyKHAC8cABSwtOgFyZcBIiQgBKfQD5yTKKxwwQ445u1Q7FFRUIBpQCJb4hMSQAHR0FkxBQQTaeBBwAORQyCAgCFBQGYlwIWER1tEQMSzsZsVJKchpmbwaOAA2RUkAJnwayO0wdUkNKk3pKO3tTLKywEA)
+
+比较下非静态枚举的编译:
+
+```ts
+var EDirection;
+(function (EDirection) {
+    EDirection[EDirection["Up"] = 0] = "Up";
+    EDirection[EDirection["Down"] = 1] = "Down";
+    EDirection[EDirection["Left"] = 2] = "Left";
+    EDirection[EDirection["Right"] = 3] = "Right";
+})(EDirection || (EDirection = {}));
+const getStatus = (status) => {
+    switch (status) {
+        case EDirection.Up:
+            return 'success';
+        case EDirection.Down:
+            return 'fail';
+        default:
+            return null;
+    }
+};
 ```
 
 通过此种静态枚举的方案来判断类型, 比较 `Object['name']` 的方式和普通枚举的方式来说, 
 性能更好, 可维护性也更高
+
+### 有静态方法的枚举
+
+你可以使用 `enum` + `namespace` 的声明的方式向枚举类型添加静态方法。
+
+**这里的枚举只支持普通枚举**
+
+```ts
+
+enum EDirection {
+  Up,
+  Down,
+  Left,
+  Right,
+}
+
+
+namespace EDirection {
+  export function go(type: EDirection) {
+    switch (type) {
+      case EDirection.Up:
+      case EDirection.Down:
+        return false;
+      default:
+        return true;
+    }
+  }
+}
+
+EDirection.go(EDirection.Down)
+```
 
 
 ## 接口请求
