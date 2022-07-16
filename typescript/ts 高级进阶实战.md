@@ -396,10 +396,60 @@ namespace EDirection {
 EDirection.go(EDirection.Down)
 ```
 
+搭配使用可以在状态的基础上, 作出各种变化和判断方法
 
 ## 接口请求
 // ReturnType
 // Parameters
+
+https://jkchao.github.io/typescript-book-chinese/typings/generices.html#%E9%85%8D%E5%90%88-axios-%E4%BD%BF%E7%94%A8
+
+在我们常用的一种接口请求的场景中, 也需要覆盖 ts 的类型:
+
+```ts
+// 如果使用的是 axios
+
+import Ax from './axios';
+
+interface ResponseData<T = any> {
+    // 比较常用的一种接口返回形式
+    code: number;
+    result: T;
+    message: string;
+}
+
+// 在这里我们有多重方案, 可以使用泛型, 在使用的时候传入值, 因为接口返回可能会有点变动
+
+export function getUser<T>() {
+    return Ax.get<ResponseData<T>>('/user/get')
+        .then(res => res.data)
+        .catch(err => console.error(err));
+}
+
+interface User {
+    name: string;
+    age: number;
+}
+
+async function test() {
+    // user 被推断出为
+    // {
+    //  code: number,
+    //  result: { name: string, age: number },
+    //  message: string
+    // }
+    const user = await getUser<User>();
+}
+
+// 二是直接在这里就定义好
+export function getUser() {
+    return Ax.get<ResponseData<User>>('/user/get')
+        .then(res => res.data)
+        .catch(err => console.error(err));
+}
+```
+
+
 
 
 ## 导入类型
