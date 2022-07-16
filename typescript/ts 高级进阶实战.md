@@ -1,6 +1,8 @@
 ## 前言
 本文主要讲述有关 typescript 的高级用法及知识点, 在阅读之前最好有 ts 的基础
 
+TODO 此文发布按照分享时间来计算 至少延迟几个月发布
+
 ### 互斥键的类型
 
 在 ts 官网的联合类型文档中有这样一种情况:
@@ -534,17 +536,13 @@ namespace C {
 let y: C.D; // OK
 ```
 
-
-## 类型兼容性
-
-逆变、协变、双向协变和不变
-
-https://www.typescriptlang.org/docs/handbook/type-compatibility.html
-
-
 ## 类型仓库
 
+type-fest 类似
+
 ## 类型体操 挑战
+
+github 的类型挑战
 
 引用:
 
