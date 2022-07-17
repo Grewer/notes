@@ -122,9 +122,6 @@
     <details>
       <summary>点我展开</summary>
 
-    - 离职
-        - index
-
     - 面试题大纲
 
     </details>
