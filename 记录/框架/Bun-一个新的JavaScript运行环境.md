@@ -1,12 +1,8 @@
 ## bun.js  一个新的JavaScript运行环境
 
-## 前言
-
-
-
 ## 介绍
 
-Bun是一个现代的JavaScript运行环境，如Node, Deno。主要特性如下:
+[Bun](https://bun.sh/) 是一个现代的JavaScript运行环境，如Node, Deno。主要特性如下:
 
 1. 启动速度快。
 2. 更高的性能。
@@ -172,7 +168,65 @@ bun create react ./app
 
 ![](images/bun3.png)
 
-这就是他的官方 react 项目模板
+在项目中, 通过指令 `bun dev` 即可运行
+
+这就是他的官方 react 项目模板, 当然他还可以扩展:
+
+```shell
+bun create github-user/repo-name destination
+bun create local-example-or-remote-example destination
+bun create /absolute/path/to-template-folder destination
+bun create https://github.com/github-user/repo-name destination
+bun create github.com/github-user/repo-name destination
+```
+通过初始化本地路径, github 地址, gitlab 地址来初始化项目
+
+### bun create 工作流程
+
+当我们运行 `bun create ${template} ${destination}` 的时候会出现以下判断
+
+1. 判断远程模板 
+   1. 请求 `registry.npmjs.org` 相关路径, 下载tgz
+   2. 解压缩, 提取文件
+2. 如果是 GitHub
+   1. 通过 GitHub API 下载
+   2. 解析并提取文件
+3. 如果是本地模板
+   1. 打开本地文件夹
+   2. 清空已有名称的文件
+   3. 递归复制文件
+   4. 解析 package, 执行 hook, 下载依赖, 初始化 git
+
+### 包管理
+
+bun 有他自己的包公里工具: `bun install`, 可以在 `bunfig.toml`配置文件中对其进行 `registry`, `dev`, `cache` 等配置
+
+`bun install` 对等依赖的处理方式与 `yarn` 类似。不会自动安装对等依赖，会尝试选择一个现有的依赖。
+
+
+### lock 文件
+
+`bun.lockb` 是 `bun` 的二进制 lock 文件格式, 至于为什么选择二进制, 直接的原因就是为了性能, 和更多的存储
+
+#### 快速的原因
+
+它对所有数据使用线性数组。包是由一个自动递增的整数 ID 或者包名的哈希值引用的。超过8个字符的字符串会被去掉。
+在保存在磁盘之前，lock 文件通过 garbage collection (GC)和遍历包的树形结构确定顺序 ，再按依赖关系下载包。
+
+### 脚本运行器
+
+`bun run`是一个快速的 `package.json` 脚本运行器
+
+
+`bun run ${script-name}` 运行相当于 `npm run script-name` 的内容。例如，`bun run dev` 运行 `package.json` 中的 `dev` 脚本。
+
+bun 运行会自动从 `.env` 中加载环境变量到 `shell/task` 中。`.env `文件的加载优先级与 `bun` 的其他部分相同:
+
+1. .env.local 最先加载
+2.  if ($NODE_ENV === "production") .env.production else .env.development
+3.  .env
+
+如果有什么问题，你可以运行 `bun run env` 来得到一个环境变量的列表。
 
 ## 问题
 
