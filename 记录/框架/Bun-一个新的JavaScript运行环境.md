@@ -129,7 +129,50 @@ editor = "code"
 
 ## 使用
 
+首先我们下载 cli
 
+在终端执行如下指令即可进行下载:
+```
+curl https://bun.sh/install | bash
+```
+
+### 启用服务
+
+先尝试实现类似于 node 的相关功能:
+
+新建文件 http.js
+```js
+export default {
+  port: 3000,
+  fetch(request) {
+    return new Response("Welcome to Bun!");
+  },
+};
+```
+之后在终端执行:
+
+```shell
+bun run http.js
+```
+之后打开浏览器地址 `http://localhost:3000/` 即可查看到对应页面的返回 `Welcome to Bun!`
+
+
+### 创建项目
+
+我们先尝试使用它默认的 react 模板项目来创建:
+```shell
+bun create react ./app
+```
+
+运行指令之后的终端部分输出:
+
+![](images/bun2.png)
+
+之后便出现如下目录:
+
+![](images/bun3.png)
+
+这就是他的官方 react 项目模板
 
 ## 问题
 
