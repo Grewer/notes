@@ -152,6 +152,20 @@ bun run http.js
 ```
 之后打开浏览器地址 `http://localhost:3000/` 即可查看到对应页面的返回 `Welcome to Bun!`
 
+如果运行中有错误处理, 可以这样判断:
+
+```js
+export default {
+  fetch(req) {
+    // if(...)
+    throw new Error("woops!");
+  },
+  error(error: Error) {
+    // 类似与 catch 到fetch 抛出的错误
+    return new Response("Uh oh!!\n" + error.toString(), { status: 500 });
+  },
+}
+```
 
 ### 创建项目
 
@@ -234,7 +248,13 @@ bun 运行会自动从 `.env` 中加载环境变量到 `shell/task` 中。`.env 
 
 ### Zig 的问题
 
+Zig 是一个较新(2016 年)的语言, 他的生态,安全性值得考虑  
+
+同时如果底层出现什么问题, 会这门语言的人是非常少的, 就很容易卡主, 过于被动
+
 ### Issue 的问题
+
+目前存在了 284 个 Issue(2022.07.27), 有一些是特别重要且影响性能的
 
 ### 生态问题
 很多常用的, 较为重要的功能还未支持, 例如: 
