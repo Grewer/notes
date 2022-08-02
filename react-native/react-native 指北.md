@@ -89,7 +89,41 @@ RN 内置了Babel 转换器。所以很多语法我们是不需要再配置 babe
 
 ### 定时器
 
+在 RN 中有针对动画的定时器:  `InteractionManager` 
 
+
+原生应用感觉流畅的一个重要原因就是在互动和动画的过程中避免繁重的操作。在 RN 里，我们目前受到限制，因为我们只有一个 JavaScript 执行线程。于是就有了 `InteractionManager` 来确保在执行繁重工作之前所有的交互和动画都已经处理完毕。
+
+```js
+InteractionManager.runAfterInteractions(() => {
+  // ...需要长时间同步执行的任务...
+});
+```
+
+相比较另外的几个定时器:
+
+*   requestAnimationFrame(): 用来执行在一段时间内控制视图动画的代码
+*   setImmediate/setTimeout/setInterval(): 在稍后执行代码。注意这有可能会延迟当前正在进行的动画。
+*   runAfterInteractions(): 在稍后执行代码，不会延迟当前进行的动画。
+
+### Hermes 引擎
+
+Hermes 是专门针对 RN 应用而优化的全新开源 JavaScript 引擎。对于很多应用来说，启用 Hermes 引擎可以优化启动时间，减少内存占用以及空间占用。
+
+具体怎么启用和检测这里就不展示了
+
+#### Hermes 的特色
+
+- 预编译字节码（引擎加载二进制代码效率高于运行 JS 脚本）
+- 无 JIT 编译器（减小了引擎大小，优化内存占用，但直接运行 JS 脚本的性能差于 V8 和 JSC）
+- 针对移动端的垃圾回收策略
+
+#### 优化原理
+
+传统 JavaScript 引擎通常是以上图的模式完成代码执行的，编译阶段只完成 babel 转义和 minify 压缩，产物还是 JavaScript 脚本，解释与执行的任务都需要在运行时完成（如 V8 引擎，还会在运行时将 JavaScript 编译为本地机器码）很明显缺点就是在运行时需要边解释边执行，甚至需要占用系统资源执行编译任务。
+
+
+Hermes 引擎使用了 aot 编译的方式，将解释和编译过程前置到编译阶段，运行时只完成机器码的执行，大大提高了运行效率。
 
 ## 原生模块
 
@@ -122,3 +156,4 @@ RN 内置了Babel 转换器。所以很多语法我们是不需要再配置 babe
 ## 引用
 - https://www.jianshu.com/p/da80214720eb
 - https://blog.csdn.net/tyuiof/article/details/105595253
+- https://www.infoq.cn/article/r0v5cbf37f75ojwlmh5y
