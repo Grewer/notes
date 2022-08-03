@@ -125,11 +125,70 @@ Hermes 是专门针对 RN 应用而优化的全新开源 JavaScript 引擎。对
 
 Hermes 引擎使用了 aot 编译的方式，将解释和编译过程前置到编译阶段，运行时只完成机器码的执行，大大提高了运行效率。
 
-## 原生模块
-
 ## 原生 ui 组件
 
-## 原生组件和 js 组件的通信
+在 RN 中的一个优势就是可以插入原生组件, 提高 APP 的性能  
+假如我们在 `js` 中要使用 `ImageView`, 那就需要这几步:
+
+1. 创建一个 `ViewManager` 的子类。
+2. 实现`createViewInstance`方法。
+3. 导出视图的属性设置器：使用`@ReactProp`（或`@ReactPropGroup`）注解。
+4. 把这个视图管理类注册到应用程序包的`createViewManagers`里。
+5. 实现 JavaScript 模块。
+
+上述是安卓的添加, 相对来说 iOS 会简单一点:
+
+*   首先创建一个`RCTViewManager`的子类。
+*   添加`RCT_EXPORT_MODULE()`宏标记。
+*   实现`-(UIView *)view`方法。
+
+```OC
+// RNTMapManager.m
+#import <MapKit/MapKit.h>
+
+#import <React/RCTViewManager.h>
+
+@interface RNTMapManager : RCTViewManager
+@end
+
+@implementation RNTMapManager
+
+RCT_EXPORT_MODULE(RNTMap)
+
+- (UIView *)view
+{
+  return [[MKMapView alloc] init];
+}
+
+@end
+```
+
+在 JS 中使用:
+
+```jsx
+// MapView.js
+
+import { requireNativeComponent } from 'react-native';
+
+// requireNativeComponent 自动把'RNTMap'解析为'RNTMapManager'
+export default requireNativeComponent('RNTMap');
+
+// MyApp.js
+
+import MapView from './MapView.js';
+
+...
+
+render() {
+  return <MapView style={{ flex: 1 }} />;
+}
+```
+
+这是简单的展示, 关于传值的话就是多一些属性的判断, 下面来介绍两端的通信
+
+除了原生组件之外, js 还能传值给移动端, 添加监听事件, 对应的移动端也都可以
+
+这样就组成了两端完成的交互
 
 ## 手势方案
 
@@ -152,6 +211,19 @@ Hermes 引擎使用了 aot 编译的方式，将解释和编译过程前置到�
 0.59-0.60
 
 0.68 https://juejin.cn/post/7063738658913779743
+
+
+## 新的架构
+
+## 缺点
+
+第一，库有缺陷，提出的 Issue 得不到快速的解决，那么你只好亲自动手去修改了，往往自己修改要快过等待。
+
+第二，库缺乏一些自己需要的特性，这样的问题，除了自己解决，没有更好的办法。而在自己解决的过程中，你会对 RN 了解的更全面。
+
+在选择 RN 之前，你需要是一个有着 Android 或 iOS 开发经验的程序员，在我看来，这必不可少。
+
+## 总结
 
 ## 引用
 - https://www.jianshu.com/p/da80214720eb

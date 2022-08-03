@@ -544,6 +544,13 @@ type-fest 类似
 
 github 的类型挑战
 
+
+
+
+TODO 
+
+https://segmentfault.com/a/1190000042227498
+
 引用:
 
 - https://jkchao.github.io/typescript-book-chinese/#why
