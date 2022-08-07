@@ -200,12 +200,31 @@ render() {
 
 而手动链接是一个很麻烦的事情, 安卓和 iOS 的方案还是不相同的, [具体可查看](https://www.react-native.cn/docs/linking-libraries-ios)
 
-很幸运的是, 但是如果我们使用的 RN 库是在 `0.60` 以上的 
+### 现状
 
+很幸运的是, 但是如果我们使用的 RN 库是在 `0.60` 以上的, 就可以不需要使用 `link`指令了
 
+在安卓中他会自动链接, 而在 iOS 中, 则可以使用 `cocoapods` 来下载原生包
 
+### cocoapods
+
+简单介绍一下, `CocoaPods` 是一个用于 `Swift` 和 `Objective-C` Cocoa项目的依赖管理器.
+类比的话, 看成 `npm` 即可.
+
+使用 cocoapods 时, 会需要文件 `Podfile`, 可以类比成 `package.json`  
+之后通过指令 `pod install` (类比 `npm install`) 下载, 下载完毕之后会存于 `Pods` 文件下, 同时也存在 `lock` 文件:  
+`Podfile.lock`, `Manifest.lock` 两份
+
+悄悄说一句, 如果没有翻墙工具 pod 的下载会变得很麻烦, 经常会卡住
 
 ## 路由管理
+
+在 RN 中常用的路由管理有两个 一是 `React Navigation`
+
+### React Navigation
+
+
+
 
 ## APP 更新以及热更新
 
