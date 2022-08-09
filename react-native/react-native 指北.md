@@ -219,14 +219,26 @@ render() {
 
 ## 路由管理
 
-在 RN 中常用的路由管理有两个 一是 `React Navigation`
+在 RN 中常用的路由管理有两个 一是 `React Navigation`, 里一个是 `react-native-navigation`
 
-### React Navigation
+这两的区别在于, 前者是通过 JS 代码, 通过 `monorepo` 的组合, 并且通过 `react-native-screens`和 `react-native-reanimated v2 `等等库的优化, 最终形成最终接近原生的体验, 至于为什么大部分放在 js 端, 他有什么好处, 我会放在下面热更新部分讲解
+
+而后者使用原生容器来作为路由界面, 如 `<ScreenContainer>` 或者 `<Screen>`, 他带来了原生的性能, 特性和体验, 但在我们使用此库, 或者要集成另外的库时会带来一些麻烦
 
 
+## 和前端有什么异同
 
+在 APP 中的路由会出现一个概念 堆栈(stack), 这就和 web 中最大的一点不同了
+
+这里用一张图来介绍下:
+
+![](images/RN3.png)
+
+当我们到一个新页面时, 上一个页面是不会销毁的(大多数情况), 他是将新页面添加到栈中, 所以在 APP 中, 要经常小心内存的泄漏问题
 
 ## APP 更新以及热更新
+
+
 
 ## 其他不同点
 
