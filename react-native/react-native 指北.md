@@ -236,9 +236,35 @@ render() {
 
 当我们到一个新页面时, 上一个页面是不会销毁的(大多数情况), 他是将新页面添加到栈中, 所以在 APP 中, 要经常小心内存的泄漏问题
 
-## APP 更新以及热更新
+## 热更新
 
+这是一个在 RN 中最常用到以及最大的一个优势功能--热更新
 
+### 热更新方案
+
+一般来说有三种方案:
+
+* [react-native-pushy](https://pushy.reactnative.cn/)
+    ReactNative中文网推出的代码热更新服务，免费阶段适用于小型应用，轻度更新需求, 超出就需要收费了
+* [react-native-code-push](https://github.com/microsoft/react-native-code-push) + [AppCenter](https://appcenter.ms/)
+    完全免费，国内速度可能慢，适合个人开发者
+* [react-native-code-push](https://github.com/microsoft/react-native-code-push) + [code-push-server](https://github.com/lisong/code-push-server)
+    适合公司自建热更新服务器
+
+关于热更新的注意点:
+
+- 苹果App允许使用热更新[Apple's developer agreement](https://developer.apple.com/programs/ios/information/iOS_Program_Information_4_3_15.pdf), 为了不影响用户体验，规定必须使用静默更新。 Google Play不能使用静默更新，必须弹框告知用户App有更新。中国的android市场必须采用静默更新（如果弹框提示，App会被“请上传最新版本的二进制应用包”原因驳回）。
+- react-native-code-push只更新资源文件,不会更新java和Objective C，所以npm升级依赖包版本的时候，如果依赖包使用的本地化实现, 这时候必须更改应用版本号(ios修改Info.plist中的CFBundleShortVersionString, android修改build.gradle中的versionName), 然后重新编译app发布到应用商店。
+
+一般来说手机热更新的流程:
+
+![](images/RN4.png)
+
+其中 检测,下载, 重启等等, 都是 npm 包 [react-native-code-push](https://www.npmjs.com/package/react-native-code-push) 中的 API
+
+关于热更新还有进一步优化的空间, 如: 一次打包出来的 bundle 过大, 对其进行分包, 本文就不在深入解析了
+
+## APP 更新
 
 ## 其他不同点
 
