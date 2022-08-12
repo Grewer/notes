@@ -281,17 +281,39 @@ render() {
 
 在 APP 中海油很多细节与 Web 端不同, 这里列出几点
 
-### 手势方案
-
-在 h5 开发中, 我想大伙都接触到了手势和触摸的概念, 但是在 APP 中, 他是更加主流的操作方案
-
 ### debug 方案
+
+开发过 H5 的人应该对于 vconsole 很熟悉, 在 RN 中也有一个 vconsole 的组件, 用来 debug, 打印console, 查看请求, 各类信息等等
+
+之前本人也封装过一个: [react-native-vconsole](https://github.com/Grewer/react-native-vconsole), 结合了多个插件的优点
 
 ### 针对物理键的操作
 
-### 暗黑模式
+在安卓机上特有的一种功能, 他就是物理键
+
+用户可以直接点击物理键来进行后退, 当退到最首页的时候, 就需要显示提示 `再按一次退出`
+
+这就需要对其进行特殊适配:
+
+```ts
+  BackHandler.addEventListener('hardwareBackPress', this.handleBackPress)
+
+  handleBackPress = () => {
+    if (如果是第一个页面) {
+      const timestamp = new Date().valueOf()
+      if (timestamp - firstClick > 2000) {
+        firstClick = timestamp
+        ToastAndroid.show('再按一次退出', ToastAndroid.SHORT)
+        return true // 返回 true，意思是阻止默认操作
+      }
+    }
+    return false
+  }
+```
 
 ### 沉浸式状态栏
+
+在手机上会有状态栏这么一说, 这是一个很影响视觉的功能
 
 ### 文件管理
 
