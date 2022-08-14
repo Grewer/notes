@@ -313,9 +313,26 @@ render() {
 
 ### 沉浸式状态栏
 
-在手机上会有状态栏这么一说, 这是一个很影响视觉的功能
+在手机上会有状态栏这么一个场景, 这是一个很影响视觉的功能
+
+![](images/RN6.gif)
+
+可以看到上图中, 在显示信号和电池那一块的变化, 这一部分就是状态栏
+在 RN 中时候我们通过此 API 来控制:
+
+```jsx
+ <StatusBar barStyle="dark-content" backgroundColor="#ecf0f1" />
+```
+
+当然, 为了适配多种情况(在 APP 中要在页面的进入, 离开, 其他小功能的变化时修改状态栏), 有时候一些页面是需要透明状态栏, 也需要一些特殊设置
+
+此组件也需要特殊的包装
 
 ### 文件管理
+
+在 APP 上经常也会喷到一个问题, 就是文件的存储, 在 web 中基本不会遇到, 但是在 PC 端(例如 electron)会偶尔碰到
+
+
 
 ## 版本变化
 
@@ -340,3 +357,4 @@ render() {
 - https://www.jianshu.com/p/da80214720eb
 - https://blog.csdn.net/tyuiof/article/details/105595253
 - https://www.infoq.cn/article/r0v5cbf37f75ojwlmh5y
+- https://reactnavigation.org/docs/getting-started/
