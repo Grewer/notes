@@ -328,20 +328,37 @@ render() {
 
 此组件也需要特殊的包装
 
-### 文件管理
-
-在 APP 上经常也会喷到一个问题, 就是文件的存储, 在 web 中基本不会遇到, 但是在 PC 端(例如 electron)会偶尔碰到
-
-
-
 ## 版本变化
 
-0.59-0.60
+在 RN 中有几个版本是有很大的 breaking change
 
-0.68 https://juejin.cn/post/7063738658913779743
+- 0.59-0.60的升级
 
+在这两个版本直接有很多的 breaking change
+
+其中iOS 端最大的改动就是, 包变成了 CocoaPods(上面已经讲过),
+这让我们的 package 依赖也需要对应的升级(预计会有 50%以上的包升级), 所以影响范围基本就是整个项目
+
+而安卓方面, 则是 link 的方式变化了, 另外就是 `build.gradle`, `settings.gradle` , `AndroidX` 的配置的修改
+
+这里要介绍一下官方的升级工具: https://react-native-community.github.io/upgrade-helper/
+他能比较对应的版本, 把其中的 changes 显示出来
+
+- 0.68 的升级
+
+另一个就是 0.68 的升级, 在这个版本中, RN 进行了四点调整:
+
+1. JavaScript Interface(JSI) - 通信的更新
+2. Fabric  - 新的渲染系统
+3. Turbo Modules - Native 模块的增强
+4. CodeGen - 静态类型检查器
+
+因为是一个很底层的修改, 可能会导致现有的所有组件发生变化, 影响范围也是很广的
 
 ## 新的架构
+
+这里我们就来讲一下 0.68 中的更新具体是什么
+
 
 ## 缺点
 
@@ -353,8 +370,18 @@ render() {
 
 ## 总结
 
+文章还有其他的一些问题没有在文章里详细说明, 比如安卓的打包, 签名, iOS 的上架, 常用的代码、图片优化手段, 字体解决方案, 
+启动屏, 长列表, 吸附列表的问题等等, 不过这些也都是细枝末节, 主体的比较基本上都有了  
+
+目前来说 RN 存在的缺点:
+
+1. 旧库的问题   
+  目前 RN 的生态环境确实还算可以, 但是有很多库
+
+
 ## 引用
 - https://www.jianshu.com/p/da80214720eb
 - https://blog.csdn.net/tyuiof/article/details/105595253
 - https://www.infoq.cn/article/r0v5cbf37f75ojwlmh5y
 - https://reactnavigation.org/docs/getting-started/
+- https://juejin.cn/post/7063738658913779743
