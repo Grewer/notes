@@ -112,7 +112,7 @@
     <details>
       <summary>点我展开</summary>
 
-    - react-native 指北
+    - 写给前端的 react-native 开发指南
 
     </details>
             
