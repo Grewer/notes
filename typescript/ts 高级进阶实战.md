@@ -550,6 +550,7 @@ github 的类型挑战
 TODO 
 
 https://segmentfault.com/a/1190000042227498
+TypeScript鸭子类型（duck-typing） http://www.srcmini.com/3478.html
 
 引用:
 
