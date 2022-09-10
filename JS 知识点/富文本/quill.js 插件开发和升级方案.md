@@ -16,8 +16,33 @@ Quill.js 是一个具有跨平台和跨浏览器支持的富文本编辑器。�
 *   可以将内容表示为 JSON，更易于处理和转换为其他格式；
 *   提供两个主题以快速轻松地更改编辑器的外观。
 
-
 ## 插件的开发
+
+> 本次的编辑器使用 `react-quill` 组件库, 他在 `quill.js` 外层包装了一层 `react` 组件, 使得开发者在 react 框架用使用更加友好  
+> 相关链接: https://github.com/zenoamaro/react-quill
+> 
+
+### 使用:
+
+```tsx
+import React, { useState } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+
+function App() {
+  const [value, setValue] = useState('');
+
+  return <ReactQuill theme="snow" value={value} onChange={setValue} />;
+}
+```
+
+### 自定义 toolbar
+
+传递自定义 toolbar 的值:
+
+```tsx
+
+```
 
 ## 例子
 
