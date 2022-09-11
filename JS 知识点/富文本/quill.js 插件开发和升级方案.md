@@ -38,13 +38,70 @@ function App() {
 
 ### 自定义 toolbar
 
-传递自定义 toolbar 的值:
+> 传递自定义 `toolbar` 的值
 
+`toolbar` 中 **自定义的按钮**, 可以用 `iconfont` 的 `svg` 或者 `class`, 这里为了方便, 我们直接用文字
 ```tsx
-
+const CustomButton = () => <span className="iconfont">
+    find
+</span>;
 ```
 
+```tsx
+function App() {
+    const [value, setValue] = useState('');
+    
+    function insertStar() {
+        // 点击自定义图标后的回调
+    }
+    
+    // 自定义的 toolbar, useCallback 重渲染会有显示问题
+    const CustomToolbar = useCallback(() => (
+        <div id="toolbar">
+            <select
+                className="ql-header"
+                defaultValue={''}
+                onChange={(e) => e.persist()}
+            >
+                <option value="1"></option>
+                <option value="2"></option>
+                <option selected></option>
+            </select>
+            <button className="ql-bold"></button>
+            <button className="ql-italic"></button>
+            <button className="ql-insertStar">
+                <CustomButton/>
+            </button>
+        </div>
+    ), []);
+    
+    // 直接声明会有显示问题
+    const modules = useMemo(() => ({
+        toolbar: {
+            container: '#toolbar',
+            handlers: {
+                insertStar: insertStar,
+            },
+        },
+    }), []);
+    
+    return (<div>
+        <CustomToolbar/>
+        <ReactQuill theme="snow" value={value} modules={modules} onChange={setValue}/>
+    </div>)
+}   
+```
+
+通过此方案, 可以打造一个属于自己的工具栏了
+
+_但是也有一个缺点: **原有的 `quill.js` 工具栏**功能需要自己手写或者去官方 copy 下来_
+
 ## 例子
+
+> 现在可以自定义添加工具栏了, 那就开始我们的插件开发之旅
+
+本次的例子是一个**查找与替换功能**的插件开发
+
 
 ### 思路
 

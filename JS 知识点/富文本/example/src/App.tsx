@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import './App.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-const CustomButton = () => <span className="octicon octicon-star"/>;
+const CustomButton = () => <span className="iconfont">
+    find
+</span>;
 
 function App() {
     const [value, setValue] = useState('');
@@ -14,7 +16,8 @@ function App() {
         // quill.setSelection(cursorPosition + 1);
     }
     
-    const CustomToolbar = () => (
+    // 重渲染会有显示问题
+    const CustomToolbar = useCallback(() => (
         <div id="toolbar">
             <select
                 className="ql-header"
@@ -27,33 +30,24 @@ function App() {
             </select>
             <button className="ql-bold"></button>
             <button className="ql-italic"></button>
-            <select className="ql-color">
-                <option value="red"></option>
-                <option value="green"></option>
-                <option value="blue"></option>
-                <option value="orange"></option>
-                <option value="violet"></option>
-                <option value="#d0d1d2"></option>
-                <option selected></option>
-            </select>
             <button className="ql-insertStar">
                 <CustomButton/>
             </button>
         </div>
-    );
+    ), []);
     
-    const modules = {
+    const modules = useMemo(() => ({
         toolbar: {
             container: '#toolbar',
             handlers: {
                 insertStar: insertStar,
             },
         },
-    };
+    }), []);
     
     return (<div>
         <CustomToolbar/>
-        <ReactQuill theme="snow" value={value} modules={modules} onChange={setValue}/>;
+        <ReactQuill theme="snow" value={value} modules={modules} onChange={setValue}/>
     </div>)
 }
 
