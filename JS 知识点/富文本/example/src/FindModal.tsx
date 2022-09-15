@@ -2,6 +2,7 @@ import React from "react";
 import Icon from "antd/es/icon";
 import {Button, Checkbox, Input, Tabs} from "antd";
 import {debounce} from "lodash";
+import {LeftOutlined, RightOutlined} from "@ant-design/icons";
 
 
 const TabPane = Tabs.TabPane;
@@ -25,11 +26,11 @@ interface IState {
 }
 
 class FindModal extends React.Component<IProps, IState> {
-    private currentIndex = null;
+    private currentIndex: number | null = null;
     private replaceKey: string = '';
     
     state = {
-        indices: [],
+        indices: [] as any[],
         currentPosition: 0,
         searchKey: '',
         checked: false,
@@ -73,7 +74,7 @@ class FindModal extends React.Component<IProps, IState> {
         }
     };
     
-    specialArray = [];
+    specialArray: number[] = [];
     
     countSpecial = (index, lastIndex) => {
         const {getEditor} = this.props;
@@ -109,7 +110,7 @@ class FindModal extends React.Component<IProps, IState> {
         const re = new RegExp(escapeRegExp(searchKey), this.state.checked ? 'g' : 'gi');
         const length = searchKey.length;
         let match;
-        const indices = [];
+        const indices: {index:number}[] = [];
         this.specialArray = [];
         while ((match = re.exec(totalText)) !== null) {
             // 目标文本在文档中的位置
@@ -278,9 +279,9 @@ class FindModal extends React.Component<IProps, IState> {
                         suffix={
                             indices.length ? (
                                 <span className={'search-range'}>
-                  <Icon onClick={this.leftClick} type="left"/>
+                                    <LeftOutlined onClick={this.leftClick} />
                                     {currentPosition + 1} / {indices.length}
-                                    <Icon onClick={this.rightClick} type="right"/>
+                                    <RightOutlined onClick={this.rightClick} />
                 </span>
                             ) : null
                         }
@@ -297,7 +298,7 @@ class FindModal extends React.Component<IProps, IState> {
         const {indices} = this.state;
         return (
             <div className={'find-modal'}>
-                <Icon type="hints-alone-error" onClick={this.props.closeFindModal}/>
+                <span className={'close'} onClick={this.props.closeFindModal}>x</span>
                 <Tabs defaultActiveKey="1" size={'small'}>
                     <TabPane tab={'查找'} key="1">
                         {this.renderSearch()}

@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import './App.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -43,10 +43,23 @@ function App() {
         },
     }), []);
     
-    return (<div>
+    const _closeFindModal = () => setVisible(false)
+    const editorRef = useRef<any>()
+    
+    const getEditor = () => {
+        return editorRef.current?.editor
+    }
+    
+    return (<div className={'container'}>
         <CustomToolbar/>
-        <ReactQuill theme="snow" value={value} modules={modules} onChange={setValue}/>
-        <FindModal visible={visible}></FindModal>
+        {/*@ts-ignore*/}
+        <ReactQuill ref={editorRef} theme="snow" value={value} modules={modules} onChange={setValue}/>
+        {visible ? (
+            <FindModal
+                closeFindModal={_closeFindModal}
+                getEditor={getEditor}
+            />
+        ) : null}
     </div>)
 }
 
