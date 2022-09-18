@@ -104,11 +104,51 @@ _但是也有一个缺点: **原有的 `quill.js` 工具栏**功能需要自己�
 
 首先根据 `自定义 toolbar` 中的方案添加按钮, 因为上面已经有了例子, 这里就忽略掉自定义按钮的代码
 
-添加显示状态栏:
+现在根据点击之后的回调, 显示如下的样式:
+
+![](images/img_1.png)
 
 ```tsx
-
+class FindModal extends React.Component {
+    render(){
+        return <div className={'find-modal'}>
+            <span className={'close'} onClick={this.props.closeFindModal}>x</span>
+            <Tabs defaultActiveKey="1" size={'small'}>
+                <TabPane tab={'查找'} key="1">
+                    {this.renderSearch()}
+                </TabPane>
+                <TabPane tab={'替换'} key="2">
+                    {this.renderSearch()}
+                    <div className={'find-input-box replace-input'}>
+                        <label>{'替换'}</label>
+                        <Input onChange={this.replaceOnChange}/>
+                    </div>
+                    <div className={'replace-buttons'}>
+                        <Button disabled={!indices.length} size={'small'} onClick={this.replaceAll}>
+                            {'全部替换'}
+                        </Button>
+                        <Button
+                            disabled={!indices.length}
+                            size={'small'}
+                            type={'primary'}
+                            onClick={this.replace}
+                        >
+                            {'替换'}
+                        </Button>
+                    </div>
+                </TabPane>
+            </Tabs>
+        </div>
+    }
+}
 ```
+
+在外部使用 `state` 的 `visible` 控制即可:
+
+```tsx
+visible ? (<FindModal/>) : null
+```
+
 
 ### 思路
 
