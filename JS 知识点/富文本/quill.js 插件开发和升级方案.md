@@ -4,7 +4,7 @@
 
 ## 介绍
 
-Quill.js 是一个具有跨平台和跨浏览器支持的富文本编辑器。凭借其可扩展架构和富有表现力的 API，可以完全自定义它以满足个性化的需求。由于其模块化架构和富有表现力的 API，可以从 Quill 核心开始，然后根据需要自定义其模块或将自己的扩展添加到这个富文本编辑器中。它提供了两个用于更改编辑器外观的主题，可以使用插件或覆盖其 CSS 样式表中的规则进一步自定义。Quill 还支持任何自定义内容和格式，因此可以添加嵌入式幻灯片、3D 模型等。
+> Quill.js 是一个具有跨平台和跨浏览器支持的富文本编辑器。凭借其可扩展架构和富有表现力的 API，可以完全自定义它以满足个性化的需求。由于其模块化架构和富有表现力的 API，可以从 Quill 核心开始，然后根据需要自定义其模块或将自己的扩展添加到这个富文本编辑器中。它提供了两个用于更改编辑器外观的主题，可以使用插件或覆盖其 CSS 样式表中的规则进一步自定义。Quill 还支持任何自定义内容和格式，因此可以添加嵌入式幻灯片、3D 模型等。
 
 ![](images/img.png)
 
@@ -104,6 +104,8 @@ _但是也有一个缺点: **原有的 `quill.js` 工具栏**功能需要自己�
 
 首先根据 `自定义 toolbar` 中的方案添加按钮, 因为上面已经有了例子, 这里就忽略掉自定义按钮的代码
 
+### 主要结构
+
 现在根据点击之后的回调, 显示如下的样式:
 
 ![](images/img_1.png)
@@ -149,10 +151,55 @@ class FindModal extends React.Component {
 visible ? (<FindModal/>) : null
 ```
 
+### 搜索栏的处理
 
-### 思路
+这里我们从用户的输入关键词开始入手: 当用户**输入搜索关键词**时, 触发回调:
 
-### 实战
+```tsx
+<Input
+    onChange={this.onChange}
+    value={searchKey}
+    suffix={
+        // 如果有搜索的结果, 显示个数, 上一个,下一个的操作图标
+        indices.length ? (
+            <span className={'search-range'}>
+                <LeftOutlined onClick={this.leftClick} />
+                {currentPosition + 1} / {indices.length}
+                <RightOutlined onClick={this.rightClick} />
+            </span>
+        ) : null
+    }
+/>
+```
+
+`onChange` 输入时的触发 _(这里我们可以加上 debounce)_:
+
+首先我们保存输入的值, 将搜索结果 `indices` 重置为空:
+```ts
+this.setState({
+    searchKey: value,
+    indices: [],
+});
+```
+
+通过 quill 获取所有文本格式:
+```ts
+const {getEditor} = this.props;
+const quill = getEditor();
+const totalText = quill.getText();
+```
+
+解析用户输入的词, 将其转换成正则 (**_注意这里要对用户输入转义, 避免一些关键词影响正则_**)   
+之后则是是非大小写敏感: 使用 `i` 标记, `g` 表示全局匹配的意思(_不加上就只会匹配一次_):
+```ts
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+const re = new RegExp(escapeRegExp(searchKey), this.state.checked ? 'g' : 'gi');
+```
+
+
+
 
 ## 升级现状
 
