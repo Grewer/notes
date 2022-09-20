@@ -79,7 +79,7 @@ class FindModal extends React.Component<IProps, IState> {
     countSpecial = (index, lastIndex) => {
         const {getEditor} = this.props;
         const quill = getEditor();
-        const delta = quill.getContents();
+        const delta = quill.getContents(); // 此处的获取可优化
         // 获取上一个节点到当前节点的 delta
         const restDelta = delta.slice(lastIndex, index);
         const initValue = this.specialArray.length

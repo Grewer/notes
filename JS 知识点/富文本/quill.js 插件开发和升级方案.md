@@ -198,7 +198,89 @@ function escapeRegExp(string) {
 const re = new RegExp(escapeRegExp(searchKey), this.state.checked ? 'g' : 'gi');
 ```
 
+之后我们就要利用 `totalText` 和 `re` 进行循环正则匹配:
 
+```ts
+while ((match = re.exec(totalText)) !== null) {
+    // 目标文本在文档中的位置
+    let index = match.index;
+    // 计算 从最初到 index 有多少个特殊 insert
+    index = this.countSpecial(index, indices.length ? indices[indices.length - 1].index : 0);
+    
+    // 来自于 formatText 的方法, 使其高亮, 第 0 个默认选中
+    quill.formatText(index, searchKey.length, 'SearchedString', true, 'api');
+    // 最后记录搜索到的坐标
+    indices.push({index});
+}
+```
+
+### 特殊字符问题
+
+这里需要注意的是 `countSpecial` 方法
+
+具体实现:
+
+```ts
+countSpecial = (index, lastIndex) => {
+        const {getEditor} = this.props;
+        const quill = getEditor();
+        const delta = quill.getContents();
+        // 获取上一个节点到当前节点的 delta
+        const restDelta = delta.slice(lastIndex, index);
+        const initValue = this.specialArray.length
+            ? this.specialArray[this.specialArray.length - 1]
+            : 0;
+        const num = restDelta.reduce((num, op) => {
+            if (typeof op.insert === 'object') {
+                return num + 1;
+            }
+            return num;
+        }, initValue);
+        this.specialArray.push(num);
+        return index + num;
+    };
+```
+
+他的主要作用是用来计算编辑器中的**特殊字符**数量, 如**图片、emoji、附件**等等
+
+这样做的原因在于, 通过 `quill` 的方法 `quill.getText();` 并不能完全返回所有的显示, 他只能返回**文本**, 而像是**图片**这样的, 他是没有实际的文本, 但是却有着真实的占位符
+
+像这些特殊符号只能通过 `delta` 的方案来获取 **它是否存在**, 而如果全局使用 `delta` 方案的话, 他就不能完成搜索了;
+
+#### 举个例子
+
+比如我现在输入一句古诗 `但愿人长久，千里共婵娟。`, 其中 `长久` 两个字使用了**加粗**的格式, 他显示的 `delta` 是这样的: 
+
+```js
+[
+    {insert: '但愿人'},
+    {attributes: {bold: true}, insert: '长久'},
+    {insert: '，千里共婵娟。\n'},
+]
+```
+
+可以看到 `delta` 的文字是断裂的, 会被任意的格式所拆开;
+
+所以现在使用的是这样一种 `text` + `delta` 组合的方案
+
+### 搜索结束
+
+搜索完毕之后, 格局结果的坐标一次赋予对应格式, 同时记录当前选中的第 `0` 个搜索关键词
+
+```ts
+if (indices.length) {
+  this.currentIndex = indices[0].index;
+  quill.formatText(indices[0].index, length, 'SearchedStringActive', true, Emitter.sources.API);
+  this.setState({
+    currentPosition: 0,
+    indices,
+  });
+}
+```
+
+### quill 格式
+
+在上面搜索功能中我们使用了一个 `API`: `formatText`
 
 
 ## 升级现状
