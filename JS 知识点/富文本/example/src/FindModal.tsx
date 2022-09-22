@@ -119,6 +119,7 @@ class FindModal extends React.Component<IProps, IState> {
             index = this.countSpecial(index, indices.length ? indices[indices.length - 1].index : 0);
             
             // 高亮, 第 0 个默认选中
+            // console.log({index, length})
             quill.formatText(index, length, 'SearchedString', true, 'api');
             indices.push({index});
         }

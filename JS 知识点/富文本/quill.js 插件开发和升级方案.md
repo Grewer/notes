@@ -270,6 +270,7 @@ countSpecial = (index, lastIndex) => {
 ```ts
 if (indices.length) {
   this.currentIndex = indices[0].index;
+  // 使得 indices[0].index 到 length 的距离的文本 添加 SearchedStringActive 格式
   quill.formatText(indices[0].index, length, 'SearchedStringActive', true, Emitter.sources.API);
   this.setState({
     currentPosition: 0,
@@ -280,14 +281,49 @@ if (indices.length) {
 
 ### quill 格式
 
-在上面搜索功能中我们使用了一个 `API`: `formatText`
+在上面搜索功能中我们使用了一个 `API`: `quill.formatText` 这里我们就来介绍一下他
+
+在 `quill.js` 中我们可以给他添加自定义的格式, 以这个 `SearchedString` 格式为例子:
+
+```ts
+quill.formatText(index, length, 'SearchedString', true, 'api');
+```
+想要让他起效我们就要先创建文件 `SearchedString.ts`(_使用 js 也没问题_):
+
+```ts
+import {Quill} from 'react-quill';
+const Inline = Quill.import('blots/inline');
+
+class SearchedStringBlot extends Inline {
+  static blotName: string;
+  static className: string;
+  static tagName: string;
+}
+
+SearchedStringBlot.blotName = 'SearchedString';
+SearchedStringBlot.className = 'ql-searched-string';
+SearchedStringBlot.tagName = 'div';
+
+export default SearchedStringBlot;
+
+```
+
+在入口使用:
+
+```ts
+import SearchedStringBlot from './SearchedString'
+
+Quill.register(SearchedStringBlot);
+```
+
+添加这样一个格式之后, 在我们搜索调用之后, 搜索到的结果就会有对应的类名了:
 
 
-## 升级现状
 
-## 升级方案
 
-## 结语
+### 下一步
+
+
 
 
 ## 引用
