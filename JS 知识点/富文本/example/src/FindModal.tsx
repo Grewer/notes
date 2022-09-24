@@ -283,7 +283,7 @@ class FindModal extends React.Component<IProps, IState> {
                                     <LeftOutlined onClick={this.leftClick} />
                                     {currentPosition + 1} / {indices.length}
                                     <RightOutlined onClick={this.rightClick} />
-                </span>
+                                </span>
                             ) : null
                         }
                     />

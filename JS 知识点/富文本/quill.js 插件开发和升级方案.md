@@ -316,15 +316,55 @@ import SearchedStringBlot from './SearchedString'
 Quill.register(SearchedStringBlot);
 ```
 
-添加这样一个格式之后, 在我们搜索调用之后, 搜索到的结果就会有对应的类名了:
+添加这样一个格式, 在我们搜索调用之后, 搜索到的结果就会有对应的类名了:
 
+![](images/img_2.png)
 
+在这里我们还需要在 CSS 中添加对应的样式即可完成高亮功能:
 
+```less
+  .ql-searched-string {
+    // 这里需要保证权重, 避免查找的显示被背景色和字体颜色覆盖
+    background-color: #ffaf0f !important;
+    display: inline;
+  }
+```
 
-### 下一步
+### 搜索的选中
 
+在搜索完毕之后, 默认选中的是第 0 个, 并且我们还需要赋予另一个格式: `SearchedStringActive`,
+按照上述方案同样添加这个 `formats`
 
+之后添加样式:
 
+```less
+  // 选中的规则权限需要大于 ql-searched-string 的规则, 并且要不一样的颜色和背景
+  .ql-searched-string-active {
+    display: inline;
+    .ql-searched-string {
+        background-color: #337eff !important;
+        color: #fff !important;
+    }
+  }
+```
+
+给我们的输入框末尾添加 **上一个**和**下一个**功能, 这里就直接用图标来做按钮, 中间显示当前索引和总数:
+
+```tsx
+<Input
+    onChange={this.onChange}
+    value={searchKey}
+    suffix={
+        indices.length ? (
+            <span className={'search-range'}>
+                <LeftOutlined onClick={this.leftClick} />
+                {currentPosition + 1} / {indices.length}
+                <RightOutlined onClick={this.rightClick} />
+            </span>
+        ) : null
+    }
+/>
+```
 
 ## 引用
 - https://juejin.cn/post/7084046542994145294
