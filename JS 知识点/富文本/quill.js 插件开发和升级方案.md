@@ -159,16 +159,6 @@ visible ? (<FindModal/>) : null
 <Input
     onChange={this.onChange}
     value={searchKey}
-    suffix={
-        // 如果有搜索的结果, 显示个数, 上一个,下一个的操作图标
-        indices.length ? (
-            <span className={'search-range'}>
-                <LeftOutlined onClick={this.leftClick} />
-                {currentPosition + 1} / {indices.length}
-                <RightOutlined onClick={this.rightClick} />
-            </span>
-        ) : null
-    }
 />
 ```
 
@@ -348,7 +338,7 @@ Quill.register(SearchedStringBlot);
   }
 ```
 
-给我们的输入框末尾添加 **上一个**和**下一个**功能, 这里就直接用图标来做按钮, 中间显示当前索引和总数:
+给我们的输入框末尾添加**上一个**和**下一个**功能, 这里就直接用图标来做按钮, 中间显示当前索引和总数:
 
 ```tsx
 <Input
@@ -365,6 +355,70 @@ Quill.register(SearchedStringBlot);
     }
 />
 ```
+
+#### 点击事件
+
+在点击**下一个**图标之后, 我们只需要做四步:
+
+1. 清除上一个索引的样式
+2. 索引数加一, 并判断下一个是否存在, 如果不存在则赋值为 0
+3. 获取下一个的索引, 并添加高亮
+4. 检查下一个的位置是否在视窗中, 不在则滚动窗口
+
+上述的数据获取来源都在于搜索函数中的 `indices` 数组, 标记着每一个搜索结果的索引
+
+和**下一个**事件相反的就是**上一个**事件了, 他的步骤和**下一个**步骤类似
+
+#### 视窗的检查
+
+在点击之后我们需要对当前高亮的索引位置进行判断, 依赖于 `quill` 和**原生的位置 `API`** 来做出调整: 
+
+```ts
+
+const scrollingContainer = quill.scrollingContainer;
+const bounds = quill.getBounds(index + searchKey.length, 1);
+// bounds.top + scrollingContainer.scrollTop 等于目标到最顶部的距离
+if (
+    bounds.top < 0 ||
+    bounds.top > scrollingContainer.scrollTop + scrollingContainer.offsetHeight
+) {
+    scrollingContainer.scrollTop = bounds.top - scrollingContainer.offsetHeight / 3;
+}
+```
+
+### 替换
+
+在查找功能之后, 我们就需要添加替换的功能
+
+#### 单个替换
+
+单个的替换是非常简单的, 只需要三步: 删除原有词, 添加新词, 重新搜索:
+
+```ts
+quill.deleteText(this.currentIndex, searchKey.length, 'user');
+quill.insertText(this.currentIndex, this.replaceKey, 'user');
+this.search();
+```
+
+#### 全部替换
+
+想要实现全部替换, 就不是循环单个替换了, 这样花费的性能较多, 甚至会产生卡顿, 对用户是否不友好
+
+目前我使用的方案是, 倒序删除:
+
+```ts
+let length = indices.length;
+        // 遍历 indices 尾部替换
+while (length--) {
+    // 先删除再添加
+    quill.deleteText(indices[length].index, oldStringLen, 'user');
+    quill.insertText(indices[length].index, newString, 'user');
+}
+// 结束后重新搜索
+this.search();
+```
+
+
 
 ## 引用
 - https://juejin.cn/post/7084046542994145294

@@ -263,9 +263,6 @@ class FindModal extends React.Component<IProps, IState> {
         const {getEditor} = this.props;
         const quill = getEditor();
         // 删除, 添加
-        quill.deleteText(this.currentIndex, searchKey.length, 'user');
-        quill.insertText(this.currentIndex, this.replaceKey, 'user');
-        this.search();
     };
     
     renderSearch = () => {
