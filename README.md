@@ -70,10 +70,14 @@
     - 垃圾回收机制
 
     - 富文本
-        - example
-            - public
+        - quill.js 2.0升级和添加表格
+            - index
 
-        - quill.js 插件开发和升级方案
+        - quill.js 插件开发指南
+            - example
+                - public
+
+            - index
 
     - 性能优化
         - 大量数据渲染优化
