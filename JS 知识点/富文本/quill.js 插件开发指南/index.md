@@ -426,10 +426,9 @@ this.search();
 - 不支持表格等格式, 需要升级到 `2.0dev` 版本, 但是此版本更改了很多东西
 - 当前此仓库的人员称已经停止维护了, 后续的更新维护是一个大问题
 
-
 本文从单个插件的开发, 介绍了 `quill` 富文本编辑器的插件开发流程, 整个结构是很简单的, 基本也是都用了 `quill` 的官方 `API`
 
-文章中只讲到个 `format` 格式的介绍, 在下一篇文章中, 我讲继续讲述 `table` `modules` 和 `quill.js@2.x` 的开发
+当前插件只涉及到了 `format` 格式, 在下一篇文章中, 我讲继续讲述 `table` `modules` 和 `quill.js@2.x` 的开发
 
 
 本文中例子的源码: [点击查看](https://github.com/Grewer/notes/tree/master/JS%20%E7%9F%A5%E8%AF%86%E7%82%B9/%E5%AF%8C%E6%96%87%E6%9C%AC/quill.js%20%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/example)
