@@ -431,7 +431,7 @@ this.search();
 当前功能只涉及到了 `format` 格式, 在下一篇文章中, 我讲继续讲述 `table` `modules` 和 `quill.js@2.x` 的开发
 
 
-本文中例子的源码: [点击查看](https://github.com/Grewer/notes/tree/master/JS%20%E7%9F%A5%E8%AF%86%E7%82%B9/%E5%AF%8C%E6%96%87%E6%9C%AC/quill.js%20%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/example)
+本文中例子的源码: [点击查看](https://github.com/Grewer/notes/tree/master/JS%20%E7%9F%A5%E8%AF%86%E7%82%B9/%E5%AF%8C%E6%96%87%E6%9C%AC/quill.js%20%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E6%A0%8F%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/example)
 
 ## 引用
 - https://juejin.cn/post/7084046542994145294
