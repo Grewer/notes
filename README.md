@@ -73,7 +73,7 @@
         - quill.js 2.0升级和添加表格
             - index
 
-        - quill.js 插件开发指南
+        - quill.js 自定义工具栏开发指南
             - example
                 - public
 
