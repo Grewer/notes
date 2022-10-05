@@ -29,6 +29,15 @@
 
 ## 现有表格功能调研
 
+在 `GitHub` 上搜索关键词 `quill` + `table` 之后出现的[结果](https://github.com/search?q=quill+table):
+
+目前 star 大于 10, 且是正常库(_非测试库, 类似于[这种](https://github.com/dost/quilljs-table)_), 最近 2-3 年有更新的, 结果只有 2 个, 最后我们对这 2 个库来进行调研
+
+1. https://github.com/volser/quill-table-ui
+2. https://github.com/soccerloway/quill-better-table
+
+
+
 ## 添加表格功能
 
 ## 结语
