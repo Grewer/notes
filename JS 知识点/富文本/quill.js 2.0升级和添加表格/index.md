@@ -25,6 +25,8 @@
 
 ## 手动进行 2.0 升级
 
+目前我们使用的是 `react-quill` 仓库, 我们要将其源码复制下来, 同时也将 `quill` 的 `2.x` 源码克隆, 将其作为依赖
+
 
 
 ## 现有表格功能调研
@@ -36,6 +38,12 @@
 1. https://github.com/volser/quill-table-ui
 2. https://github.com/soccerloway/quill-better-table
 
+这两个库都是有自己对应的 demo, 可以点击查看:
+
+1. [quill-table-ui](https://codepen.io/volser/pen/QWWpOpr)
+2. [quill-better-table](https://codepen.io/soccerloway/pen/WWJowj)
+
+目前看这两个仓库基本都能实现较好的表格方案
 
 
 ## 添加表格功能
