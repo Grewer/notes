@@ -549,6 +549,10 @@ github 的类型挑战
 
 TODO 
 
+
+any是基本类型，使用any时ts不会做类型检查，any也经常被用于官方类型中（例如：上面例子中的response.json()类型被TypeScript团队定义为Promise<any>类型）
+ts不会对any类型做类型检查，任何对any类型值的变更也不会被检查，这时候定位问题变得很困难（就和js 运行一样），只有当运行时的赋值和预期的一致的时候才不会出错。
+
 https://segmentfault.com/a/1190000042227498
 TypeScript鸭子类型（duck-typing） http://www.srcmini.com/3478.html
 

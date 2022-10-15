@@ -27,6 +27,13 @@
 
 目前我们使用的是 `react-quill` 仓库, 我们要将其源码复制下来, 同时也将 `quill` 的 `2.x` 源码克隆, 将其作为依赖
 
+详情可查看仓库: https://github.com/Grewer/react-quill2
+
+差异点:
+- CSS 样式问题
+- 
+
+
 
 
 ## 现有表格功能调研
@@ -44,6 +51,10 @@
 2. [quill-better-table](https://codepen.io/soccerloway/pen/WWJowj)
 
 目前看这两个仓库基本都能实现较好的表格方案
+
+本文选择了 `quill-table-ui` 作为接入方案, 大伙如果喜欢 `quill-better-table` 也可以考虑自己来了接入
+
+
 
 
 ## 添加表格功能
