@@ -30,10 +30,13 @@
 详情可查看仓库: https://github.com/Grewer/react-quill2
 
 差异点:
-- CSS 样式问题
-- 
+- CSS 样式问题(原有的 li, ol 不再通过标签来区分, 而是用节点的类型)
+- 同样地代码块 `pre` 也是使用了 `div` 代替
+- 添加了一些新的 formats
+- 不再支持 IE11
+- 其他的一些 API 变更(和表格功能关系不大)
 
-
+更加详细地变更可查看: https://github.com/quilljs/quill/blob/develop/docs/guides/upgrading-to-2-0.md
 
 
 ## 现有表格功能调研
