@@ -27,6 +27,24 @@
 
 目前我们使用的是 `react-quill` 仓库, 我们要将其源码复制下来, 同时也将 `quill` 的 `2.x` 源码克隆, 将其作为依赖
 
+最终维护的文件格式为:
+```
+├── quill
+│   ├── assets
+│   ├── blots
+│   ├── core
+│   ├── core.ts
+│   ├── formats
+│   ├── modules
+│   ├── quill.ts
+│   ├── themes
+│   └── ui
+├── react-quill
+│   ├── index.tsx
+│   └── quill.snow.less
+
+```
+
 详情可查看仓库: https://github.com/Grewer/react-quill2
 
 差异点:
@@ -34,6 +52,8 @@
 - 同样地代码块 `pre` 也是使用了 `div` 代替
 - 添加了一些新的 formats
 - 不再支持 IE11
+- `setContents` API 的变更
+  `editor.setContents` 的使用从原有的 `editor.setContents(value);` 改为
 - 其他的一些 API 变更(和表格功能关系不大)
 
 更加详细地变更可查看: https://github.com/quilljs/quill/blob/develop/docs/guides/upgrading-to-2-0.md
@@ -57,11 +77,11 @@
 
 本文选择了 `quill-table-ui` 作为接入方案, 大伙如果喜欢 `quill-better-table` 也可以考虑自己来了接入
 
-
-
-
 ## 添加表格功能
 
 ## 结语
+
+目前来说, 因为 `quill` 一直卡在 `2.0@dev` 中, 后面的升级都需要自己来维护了,
+并且
 
 ## 引用
