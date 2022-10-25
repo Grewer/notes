@@ -53,10 +53,10 @@
 - 添加了一些新的 formats
 - 不再支持 IE11
 - `setContents` API 的变更
-  `editor.setContents` 的使用从原有的 `editor.setContents(value);` 改为
+  `editor.clipboard.convert` 的使用从原有的 `editor.clipboard.convert(value)` 改为 `editor.clipboard.convert({html: string, text: string}, formats: Record<string, unknown> = {} )`
 - 其他的一些 API 变更(和表格功能关系不大)
 
-更加详细地变更可查看: https://github.com/quilljs/quill/blob/develop/docs/guides/upgrading-to-2-0.md
+更加详细的变更可查看: https://github.com/quilljs/quill/blob/develop/docs/guides/upgrading-to-2-0.md
 
 
 ## 现有表格功能调研
@@ -78,6 +78,72 @@
 本文选择了 `quill-table-ui` 作为接入方案, 大伙如果喜欢 `quill-better-table` 也可以考虑自己来了接入
 
 ## 添加表格功能
+
+新增文件 `modules/table.ts` :
+这里就简单展示一下主要逻辑
+```tsx
+
+export default class TableUI {
+    menuItems: MenuItem[] = [
+        {
+            title: 'Insert column right',
+            icon: iconAddColRight,
+            handler: () => {
+                if (
+                    !(this.options.maxRowCount > 0) ||
+                    this.getColCount() < this.options.maxRowCount
+                ) {
+                    this.table.insertColumnRight();
+                }
+            },
+        },
+        // 省略
+        // 这里的数据是点击一个表格, 显示的菜单, 新增行列, 删除行列
+    ];
+    
+    
+        toggleClickHandler = (e) => {
+        // 控制菜单显示
+    };
+    
+    showMenu() {
+        // 菜单显示的具体 dom 操作
+    }
+    
+    hideMenu() {
+        // 删除菜单的 dom 操作
+    }
+    
+    createMenuItem(item: MenuItem) {
+        // 创建菜单时, 构建菜单结构
+        const node = document.createElement('div');
+        node.classList.add('ql-table-menu__item');
+    
+        node.addEventListener(
+            'click',
+            (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.quill.focus();
+                item.handler();
+                this.hideMenu();
+                this.detectButton(this.quill.getSelection());
+            },
+            false
+        );
+        return node;
+    }
+    
+    
+    
+    destroy() {
+        // 删除时, 去掉引用对象, 监听等等操作
+    }
+}
+```
+
+这就是表格的主要功能了
+
 
 ## 结语
 
