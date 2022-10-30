@@ -139,14 +139,36 @@ export default class TableUI {
 }
 ```
 
+**注意点**  
+此额外组件原本就有错误, 我们需要修改他的依赖包:   
+将  `import { positionElements } from 'positioning';` 替换为  `import positions from 'position.js';`
+
+同时替换原有的 `positionElements` 逻辑即可
+
+
 在注册之后, 我们就正式调用对应的 API, 来创建表格:
 
 ```ts
 // 注册
 Quill.register({ 'modules/tableUI': TableUI }, true);
 
-
+function insertTable() {
+    const quill = editorRef.current?.editor
+    if(quill){
+        quill.focus();
+        const table = quill.getModule('table');
+        table.insertTable(3, 3);
+    }
+}
 ```
+
+添加效果动图演示:
+
+// todo
+
+在完成添加功能之后, 我们还需要一个添加自定义长宽的表格功能
+
+
 
 
 ## 结语
