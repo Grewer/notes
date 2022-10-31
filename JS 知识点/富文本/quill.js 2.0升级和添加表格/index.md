@@ -157,23 +157,49 @@ function insertTable() {
     if(quill){
         quill.focus();
         const table = quill.getModule('table');
-        table.insertTable(3, 3);
+        table.insertTable(3, 2);
     }
 }
 ```
 
 添加效果动图演示:
 
-// todo
+![](images/1.gif)
+
 
 在完成添加功能之后, 我们还需要一个添加自定义长宽的表格功能
+
+这里我们用数组来创建一个 10*10 的方格即可, 最后在外层添加代理:
+
+```tsx
+<div
+  className={`${preClass}-box`}
+  onMouseMove={this.mouseoverHandle}
+  onClick={this.clickHandle}
+>
+  {this.cellArr.map((row, rowIndex) => {
+    return row.map((col, colIndex) => {
+      return (
+        <div
+          data-position={`${rowIndex},${colIndex}`}
+          className={classNames(this.cellClass, {
+            active: rowIndex <= activeRow && colIndex <= activeCol,
+          })}
+          key={`${rowIndex}${colIndex}`}
+        />
+      );
+    });
+  })}
+```
+
+查看效果:
 
 
 
 
 ## 结语
 
-目前来说, 因为 `quill` 一直卡在 `2.0@dev` 中, 后面的升级都需要自己来维护了,
-并且
+目前来说, 因为 `quill` 一直卡在 `2.0@dev` 中, 后面的升级都需要自己来维护了  
+而且如果 `quill` 中开发新功能的话也会花费一番额外的精力, 大家可以酌情使用
 
 ## 引用
