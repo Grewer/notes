@@ -12,6 +12,21 @@
 
 ## Selection
 
+> Selection 对象表示用户选择的文本范围或插入符号的当前位置。它代表页面中的文本选区，可能横跨多个元素。文本选区由用户拖拽鼠标经过文字而产生。
+
+我们可以通过 API `window.getSelection()` 来获取当前用户选中了哪些文本
+
+
 ## Range
 
+
+## quill 中的操作
+
+normalizeNative 函数包装
+
 ## 总结
+
+
+## 引用
+
+- https://developer.mozilla.org/zh-CN/docs/Web/API/Selection
