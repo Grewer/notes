@@ -22,6 +22,24 @@
 
 ## quill 中的操作
 
+在 quill 中, 会基于原生 API 获取信息, 并包装出一个自己的对象:
+
+```js
+  getNativeRange() {
+    const selection = document.getSelection();
+    if (selection == null || selection.rangeCount <= 0) return null;
+    const nativeRange = selection.getRangeAt(0);
+    if (nativeRange == null) return null;
+    const range = this.normalizeNative(nativeRange);
+    debug.info('getNativeRange', range);
+    return range;
+}
+```
+
+首先是通过原生 API 获取是否有选中, 如果没有则返回 null  
+如果有则通过 getRangeAt 方法获取 range // TODO
+
+
 normalizeNative 函数包装
 
 ## 总结
