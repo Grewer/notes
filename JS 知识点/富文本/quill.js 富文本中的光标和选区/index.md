@@ -1,5 +1,23 @@
 聊聊光标和选区的问题
 
+
+## 术语表
+首先我们需要知道一些术语, 才能更好地理解, 如果您已经了解, 可以跳过这一段
+
+**锚点 (anchor)**
+
+锚指的是一个选区的起始点（不同于 HTML 中的锚点链接）。当我们使用鼠标框选一个区域的时候，锚点就是我们鼠标按下瞬间的那个点。在用户拖动鼠标时，锚点是不会变的。
+
+**焦点 (focus)**
+
+选区的焦点是该选区的终点，当您用鼠标框选一个选区的时候，焦点是你的鼠标松开瞬间所记录的那个点。随着用户拖动鼠标，焦点的位置会随着改变。
+
+**范围 (range)**
+
+范围指的是文档中连续的一部分。一个范围包括整个节点，也可以包含节点的一部分，例如文本节点的一部分。用户通常下只能选择一个范围，但是有的时候用户也有可能选择多个范围（例如当用户按下 Control 按键并框选多个区域时，Chrome 中禁止了这个操作）。“范围”会被作为 [`Range`](https://developer.mozilla.org/zh-CN/docs/Web/API/Range) 对象返回。Range 对象也能通过 DOM 创建、增加、删减。
+
+本术语表来源于 [MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/Selection#%E6%9C%AF%E8%AF%AD%E8%A1%A8)
+
 ## contenteditable
 
 > contenteditable全局属性是一个枚举属性，表示该元素是否应该由用户编辑。如果是的话，浏览器就会修改其小部件以允许编辑。
@@ -15,6 +33,24 @@
 > Selection 对象表示用户选择的文本范围或插入符号的当前位置。它代表页面中的文本选区，可能横跨多个元素。文本选区由用户拖拽鼠标经过文字而产生。
 
 我们可以通过 API `window.getSelection()` 来获取当前用户选中了哪些文本
+
+它的返回结果是一个对象, 这里提供一个返回结果的例子
+
+```js
+{
+    anchorNode:text
+    anchorOffset:1
+    baseNode:text
+    baseOffset:1
+    extentNode:text
+    extentOffset:0
+    focusNode:text
+    focusOffset:0
+    isCollapsed:false
+    rangeCount:1
+    type:"Range"
+}
+```
 
 
 ## Range
