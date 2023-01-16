@@ -34,23 +34,29 @@
 
 我们可以通过 API `window.getSelection()` 来获取当前用户选中了哪些文本
 
-它的返回结果是一个对象, 这里提供一个返回结果的例子
+这是调用后的返回结果:
 
-```js
-{
-    anchorNode:text
-    anchorOffset:1
-    baseNode:text
-    baseOffset:1
-    extentNode:text
-    extentOffset:0
-    focusNode:text
-    focusOffset:0
-    isCollapsed:false
-    rangeCount:1
-    type:"Range"
-}
-```
+![](images/img1.png)
+
+### 部分属性说明
+
+#### anchorNode 只读
+> 返回该选区起点所在的节点（Node）。
+
+#### anchorOffset 只读
+> 返回一个数字，其表示的是选区起点在 `anchorNode` 中的位置偏移量。
+>
+> 1.  如果 `anchorNode` 是文本节点，那么返回的就是从该文字节点的第一个字开始，直到被选中的第一个字之间的字数（如果第一个字就被选中，那么偏移量为零）。
+> 2.  如果 `anchorNode` 是一个元素，那么返回的就是在选区第一个节点之前的同级节点总数。(这些节点都是 `anchorNode` 的子节点)
+
+#### isCollapsed 只读
+
+返回一个布尔值，用于判断选区的起始点和终点是否在同一个位置。
+
+#### rangeCount 只读
+返回该选区所包含的连续范围的数量。
+
+### 方法
 
 
 ## Range
