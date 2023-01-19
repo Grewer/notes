@@ -77,6 +77,8 @@
             - index
 
         - quill.js 富文本中的光标和选区
+            - demo
+
             - index
 
         - quill.js 自定义工具栏开发指南
