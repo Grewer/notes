@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<strong id="foo">这是一段话巴拉巴拉</strong>
+<strong id="bar">这是另一段话</strong>
+<script>
+    var s = window.getSelection();
+    
+    var range = document.createRange();
+    range.selectNode(foo);
+    s.addRange(range);
+    
+    setTimeout(()=>{
+        s.removeAllRanges();
+        var range2 = document.createRange();
+        range2.selectNode(document.body);
+        s.addRange(range2);
+    }, 1000)
+</script>
+</body>
+</html>

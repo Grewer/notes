@@ -50,7 +50,6 @@
 > 2.  如果 `anchorNode` 是一个元素，那么返回的就是在选区第一个节点之前的同级节点总数。(这些节点都是 `anchorNode` 的子节点)
 
 #### isCollapsed 只读
-
 返回一个布尔值，用于判断选区的起始点和终点是否在同一个位置。
 
 #### rangeCount 只读
@@ -58,11 +57,68 @@
 
 ### 方法
 
+这里只阐述几个重要的方法
+
+#### getRangeAt
+
+```js
+var selObj = window.getSelection();
+range = sel.getRangeAt(index)
+```
+
+**例子:**
+
+```js
+let ranges = [];
+
+sel = window.getSelection();
+
+for(var i = 0; i < sel.rangeCount; i++) {
+ ranges[i] = sel.getRangeAt(i);
+}
+/* 在 ranges 数组的每一个元素都是一个 range 对象，
+ * 对象的内容是当前选区中的一个。 */
+```
+
+#### addRange
+
+> 向选区（Selection）中添加一个区域（Range）。
+
+这里举一个小栗子就能快速理解:
+
+```js
+<strong id="foo">这是一段话巴拉巴拉</strong>
+<strong id="bar">这是另一段话</strong>
+var s = window.getSelection();
+
+// 一开始我们让他选中 foo 节点
+var range = document.createRange();
+range.selectNode(foo);
+s.addRange(range);
+
+// 在一秒钟后我们取消foo 节点的选中, 选择所有body节点
+setTimeout(()=>{
+    s.removeAllRanges();
+    var range2 = document.createRange();
+    range2.selectNode(document.body);
+    s.addRange(range2);
+}, 1000)
+```
+
+效果展示:
+![](images/gif1.gif)
+
+
+#### collapse
+
+> collapse 方法可以收起当前选区到一个点。文档不会发生改变。如果选区的内容是可编辑的并且焦点落在上面，则光标会在该处闪烁。
+
+
 
 ## Range
 
 
-## quill 中的操作
+## quill 中的 Selection
 
 在 quill 中, 会基于原生 API 获取信息, 并包装出一个自己的对象:
 
