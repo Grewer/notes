@@ -9,7 +9,7 @@ function getStatus(fullPath) {
     }
 }
 
-const ignoreDir = ['bin', 'build', 'src', 'images', 'static', 'reactDemo', 'examples']
+const ignoreDir = ['bin', 'build', 'src', 'images', 'static', 'reactDemo', 'examples', 'demo']
 
 
 function readFileList(dir, filesList = []) {

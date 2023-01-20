@@ -108,12 +108,68 @@ setTimeout(()=>{
 效果展示:
 ![](images/gif1.gif)
 
+**遇到 contenteditable** 元素时
+
+如果 `strong#foo` 元素是一个 `contenteditable` 元素: `<strong id="foo" contenteditable="true">这是一段话巴拉巴拉</strong>`
+那么我们不能直接用 `range.selectNode(foo);`, 而是应该这样做:
+
+```js
+    var range = document.createRange();
+    range.setStart(foo, 0)
+    range.setEnd(foo, 1)
+    // 其中 0, 1 代表子节点数量
+    s.addRange(range);
+```
+
+其中 `setStart` 和 `setEnd` 第二个参数: 
+> 如果起始节点类型是 Text、Comment 或 CDATASection之一，那么 startOffset 指的是从起始节点算起字符的偏移量。对于其他 Node 类型节点，startOffset 是指从起始结点开始算起子节点的偏移量。
+
+或者使用 `selectNodeContents` API:
+
+```js
+    var range = document.createRange();
+    range.selectNodeContents(foo)
+    s.addRange(range);
+```
+
 
 #### collapse
 
 > collapse 方法可以收起当前选区到一个点。文档不会发生改变。如果选区的内容是可编辑的并且焦点落在上面，则光标会在该处闪烁。
 
+同样地, 这里也创建一个例子
 
+```js
+<p id="foo">这是一段话巴拉巴拉</p>
+var s = window.getSelection();
+
+var range = document.createRange();
+range.selectNode(foo);
+s.addRange(range);
+
+setTimeout(()=>{
+    s.collapse(foo, 0);
+}, 1000)
+```
+效果是, 在 1 秒之后, 选区消失了
+![](images/gif2.gif)
+
+我们再在 `p` 标签上添加 `contenteditable` 尝试下:
+
+```js
+<p contenteditable="true" id="foo">这是一段话巴拉巴拉</p>
+var s = window.getSelection();
+
+var range = document.createRange();
+range.selectNodeContents(foo)
+s.addRange(range);
+
+setTimeout(()=>{
+    s.collapse(foo, 1);
+}, 1000)
+```
+效果展示:
+![](images/gif3.gif)
 
 ## Range
 

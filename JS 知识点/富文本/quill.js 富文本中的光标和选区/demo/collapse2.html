@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <title>collapse</title>
 </head>
+<!--<style>-->
+<!--    p{-->
+<!--        padding: 20px;-->
+<!--    }-->
+<!--</style>-->
 <body>
-<p id="foo">这是一段话巴拉巴拉</p>
+<p contenteditable="true" id="foo">这是一段话巴拉巴拉</p>
 <script>
     var s = window.getSelection();
     
     var range = document.createRange();
-    range.selectNode(foo);
+    range.selectNodeContents(foo)
     s.addRange(range);
     
     setTimeout(()=>{

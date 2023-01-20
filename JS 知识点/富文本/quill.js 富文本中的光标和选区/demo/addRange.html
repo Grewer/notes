@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>collapse</title>
+    <title>Title</title>
 </head>
 <body>
-<p id="foo">这是一段话巴拉巴拉</p>
+<strong id="foo">这是一段话巴拉巴拉</strong>
+<strong id="bar">这是另一段话</strong>
 <script>
     var s = window.getSelection();
     
@@ -14,7 +15,10 @@
     s.addRange(range);
     
     setTimeout(()=>{
-        s.collapse(foo, 1);
+        s.removeAllRanges();
+        var range2 = document.createRange();
+        range2.selectNode(document.body);
+        s.addRange(range2);
     }, 1000)
 </script>
 </body>
