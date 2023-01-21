@@ -79,6 +79,8 @@ for(var i = 0; i < sel.rangeCount; i++) {
 /* 在 ranges 数组的每一个元素都是一个 range 对象，
  * 对象的内容是当前选区中的一个。 */
 ```
+他的返回值是一个 `Range`, 具体在本文的 `Range` 部分讲解
+
 
 #### addRange
 
@@ -172,6 +174,27 @@ setTimeout(()=>{
 ![](images/gif3.gif)
 
 ## Range
+
+> Range 接口表示一个包含节点与文本节点的一部分的文档片段。
+
+在上述的例子中, 我们已经尝试过使用 `Document.createRange` 方法创建 `Range`
+也可以通过 `Selection` 对象的 `getRangeAt()` 方法或者 `Document` 对象的 `caretRangeFromPoint()` 方法获取 `Range` 对象。
+
+`Range` (通过 `document.createRange();` 创建)拥有这些属性:
+
+```js
+{
+    collapsed:true // 表示 Range 的起始位置和终止位置是否相同的布尔值
+    commonAncestorContainer:document // 返回完整包含 startContainer 和 endContainer 的、最深一级的节点
+    endContainer:document // 包含 Range 终点的节点。
+    endOffset:0 // 一个表示 Range 终点在 endContainer 中的位置的数字。
+    startContainer:document // 包含 Range 开始的节点。
+    startOffset:0 // 一个数字，表示 Range 在 startContainer 中的起始位置。
+}
+```
+
+在前文中, 我们已经尝试过使用 `selectNode()` , `selectNodeContents()` , `setEnd()`, `setStart()` 等方法, 这里就不在多赘述
+
 
 
 ## quill 中的 Selection
