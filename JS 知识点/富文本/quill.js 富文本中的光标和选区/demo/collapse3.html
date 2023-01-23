@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>collapse</title>
+</head>
+<!--<style>-->
+<!--    p{-->
+<!--        padding: 20px;-->
+<!--    }-->
+<!--</style>-->
+<body>
+<p contenteditable="true" id="foo">这是一段话巴拉巴拉</p>
+<script>
+    var s = window.getSelection();
+    
+    var range = document.createRange();
+    range.selectNodeContents(foo)
+    s.addRange(range);
+    
+    setTimeout(()=>{
+        range.collapse()
+        // s.collapse(foo, 1);
+    }, 1000)
+</script>
+</body>
+</html>

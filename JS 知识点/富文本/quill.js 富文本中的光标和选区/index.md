@@ -193,7 +193,39 @@ setTimeout(()=>{
 }
 ```
 
-在前文中, 我们已经尝试过使用 `selectNode()` , `selectNodeContents()` , `setEnd()`, `setStart()` 等方法, 这里就不在多赘述
+### collapse
+
+> Range.collapse() 方法向边界点折叠该 Range
+
+**语法:**
+
+```js
+range.collapse(toStart);
+```
+
+*toStart* 可选
+
+一个布尔值： `true` 折叠到 Range 的 start 节点，`false` 折叠到 end 节点。如果省略，则默认为 false
+
+在之前的 `Selection` - `collapse` 例子中, 我们也可以通过此 API 来操作, 达到相同的效果:
+
+```js
+<p contenteditable="true" id="foo">这是一段话巴拉巴拉</p>
+var s = window.getSelection();
+
+var range = document.createRange();
+range.selectNodeContents(foo)
+s.addRange(range);
+
+setTimeout(()=>{
+    range.collapse()
+    // s.collapse(foo, 1);
+}, 1000)
+```
+
+---
+
+在前文中已经尝试过使用 `selectNode()` , `selectNodeContents()` , `setEnd()`, `setStart()` 等方法, 这里就不在多赘述
 
 
 
@@ -202,19 +234,30 @@ setTimeout(()=>{
 在 quill 中, 会基于原生 API 获取信息, 并包装出一个自己的对象:
 
 ```js
+  getRange() {
+    const root = this.scroll.domNode;
+    // 省略空值判断
+    const normalized = this.getNativeRange(); // 我们先看这个函数
+    if (normalized == null) return [null, null];
+    // 后续暂时忽略
+  }
+```
+`getRange` 函数就是 `quill` 中, 获取选区的方法, 而 `normalized` 是基于原生的api, 并通过一定的包装, 来获取数据:
+
+```js
   getNativeRange() {
     const selection = document.getSelection();
     if (selection == null || selection.rangeCount <= 0) return null;
     const nativeRange = selection.getRangeAt(0);
     if (nativeRange == null) return null;
+    // 上面四句都是通过原生 api, 来判断当前是否有选区
+    
+    // 这里的 normalizeNative 才是对原生真正的操作
     const range = this.normalizeNative(nativeRange);
-    debug.info('getNativeRange', range);
     return range;
 }
 ```
 
-首先是通过原生 API 获取是否有选中, 如果没有则返回 null  
-如果有则通过 getRangeAt 方法获取 range // TODO
 
 
 normalizeNative 函数包装
