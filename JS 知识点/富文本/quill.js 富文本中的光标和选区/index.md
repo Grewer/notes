@@ -79,6 +79,8 @@ for(var i = 0; i < sel.rangeCount; i++) {
 /* 在 ranges 数组的每一个元素都是一个 range 对象，
  * 对象的内容是当前选区中的一个。 */
 ```
+在很多情况下, `rangeCount` 的数量都是 1
+
 他的返回值是一个 `Range`, 具体在本文的 `Range` 部分讲解
 
 
@@ -251,16 +253,112 @@ setTimeout(()=>{
     const nativeRange = selection.getRangeAt(0);
     if (nativeRange == null) return null;
     // 上面四句都是通过原生 api, 来判断当前是否有选区
+    // 因为基本上 rangeCount 都是 1, 所以直接通过 getRangeAt(0) 即可获取选区
     
     // 这里的 normalizeNative 才是对原生真正的操作
+    // nativeRange 是当前
     const range = this.normalizeNative(nativeRange);
     return range;
 }
 ```
 
+### normalizeNative
 
+```js
+  normalizeNative(nativeRange) {
+    // 判断选区是否在当前的编辑器根元素中, 是否是选中状态
+    if (
+      !contains(this.root, nativeRange.startContainer) ||
+      (!nativeRange.collapsed && !contains(this.root, nativeRange.endContainer))
+    ) {
+      return null;
+    }
+    // 构造一个自定义对象, 存储原生数据
+    const range = {
+      start: {
+        node: nativeRange.startContainer,
+        offset: nativeRange.startOffset, // 开始元素的偏移, 但是并不代表是从视觉看上去的偏移, 具体看 nativeRange.startContainer.data
+      },
+      end: { node: nativeRange.endContainer, offset: nativeRange.endOffset },
+      native: nativeRange,
+    };
+    // 开始遍历 [range.start, range.end] 
+    [range.start, range.end].forEach(position => {
+      // 从原生处取值: node = range.startContainer  offset = range.startOffset
+      let { node, offset } = position;
+      
+      // 当某一节点不是 text, 且有子节点时
+      // 因为在 quill, 中会有一些特殊的格式, 比如图片, 视频, emoji 等等
+      // 这些特殊格式在选区中的占位是不同的, 举个例子:  一张看着很大的图片, 但其实偏移量只有 1
+      // 同时, 如果我们需要一些定制的功能的话, 这里的判断可能会影响选区 , 所以我们需要对这里做出一些特殊的判断
+      while (!(node instanceof Text) && node.childNodes.length > 0) {
+        if (node.childNodes.length > offset) { // 超出的情况判断
+          node = node.childNodes[offset];
+          offset = 0;
+        } else if (node.childNodes.length === offset) {
+          node = node.lastChild;
+          if (node instanceof Text) {
+            offset = node.data.length;
+          } else if (node.childNodes.length > 0) {
+            // Container case
+            offset = node.childNodes.length;
+          } else {
+            // Embed case
+            offset = node.childNodes.length + 1;
+          }
+        } else {
+          break;
+        }
+      }
+      position.node = node;
+      position.offset = offset; // 赋值
+    });
+    return range;
+  }
+```
+最后返回一个自定义 range 对象
 
-normalizeNative 函数包装
+### normalizedToRange
+
+而在自定义对象包装结束之后, 还会经历一次计算 `normalizedToRange` 方法
+
+```js
+  getRange() {
+    const root = this.scroll.domNode;
+    // 省略空值判断
+    const normalized = this.getNativeRange(); // 返回的自定义 range
+    if (normalized == null) return [null, null];
+    
+    const range = this.normalizedToRange(normalized);
+    return [range, normalized];
+  }
+```
+
+**normalizedToRange**:
+
+```js
+  normalizedToRange(range) {
+    const positions = [[range.start.node, range.start.offset]];
+    if (!range.native.collapsed) {
+      positions.push([range.end.node, range.end.offset]);
+    }
+    const indexes = positions.map(position => {
+      const [node, offset] = position;
+      const blot = this.scroll.find(node, true);
+      const index = blot.offset(this.scroll);
+      if (offset === 0) {
+        return index;
+      }
+      if (blot instanceof LeafBlot) {
+        return index + blot.index(node, offset);
+      }
+      return index + blot.length();
+    });
+    const end = Math.min(Math.max(...indexes), this.scroll.length() - 1);
+    const start = Math.min(end, ...indexes);
+    return new Range(start, end - start);
+  }
+```
 
 ## 总结
 
