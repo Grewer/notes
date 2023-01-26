@@ -337,28 +337,72 @@ setTimeout(()=>{
 **normalizedToRange**:
 
 ```js
-  normalizedToRange(range) {
+    // range 的结构
+    // const range = {
+    //  start: {
+    //      node: nativeRange.startContainer,
+    //          offset: nativeRange.startOffset, // 开始元素的偏移, 但是并不代表是从视觉看上去的偏移, 具体看 nativeRange.startContainer.data
+    //  },
+    //  end: { node: nativeRange.endContainer, offset: nativeRange.endOffset },
+    //  native: nativeRange,
+    // };
+    // 
+    normalizedToRange(range) {
     const positions = [[range.start.node, range.start.offset]];
+    // 如果不是闭合的即光标状态, 则新增 末尾的数据到数组中
     if (!range.native.collapsed) {
       positions.push([range.end.node, range.end.offset]);
     }
+    // 遍历数据, 获取索引(从编辑框的第 0 个开始算)
     const indexes = positions.map(position => {
-      const [node, offset] = position;
-      const blot = this.scroll.find(node, true);
-      const index = blot.offset(this.scroll);
-      if (offset === 0) {
-        return index;
-      }
-      if (blot instanceof LeafBlot) {
-        return index + blot.index(node, offset);
-      }
-      return index + blot.length();
+        // 经过 normalizeNative 修改的取值,和原生相比,  node 和 offset 可能发生了修改
+        const [node, offset] = position;
+        // 搜索到对应的 dom
+        const blot = this.scroll.find(node, true);
+        // 通过他的 api 来获取偏移量, 可以查看 https://github.com/quilljs/parchment
+        const index = blot.offset(this.scroll);
+        // 如果在某一个 dom 上的偏移量为 0, 那么当前索引就是 dom 的索引
+        if (offset === 0) {
+            return index;
+        }
+        // LeafBlot属于特殊情况, 属于子节点, 属于 parchment 库
+        if (blot instanceof LeafBlot) {
+            return index + blot.index(node, offset);
+        }
+        // 最后加上当前节点的长度
+        return index + blot.length();
     });
+    
+    // 比较当前的索引和, 编辑器的长度, 不让他超出
     const end = Math.min(Math.max(...indexes), this.scroll.length() - 1);
+    // 比较结尾和索引, 获取最小值, 作为开始值
     const start = Math.min(end, ...indexes);
+    // 通过原生 api 重新 new 一个新的 Range 对象, 传参为 start 和 length
     return new Range(start, end - start);
-  }
+    }
 ```
+
+### 执行顺序
+
+// todo  执行顺序图
+
+
+
+
+### 查看 selection
+
+通过官方 API, 我们即可查看到之前计算的数据:
+
+```js
+    const editorRef = useRef<any>()
+    editorRef.current?.getEditor()?.selection
+```
+
+结果如图:
+![](images/img2.png)
+
+其中 `lastRange` 对应 `normalizedToRange` 的结果, 
+而 `lastNative` 则是 `getNativeRange` 的返回(包装的原生数据)
 
 ## 总结
 
@@ -366,3 +410,4 @@ setTimeout(()=>{
 ## 引用
 
 - https://developer.mozilla.org/zh-CN/docs/Web/API/Selection
+- https://github.com/quilljs/parchment
