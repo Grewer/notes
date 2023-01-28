@@ -384,9 +384,7 @@ setTimeout(()=>{
 
 ### 执行顺序
 
-// todo  执行顺序图
-
-
+![](images/img3.png)
 
 
 ### 查看 selection
