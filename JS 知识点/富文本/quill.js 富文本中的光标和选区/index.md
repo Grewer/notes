@@ -404,8 +404,13 @@ setTimeout(()=>{
 
 ## 总结
 
+本文主要介绍了 原生 API: Selection 和 Range 的作用和他的属性、方法的说明,
+并通过这两API 介绍在 quill 中, API 会有什么影响, 我们又需要采用哪些判断
+
+总的来说, 这两 API 在除富文本功能中, 基本不会遇见, 所以大多数情况下, 只需要了解即可
 
 ## 引用
 
 - https://developer.mozilla.org/zh-CN/docs/Web/API/Selection
 - https://github.com/quilljs/parchment
+- https://github.com/quilljs/quill
