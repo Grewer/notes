@@ -1,5 +1,6 @@
 let domEl;
 export function bootstrap(props) {
+    console.log('boot')
     return Promise
     .resolve()
     .then(() => {
@@ -9,6 +10,7 @@ export function bootstrap(props) {
     });
 }
 export function mount(props) {
+    console.log('mount')
     return Promise
     .resolve()
     .then(() => {
@@ -17,6 +19,7 @@ export function mount(props) {
     });
 }
 export function unmount(props) {
+    console.log('unmount')
     return Promise
     .resolve()
     .then(() => {
