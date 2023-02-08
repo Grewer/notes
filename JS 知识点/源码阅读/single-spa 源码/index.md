@@ -1,20 +1,19 @@
 ## 引言
 
-前一段时间, 正好在做微前端的接入和微前端管理平台的相关事项。 而我们当前使用的微前端框架则是 `qiankun`,
-他是这样介绍自己的:  
+前一段时间, 正好在做微前端的接入和微前端管理平台的相关事项。 而我们当前使用的微前端框架则是 `qiankun`, 他是这样介绍自己的:
 > qiankun 是一个基于 single-spa 的微前端实现库，旨在帮助大家能更简单、无痛的构建一个生产可用微前端架构系统。
 
 所以本文基于 `single-spa` 源码, 来介绍 `single-spa`
 
 当前使用版本 5.9.4
 
-## 概念  todo  待定位置
+## 概念 todo 待定位置
 
 在single-spa中，有以下三种微前端类型：
 
-1.  single-spa applications: 为一组特定路由渲染组件的微前端。
-2.  single-spa parcels: 不受路由控制，渲染组件的微前端。
-3.  utility modules: 非渲染组件，用于暴露共享javascript逻辑的微前端。
+1. single-spa applications: 为一组特定路由渲染组件的微前端。
+2. single-spa parcels: 不受路由控制，渲染组件的微前端。
+3. utility modules: 非渲染组件，用于暴露共享javascript逻辑的微前端。
 
 ## 启动
 
@@ -31,9 +30,11 @@ app1.js:
 export function bootstrap(props) {
     //初始化时触发
 }
+
 export function mount(props) {
     // 应用挂载完毕之后触发
 }
+
 export function unmount(props) {
     // 应用卸载之后触发
 }
@@ -49,7 +50,7 @@ const app = () => import('./app1/app1.js'); // 一个加载函数
 const activeWhen = '/app1'; // 当路由为 app1 时, 会触发微应用的加载
 
 // 注册应用
-singleSpa.registerApplication({ name, app, activeWhen });
+singleSpa.registerApplication({name, app, activeWhen});
 // 启动
 singleSpa.start();
 ```
@@ -59,6 +60,7 @@ singleSpa.start();
 single-spa 的文件结构为:
 
 // TODO 添加文件的注释
+
 ```
 ├── applications
 │   ├── app-errors.js
@@ -92,11 +94,66 @@ single-spa 的文件结构为:
 
 ## registerApplication
 
+我们先从注册应用开始看起
+
+```js
+function registerApplication(
+    appNameOrConfig,
+    appOrLoadApp,
+    activeWhen,
+    customProps
+) {
+    // 数据整理, 验证传参的合理性, 最后整理得到数据源:
+    // {
+    //      name: xxx,
+    //      loadApp: xxx,
+    //      activeWhen: xxx,
+    //      customProps: xxx,
+    // }
+    const registration = sanitizeArguments(
+        appNameOrConfig,
+        appOrLoadApp,
+        activeWhen,
+        customProps
+    );
+    
+    // 如果有重名,则抛出错误, 所以 name 应该是要保持唯一值
+    if (getAppNames().indexOf(registration.name) !== -1)
+        throw Error('xxx'); // 这里省略具体错误
+    
+    // 往 apps 中添加数据
+    // apps 是 single-spa 的一个全局变量, 用来存储当前的应用数据
+    apps.push(
+        assign(
+            {
+                // 预留值
+                loadErrorTime: null,
+                status: NOT_LOADED,
+                parcels: {},
+                devtools: {
+                    overlays: {
+                        options: {},
+                        selectors: [],
+                    },
+                },
+            },
+            registration
+        )
+    );
+    
+    // 判断 window 是否为空, 进入条件
+    if (isInBrowser) {
+        // TODO
+        ensureJQuerySupport();
+        reroute();
+    }
+}
+```
 
 ## 总结
 
 在后续再来介绍 `qiankun` 和其他的微前端框架(如...)
 
-
 ## 引用
+
 - https://zh-hans.single-spa.js.org/docs/getting-started-overview
