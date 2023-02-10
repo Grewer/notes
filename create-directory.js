@@ -19,7 +19,7 @@ function readFileList(dir, filesList = []) {
         const fullPath = path.join(dir, item);
         const stat = getStatus(fullPath);
         if (stat.isDirectory) {
-            if(ignoreDir.includes(item) || item.startsWith('.')){
+            if(item.includes(ignoreDir) || item.startsWith('.')){
                 return
             }
             const obj = {name: item, children: []}
