@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import * as singleSpa from 'single-spa'
+import * as singleSpa from './single-spa/src/single-spa'
 
 const name = 'app1';
 /* loading 是一个返回 promise 的函数，用于 加载/解析 应用代码。
