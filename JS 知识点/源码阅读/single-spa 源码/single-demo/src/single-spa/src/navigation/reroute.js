@@ -55,7 +55,7 @@ export function reroute(pendingPromises = [], eventArguments) {
     navigationIsCanceled = false,
     oldUrl = currentUrl,
     newUrl = (currentUrl = window.location.href);
-
+  
   if (isStarted()) {
     appChangeUnderway = true;
     appsThatChanged = appsToUnload.concat(
