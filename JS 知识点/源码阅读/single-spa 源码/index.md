@@ -149,6 +149,7 @@ function registerApplication(
 }
 ```
 
+### reroute
 reroute 比较复杂, 简单来说, 在注册应用时, 调用此函数, 就是将应用的 promise 加载函数, 注入一个待加载的数组中
 等后面正式启动时再调用, 类似于 `()=>import('xxx')`
 
@@ -204,6 +205,7 @@ export function reroute(pendingPromises = [], eventArguments) {
     // 将需要加载的应用,  map 成一个新的 promise 数组
     // 并且用 promise.all 来返回
     // TODO toLoadPromise
+    // 不管成功或者失败, 都会调用 callAllEventListeners 函数, 进行路由通知
     function loadApps() {
         return Promise.resolve().then(() => {
             const loadPromises = appsToLoad.map(toLoadPromise);
@@ -223,21 +225,154 @@ export function reroute(pendingPromises = [], eventArguments) {
     
     
     
-    /* We need to call all event listeners that have been delayed because they were
-     * waiting on single-spa. This includes haschange and popstate events for both
-     * the current run of performAppChanges(), but also all of the queued event listeners.
-     * We want to call the listeners in the same order as if they had not been delayed by
-     * single-spa, which means queued ones first and then the most recent one.
-     */
+    // 调用 pendingPromises, 在注册应用时, pendingPromises 为空, 可忽略
+    // 
     function callAllEventListeners() {
         pendingPromises.forEach((pendingPromise) => {
             callCapturedEventListeners(pendingPromise.eventArguments);
         });
-        
+        // 根据 eventArguments 调用路由事件, 如 "hashchange", "popstate"
+        //  在注册应用时因为 eventArguments为空, 不会产生调用结果
         callCapturedEventListeners(eventArguments);
     }
     
 }
+```
+
+### toLoadPromise
+
+```js
+export function toLoadPromise(app) {
+  return Promise.resolve().then(() => {
+    if (app.loadPromise) {
+      return app.loadPromise;
+    }
+
+    if (app.status !== NOT_LOADED && app.status !== LOAD_ERROR) {
+      return app;
+    }
+
+    app.status = LOADING_SOURCE_CODE;
+
+    let appOpts, isUserErr;
+
+    return (app.loadPromise = Promise.resolve()
+      .then(() => {
+        const loadPromise = app.loadApp(getProps(app));
+        if (!smellsLikeAPromise(loadPromise)) {
+          // The name of the app will be prepended to this error message inside of the handleAppError function
+          isUserErr = true;
+          throw Error(
+            formatErrorMessage(
+              33,
+              __DEV__ &&
+                `single-spa loading function did not return a promise. Check the second argument to registerApplication('${toName(
+                  app
+                )}', loadingFunction, activityFunction)`,
+              toName(app)
+            )
+          );
+        }
+        return loadPromise.then((val) => {
+          app.loadErrorTime = null;
+
+          appOpts = val;
+
+          let validationErrMessage, validationErrCode;
+
+          if (typeof appOpts !== "object") {
+            validationErrCode = 34;
+            if (__DEV__) {
+              validationErrMessage = `does not export anything`;
+            }
+          }
+
+          if (
+            // ES Modules don't have the Object prototype
+            Object.prototype.hasOwnProperty.call(appOpts, "bootstrap") &&
+            !validLifecycleFn(appOpts.bootstrap)
+          ) {
+            validationErrCode = 35;
+            if (__DEV__) {
+              validationErrMessage = `does not export a valid bootstrap function or array of functions`;
+            }
+          }
+
+          if (!validLifecycleFn(appOpts.mount)) {
+            validationErrCode = 36;
+            if (__DEV__) {
+              validationErrMessage = `does not export a mount function or array of functions`;
+            }
+          }
+
+          if (!validLifecycleFn(appOpts.unmount)) {
+            validationErrCode = 37;
+            if (__DEV__) {
+              validationErrMessage = `does not export a unmount function or array of functions`;
+            }
+          }
+
+          const type = objectType(appOpts);
+
+          if (validationErrCode) {
+            let appOptsStr;
+            try {
+              appOptsStr = JSON.stringify(appOpts);
+            } catch {}
+            console.error(
+              formatErrorMessage(
+                validationErrCode,
+                __DEV__ &&
+                  `The loading function for single-spa ${type} '${toName(
+                    app
+                  )}' resolved with the following, which does not have bootstrap, mount, and unmount functions`,
+                type,
+                toName(app),
+                appOptsStr
+              ),
+              appOpts
+            );
+            handleAppError(validationErrMessage, app, SKIP_BECAUSE_BROKEN);
+            return app;
+          }
+
+          if (appOpts.devtools && appOpts.devtools.overlays) {
+            app.devtools.overlays = assign(
+              {},
+              app.devtools.overlays,
+              appOpts.devtools.overlays
+            );
+          }
+
+          app.status = NOT_BOOTSTRAPPED;
+          app.bootstrap = flattenFnArray(appOpts, "bootstrap");
+          app.mount = flattenFnArray(appOpts, "mount");
+          app.unmount = flattenFnArray(appOpts, "unmount");
+          app.unload = flattenFnArray(appOpts, "unload");
+          app.timeouts = ensureValidAppTimeouts(appOpts.timeouts);
+
+          delete app.loadPromise;
+
+          return app;
+        });
+      })
+      .catch((err) => {
+        delete app.loadPromise;
+
+        let newStatus;
+        if (isUserErr) {
+          newStatus = SKIP_BECAUSE_BROKEN;
+        } else {
+          newStatus = LOAD_ERROR;
+          app.loadErrorTime = new Date().getTime();
+        }
+        handleAppError(err, app, newStatus);
+
+        return app;
+      }));
+  });
+}
+
 ```
 
 ## 总结
