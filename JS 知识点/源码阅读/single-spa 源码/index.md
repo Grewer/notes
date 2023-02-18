@@ -128,7 +128,7 @@ function registerApplication(
             {
                 // 预留值
                 loadErrorTime: null,
-                status: NOT_LOADED,
+                status: NOT_LOADED, // 默认是 NOT_LOADED , 也就是待加载的状态
                 parcels: {},
                 devtools: {
                     overlays: {
@@ -241,13 +241,16 @@ export function reroute(pendingPromises = [], eventArguments) {
 
 ### toLoadPromise
 
+首先他返回一个 resolve 的 promise, 传参是应用
+
 ```js
 export function toLoadPromise(app) {
   return Promise.resolve().then(() => {
+      // 是否重复注册 promise 加载了
     if (app.loadPromise) {
       return app.loadPromise;
     }
-
+    // 刚注册的就是 NOT_LOADED 状态
     if (app.status !== NOT_LOADED && app.status !== LOAD_ERROR) {
       return app;
     }

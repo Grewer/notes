@@ -17,6 +17,7 @@ import { toUnmountPromise } from "../lifecycles/unmount.js";
 import { ensureValidAppTimeouts } from "../applications/timeouts.js";
 import { formatErrorMessage } from "../applications/app-errors.js";
 
+const name= 'single-spa'
 let parcelCount = 0;
 const rootParcels = { parcels: {} };
 

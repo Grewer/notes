@@ -17,7 +17,7 @@ const app = () => import('./app1/app1.js');
  */
 const activeWhen = '/app1';
 singleSpa.registerApplication({ name, app, activeWhen });
-singleSpa.start();
+// singleSpa.start();
 // const root = ReactDOM.createRoot(document.getElementById('root'));
 // root.render(
 //   <React.StrictMode>

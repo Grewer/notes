@@ -35,6 +35,7 @@ export function triggerAppChange() {
 }
 
 export function reroute(pendingPromises = [], eventArguments) {
+  console.log('reroute')
   if (appChangeUnderway) {
     return new Promise((resolve, reject) => {
       peopleWaitingOnAppChange.push({
@@ -66,6 +67,7 @@ export function reroute(pendingPromises = [], eventArguments) {
     return performAppChanges();
   } else {
     appsThatChanged = appsToLoad;
+      console.log('unStart loadApps', appsThatChanged)
     return loadApps();
   }
 

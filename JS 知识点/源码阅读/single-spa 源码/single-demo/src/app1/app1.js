@@ -1,4 +1,5 @@
 let domEl;
+console.log('app1.js run')
 export function bootstrap(props) {
     console.log('boot')
     return Promise
