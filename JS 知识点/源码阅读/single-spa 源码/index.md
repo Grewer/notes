@@ -204,12 +204,14 @@ export function reroute(pendingPromises = [], eventArguments) {
     // 返回一个 resolve 的 promise
     // 将需要加载的应用,  map 成一个新的 promise 数组
     // 并且用 promise.all 来返回
-    // TODO toLoadPromise
     // 不管成功或者失败, 都会调用 callAllEventListeners 函数, 进行路由通知
     function loadApps() {
         return Promise.resolve().then(() => {
+            // toLoadPromise 主要作用在甲方有讲述, 主要来定义资源的加载, 以及对应的回调
             const loadPromises = appsToLoad.map(toLoadPromise);
             
+            // 通过 Promise.all 来执行, 返回的是 app.loadPromise
+            // 这是资源加载
             return (
                 Promise.all(loadPromises)
                 .then(callAllEventListeners)
@@ -223,10 +225,7 @@ export function reroute(pendingPromises = [], eventArguments) {
         });
     }
     
-    
-    
     // 调用 pendingPromises, 在注册应用时, pendingPromises 为空, 可忽略
-    // 
     function callAllEventListeners() {
         pendingPromises.forEach((pendingPromise) => {
             callCapturedEventListeners(pendingPromise.eventArguments);
@@ -241,7 +240,8 @@ export function reroute(pendingPromises = [], eventArguments) {
 
 ### toLoadPromise
 
-首先他返回一个 resolve 的 promise, 传参是应用
+主要功能是赋值 loadPromise 给 app, 其中 loadPromise 函数中包括了
+执行函数,来加载应用的资源, 定义加载完毕的回调函数, 状态的修改, 还有加载错误的一些处理
 
 ```js
 export function toLoadPromise(app) {
@@ -254,99 +254,38 @@ export function toLoadPromise(app) {
     if (app.status !== NOT_LOADED && app.status !== LOAD_ERROR) {
       return app;
     }
-
+    
+    // 修改状态为, 加载源码
     app.status = LOADING_SOURCE_CODE;
 
     let appOpts, isUserErr;
-
+    
+    // 返回的是 app.loadPromise
     return (app.loadPromise = Promise.resolve()
       .then(() => {
+          // 这里调用的了 app的 loadApp 函数(由外部传入的), 开始加载资源
+          // getProps 用来判断 customProps 是否合法, 最后传值给 loadApp 函数
         const loadPromise = app.loadApp(getProps(app));
+        // 判断 loadPromise 是否是一个 promise
         if (!smellsLikeAPromise(loadPromise)) {
-          // The name of the app will be prepended to this error message inside of the handleAppError function
+          // 省略报错
           isUserErr = true;
-          throw Error(
-            formatErrorMessage(
-              33,
-              __DEV__ &&
-                `single-spa loading function did not return a promise. Check the second argument to registerApplication('${toName(
-                  app
-                )}', loadingFunction, activityFunction)`,
-              toName(app)
-            )
-          );
+          throw Error("...");
         }
         return loadPromise.then((val) => {
+            // 资源加载成功
           app.loadErrorTime = null;
 
           appOpts = val;
 
           let validationErrMessage, validationErrCode;
 
-          if (typeof appOpts !== "object") {
-            validationErrCode = 34;
-            if (__DEV__) {
-              validationErrMessage = `does not export anything`;
-            }
-          }
-
-          if (
-            // ES Modules don't have the Object prototype
-            Object.prototype.hasOwnProperty.call(appOpts, "bootstrap") &&
-            !validLifecycleFn(appOpts.bootstrap)
-          ) {
-            validationErrCode = 35;
-            if (__DEV__) {
-              validationErrMessage = `does not export a valid bootstrap function or array of functions`;
-            }
-          }
-
-          if (!validLifecycleFn(appOpts.mount)) {
-            validationErrCode = 36;
-            if (__DEV__) {
-              validationErrMessage = `does not export a mount function or array of functions`;
-            }
-          }
-
-          if (!validLifecycleFn(appOpts.unmount)) {
-            validationErrCode = 37;
-            if (__DEV__) {
-              validationErrMessage = `does not export a unmount function or array of functions`;
-            }
-          }
-
-          const type = objectType(appOpts);
-
-          if (validationErrCode) {
-            let appOptsStr;
-            try {
-              appOptsStr = JSON.stringify(appOpts);
-            } catch {}
-            console.error(
-              formatErrorMessage(
-                validationErrCode,
-                __DEV__ &&
-                  `The loading function for single-spa ${type} '${toName(
-                    app
-                  )}' resolved with the following, which does not have bootstrap, mount, and unmount functions`,
-                type,
-                toName(app),
-                appOptsStr
-              ),
-              appOpts
-            );
-            handleAppError(validationErrMessage, app, SKIP_BECAUSE_BROKEN);
-            return app;
-          }
-
-          if (appOpts.devtools && appOpts.devtools.overlays) {
-            app.devtools.overlays = assign(
-              {},
-              app.devtools.overlays,
-              appOpts.devtools.overlays
-            );
-          }
-
+          // 省略对于资源返回结果的判断
+          // 比如appOpts是否是对象, appOpts.mount appOpts.bootstrap 是否是函数, 等等
+          // ...
+            
+          // 修改状态为, 未进入引导
+          // 同时将资源结果的函数赋值, 以备后面执行
           app.status = NOT_BOOTSTRAPPED;
           app.bootstrap = flattenFnArray(appOpts, "bootstrap");
           app.mount = flattenFnArray(appOpts, "mount");
@@ -354,14 +293,16 @@ export function toLoadPromise(app) {
           app.unload = flattenFnArray(appOpts, "unload");
           app.timeouts = ensureValidAppTimeouts(appOpts.timeouts);
 
+          // 执行完毕之后删除 loadPromise
           delete app.loadPromise;
 
           return app;
         });
       })
       .catch((err) => {
+        // 报错也会删除 loadPromise
         delete app.loadPromise;
-
+        // 修改状态为 用户的传参报错, 或者是加载出错
         let newStatus;
         if (isUserErr) {
           newStatus = SKIP_BECAUSE_BROKEN;
