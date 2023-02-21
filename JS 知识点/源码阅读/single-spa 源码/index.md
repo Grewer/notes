@@ -150,9 +150,8 @@ function registerApplication(
 ```
 
 ### reroute
-reroute 比较复杂, 简单来说, 在注册应用时, 调用此函数, 就是将应用的 promise 加载函数, 注入一个待加载的数组中
-等后面正式启动时再调用, 类似于 `()=>import('xxx')`
 
+reroute 比较复杂, 简单来说, 在注册应用时, 调用此函数, 就是将应用的 promise 加载函数, 注入一个待加载的数组中 等后面正式启动时再调用, 类似于 `()=>import('xxx')`
 
 ```js
 export function reroute(pendingPromises = [], eventArguments) {
@@ -234,90 +233,118 @@ export function reroute(pendingPromises = [], eventArguments) {
         //  在注册应用时因为 eventArguments为空, 不会产生调用结果
         callCapturedEventListeners(eventArguments);
     }
-    
+
 }
 ```
 
 ### toLoadPromise
 
-主要功能是赋值 loadPromise 给 app, 其中 loadPromise 函数中包括了
-执行函数,来加载应用的资源, 定义加载完毕的回调函数, 状态的修改, 还有加载错误的一些处理
+主要功能是赋值 loadPromise 给 app, 其中 loadPromise 函数中包括了 执行函数,来加载应用的资源, 定义加载完毕的回调函数, 状态的修改, 还有加载错误的一些处理
 
 ```js
 export function toLoadPromise(app) {
-  return Promise.resolve().then(() => {
-      // 是否重复注册 promise 加载了
-    if (app.loadPromise) {
-      return app.loadPromise;
-    }
-    // 刚注册的就是 NOT_LOADED 状态
-    if (app.status !== NOT_LOADED && app.status !== LOAD_ERROR) {
-      return app;
-    }
-    
-    // 修改状态为, 加载源码
-    app.status = LOADING_SOURCE_CODE;
-
-    let appOpts, isUserErr;
-    
-    // 返回的是 app.loadPromise
-    return (app.loadPromise = Promise.resolve()
-      .then(() => {
-          // 这里调用的了 app的 loadApp 函数(由外部传入的), 开始加载资源
-          // getProps 用来判断 customProps 是否合法, 最后传值给 loadApp 函数
-        const loadPromise = app.loadApp(getProps(app));
-        // 判断 loadPromise 是否是一个 promise
-        if (!smellsLikeAPromise(loadPromise)) {
-          // 省略报错
-          isUserErr = true;
-          throw Error("...");
+    return Promise.resolve().then(() => {
+        // 是否重复注册 promise 加载了
+        if (app.loadPromise) {
+            return app.loadPromise;
         }
-        return loadPromise.then((val) => {
-            // 资源加载成功
-          app.loadErrorTime = null;
-
-          appOpts = val;
-
-          let validationErrMessage, validationErrCode;
-
-          // 省略对于资源返回结果的判断
-          // 比如appOpts是否是对象, appOpts.mount appOpts.bootstrap 是否是函数, 等等
-          // ...
+        // 刚注册的就是 NOT_LOADED 状态
+        if (app.status !== NOT_LOADED && app.status !== LOAD_ERROR) {
+            return app;
+        }
+        
+        // 修改状态为, 加载源码
+        app.status = LOADING_SOURCE_CODE;
+        
+        let appOpts, isUserErr;
+        
+        // 返回的是 app.loadPromise
+        return (app.loadPromise = Promise.resolve()
+        .then(() => {
+            // 这里调用的了 app的 loadApp 函数(由外部传入的), 开始加载资源
+            // getProps 用来判断 customProps 是否合法, 最后传值给 loadApp 函数
+            const loadPromise = app.loadApp(getProps(app));
+            // 判断 loadPromise 是否是一个 promise
+            if (!smellsLikeAPromise(loadPromise)) {
+                // 省略报错
+                isUserErr = true;
+                throw Error("...");
+            }
+            return loadPromise.then((val) => {
+                // 资源加载成功
+                app.loadErrorTime = null;
+                
+                appOpts = val;
+                
+                let validationErrMessage, validationErrCode;
+                
+                // 省略对于资源返回结果的判断
+                // 比如appOpts是否是对象, appOpts.mount appOpts.bootstrap 是否是函数, 等等
+                // ...
+                
+                // 修改状态为, 未进入引导
+                // 同时将资源结果的函数赋值, 以备后面执行
+                app.status = NOT_BOOTSTRAPPED;
+                app.bootstrap = flattenFnArray(appOpts, "bootstrap");
+                app.mount = flattenFnArray(appOpts, "mount");
+                app.unmount = flattenFnArray(appOpts, "unmount");
+                app.unload = flattenFnArray(appOpts, "unload");
+                app.timeouts = ensureValidAppTimeouts(appOpts.timeouts);
+                
+                // 执行完毕之后删除 loadPromise
+                delete app.loadPromise;
+                
+                return app;
+            });
+        })
+        .catch((err) => {
+            // 报错也会删除 loadPromise
+            delete app.loadPromise;
+            // 修改状态为 用户的传参报错, 或者是加载出错
+            let newStatus;
+            if (isUserErr) {
+                newStatus = SKIP_BECAUSE_BROKEN;
+            } else {
+                newStatus = LOAD_ERROR;
+                app.loadErrorTime = new Date().getTime();
+            }
+            handleAppError(err, app, newStatus);
             
-          // 修改状态为, 未进入引导
-          // 同时将资源结果的函数赋值, 以备后面执行
-          app.status = NOT_BOOTSTRAPPED;
-          app.bootstrap = flattenFnArray(appOpts, "bootstrap");
-          app.mount = flattenFnArray(appOpts, "mount");
-          app.unmount = flattenFnArray(appOpts, "unmount");
-          app.unload = flattenFnArray(appOpts, "unload");
-          app.timeouts = ensureValidAppTimeouts(appOpts.timeouts);
-
-          // 执行完毕之后删除 loadPromise
-          delete app.loadPromise;
-
-          return app;
-        });
-      })
-      .catch((err) => {
-        // 报错也会删除 loadPromise
-        delete app.loadPromise;
-        // 修改状态为 用户的传参报错, 或者是加载出错
-        let newStatus;
-        if (isUserErr) {
-          newStatus = SKIP_BECAUSE_BROKEN;
-        } else {
-          newStatus = LOAD_ERROR;
-          app.loadErrorTime = new Date().getTime();
-        }
-        handleAppError(err, app, newStatus);
-
-        return app;
-      }));
-  });
+            return app;
+        }));
+    });
 }
+```
+
+## start
+
+注册完应用之后, 最后是 `singleSpa.start();` 的执行
+
+`start` 的代码很简单:
+
+```js
+// 一般来说 opts 是不传什么东西的
+function start(opts) {
+    // 主要作用还是将标记符 started设置为 true 了
+    started = true;
+    if (opts && opts.urlRerouteOnly) {
+        // 使用此参数可以人为地触发事件 popstate
+        setUrlRerouteOnly(opts.urlRerouteOnly);
+    }
+    if (isInBrowser) {
+        reroute();
+    }
+}
+```
+
+### reroute
+
+上述已经讲过注册时 `reroute` 的一些代码了, 这里会忽略已讲过的一些东西
+
+```js
 
 ```
+
 
 ## 总结
 
