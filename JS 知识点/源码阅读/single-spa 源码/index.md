@@ -342,9 +342,137 @@ function start(opts) {
 上述已经讲过注册时 `reroute` 的一些代码了, 这里会忽略已讲过的一些东西
 
 ```js
+function reroute(pendingPromises = [], eventArguments) {
+    const {
+        appsToUnload,
+        appsToUnmount,
+        appsToLoad,
+        appsToMount,
+    } = getAppChanges();
+    let appsThatChanged,
+        navigationIsCanceled = false,
+        oldUrl = currentUrl,
+        newUrl = (currentUrl = window.location.href);
+    
+    if (isStarted()) {
+        // 这次开始执行此处
+        appChangeUnderway = true;
+        // 合并状态需要变更的 app
+        appsThatChanged = appsToUnload.concat(
+            appsToLoad,
+            appsToUnmount,
+            appsToMount
+        );
+        // 返回 performAppChanges 函数
+        return performAppChanges();
+    }
+```
+
+### performAppChanges
+
+在启动后,就会触发此函数 `performAppChanges`, 并返回结果
+
+```js
+  function performAppChanges() {
+    return Promise.resolve().then(() => {
+      // 触发自定义事件, 关于 CustomEvent 我们再下方详述
+        // 当前事件触发 getCustomEventDetail
+        // 主要是 app 的状态, url 的变更, 参数等等
+      window.dispatchEvent(
+        new CustomEvent(
+          appsThatChanged.length === 0
+            ? "single-spa:before-no-app-change"
+            : "single-spa:before-app-change",
+          getCustomEventDetail(true)
+        )
+      );
+        
+      // 同上
+      window.dispatchEvent(
+        new CustomEvent(
+          "single-spa:before-routing-event",
+          getCustomEventDetail(true, { cancelNavigation })
+        )
+      );
+    
+        // 除非在上一个事件中调用了 cancelNavigation, 才会进入这一步
+        if (navigationIsCanceled) {
+        window.dispatchEvent(
+          new CustomEvent(
+            "single-spa:before-mount-routing-event",
+            getCustomEventDetail(true)
+          )
+        );
+        // 
+        finishUpAndReturn();
+        navigateToUrl(oldUrl);
+        return;
+      }
+
+      const unloadPromises = appsToUnload.map(toUnloadPromise);
+
+      const unmountUnloadPromises = appsToUnmount
+        .map(toUnmountPromise)
+        .map((unmountPromise) => unmountPromise.then(toUnloadPromise));
+
+      const allUnmountPromises = unmountUnloadPromises.concat(unloadPromises);
+
+      const unmountAllPromise = Promise.all(allUnmountPromises);
+
+      unmountAllPromise.then(() => {
+        window.dispatchEvent(
+          new CustomEvent(
+            "single-spa:before-mount-routing-event",
+            getCustomEventDetail(true)
+          )
+        );
+      });
+
+      /* We load and bootstrap apps while other apps are unmounting, but we
+       * wait to mount the app until all apps are finishing unmounting
+       */
+      const loadThenMountPromises = appsToLoad.map((app) => {
+        return toLoadPromise(app).then((app) =>
+          tryToBootstrapAndMount(app, unmountAllPromise)
+        );
+      });
+
+      /* These are the apps that are already bootstrapped and just need
+       * to be mounted. They each wait for all unmounting apps to finish up
+       * before they mount.
+       */
+      const mountPromises = appsToMount
+        .filter((appToMount) => appsToLoad.indexOf(appToMount) < 0)
+        .map((appToMount) => {
+          return tryToBootstrapAndMount(appToMount, unmountAllPromise);
+        });
+      return unmountAllPromise
+        .catch((err) => {
+          callAllEventListeners();
+          throw err;
+        })
+        .then(() => {
+          /* Now that the apps that needed to be unmounted are unmounted, their DOM navigation
+           * events (like hashchange or popstate) should have been cleaned up. So it's safe
+           * to let the remaining captured event listeners to handle about the DOM event.
+           */
+          callAllEventListeners();
+
+          return Promise.all(loadThenMountPromises.concat(mountPromises))
+            .catch((err) => {
+              pendingPromises.forEach((promise) => promise.reject(err));
+              throw err;
+            })
+            .then(finishUpAndReturn);
+        });
+    });
+  }
 
 ```
 
+### CustomEvent
+
+`CustomEvent` 是一个原生 API, 这里稍微介绍下
 
 ## 总结
 

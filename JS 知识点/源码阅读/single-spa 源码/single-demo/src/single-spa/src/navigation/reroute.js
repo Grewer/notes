@@ -35,7 +35,7 @@ export function triggerAppChange() {
 }
 
 export function reroute(pendingPromises = [], eventArguments) {
-  console.log('reroute')
+  console.log('reroute',pendingPromises,eventArguments)
   if (appChangeUnderway) {
     return new Promise((resolve, reject) => {
       peopleWaitingOnAppChange.push({
@@ -64,6 +64,7 @@ export function reroute(pendingPromises = [], eventArguments) {
       appsToUnmount,
       appsToMount
     );
+      console.log('start', appsThatChanged)
     return performAppChanges();
   } else {
     appsThatChanged = appsToLoad;
@@ -112,6 +113,7 @@ export function reroute(pendingPromises = [], eventArguments) {
       );
 
       if (navigationIsCanceled) {
+        console.log('navigationIsCanceled run')
         window.dispatchEvent(
           new CustomEvent(
             "single-spa:before-mount-routing-event",
