@@ -113,7 +113,7 @@ export function reroute(pendingPromises = [], eventArguments) {
       );
 
       if (navigationIsCanceled) {
-        console.log('navigationIsCanceled run')
+           console.log('navigationIsCanceled run')
         window.dispatchEvent(
           new CustomEvent(
             "single-spa:before-mount-routing-event",
@@ -185,6 +185,7 @@ export function reroute(pendingPromises = [], eventArguments) {
   }
 
   function finishUpAndReturn() {
+      // 得到一件 mounted 的应用名, 数组 string[]
     const returnValue = getMountedApps();
     pendingPromises.forEach((promise) => promise.resolve(returnValue));
 

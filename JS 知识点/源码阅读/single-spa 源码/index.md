@@ -7,14 +7,6 @@
 
 当前使用版本 5.9.4
 
-## 概念 todo 待定位置
-
-在single-spa中，有以下三种微前端类型：
-
-1. single-spa applications: 为一组特定路由渲染组件的微前端。
-2. single-spa parcels: 不受路由控制，渲染组件的微前端。
-3. utility modules: 非渲染组件，用于暴露共享javascript逻辑的微前端。
-
 ## 启动
 
 在官方 demo 中, 要运行此框架需要做的是有这四步:
@@ -370,103 +362,79 @@ function reroute(pendingPromises = [], eventArguments) {
 
 ### performAppChanges
 
-在启动后,就会触发此函数 `performAppChanges`, 并返回结果
+在启动后,就会触发此函数 `performAppChanges`, 并返回结果  
+本函数的作用主要是事件的触发, 包括自定义事件和子应用中的一些事件
 
 ```js
   function performAppChanges() {
     return Promise.resolve().then(() => {
-      // 触发自定义事件, 关于 CustomEvent 我们再下方详述
+        // 触发自定义事件, 关于 CustomEvent 我们再下方详述
         // 当前事件触发 getCustomEventDetail
         // 主要是 app 的状态, url 的变更, 参数等等
-      window.dispatchEvent(
-        new CustomEvent(
-          appsThatChanged.length === 0
-            ? "single-spa:before-no-app-change"
-            : "single-spa:before-app-change",
-          getCustomEventDetail(true)
-        )
-      );
+        window.dispatchEvent(
+            new CustomEvent(
+                appsThatChanged.length === 0
+                    ? "single-spa:before-no-app-change"
+                    : "single-spa:before-app-change",
+                getCustomEventDetail(true)
+            )
+        );
         
-      // 同上
-      window.dispatchEvent(
-        new CustomEvent(
-          "single-spa:before-routing-event",
-          getCustomEventDetail(true, { cancelNavigation })
-        )
-      );
-    
+        // 省略类似事件
+        
         // 除非在上一个事件中调用了 cancelNavigation, 才会进入这一步
         if (navigationIsCanceled) {
-        window.dispatchEvent(
-          new CustomEvent(
-            "single-spa:before-mount-routing-event",
-            getCustomEventDetail(true)
-          )
-        );
-        // 
-        finishUpAndReturn();
-        navigateToUrl(oldUrl);
-        return;
-      }
-
-      const unloadPromises = appsToUnload.map(toUnloadPromise);
-
-      const unmountUnloadPromises = appsToUnmount
+            window.dispatchEvent(
+                new CustomEvent(
+                    "single-spa:before-mount-routing-event",
+                    getCustomEventDetail(true)
+                )
+            );
+            // 将 peopleWaitingOnAppChange 的数据重新执行 reroute 函数 reroute(peopleWaitingOnAppChange)  
+            finishUpAndReturn();
+            // 更新 url
+            navigateToUrl(oldUrl);
+            return;
+        }
+        
+        // 准备卸载的 app
+        const unloadPromises = appsToUnload.map(toUnloadPromise);
+        
+        // 执行子应用中的 unmount 函数, 如果超时也会有报警
+        const unmountUnloadPromises = appsToUnmount
         .map(toUnmountPromise)
         .map((unmountPromise) => unmountPromise.then(toUnloadPromise));
-
-      const allUnmountPromises = unmountUnloadPromises.concat(unloadPromises);
-
-      const unmountAllPromise = Promise.all(allUnmountPromises);
-
-      unmountAllPromise.then(() => {
-        window.dispatchEvent(
-          new CustomEvent(
-            "single-spa:before-mount-routing-event",
-            getCustomEventDetail(true)
-          )
-        );
-      });
-
-      /* We load and bootstrap apps while other apps are unmounting, but we
-       * wait to mount the app until all apps are finishing unmounting
-       */
-      const loadThenMountPromises = appsToLoad.map((app) => {
-        return toLoadPromise(app).then((app) =>
-          tryToBootstrapAndMount(app, unmountAllPromise)
-        );
-      });
-
-      /* These are the apps that are already bootstrapped and just need
-       * to be mounted. They each wait for all unmounting apps to finish up
-       * before they mount.
-       */
-      const mountPromises = appsToMount
+        
+        const allUnmountPromises = unmountUnloadPromises.concat(unloadPromises);
+        
+        const unmountAllPromise = Promise.all(allUnmountPromises);
+        
+        // 所有应用的卸载事件
+        unmountAllPromise.then(() => {
+            window.dispatchEvent(
+                new CustomEvent(
+                    "single-spa:before-mount-routing-event",
+                    getCustomEventDetail(true)
+                )
+            );
+        });
+        
+        // 执行 bootstrap 生命周期, tryToBootstrapAndMount 确保先执行 bootstrap
+        const loadThenMountPromises = appsToLoad.map((app) => {
+            return toLoadPromise(app).then((app) =>
+                tryToBootstrapAndMount(app, unmountAllPromise)
+            );
+        });
+        
+        // 执行 mount 事件
+        const mountPromises = appsToMount
         .filter((appToMount) => appsToLoad.indexOf(appToMount) < 0)
         .map((appToMount) => {
-          return tryToBootstrapAndMount(appToMount, unmountAllPromise);
+            return tryToBootstrapAndMount(appToMount, unmountAllPromise);
         });
-      return unmountAllPromise
-        .catch((err) => {
-          callAllEventListeners();
-          throw err;
-        })
-        .then(() => {
-          /* Now that the apps that needed to be unmounted are unmounted, their DOM navigation
-           * events (like hashchange or popstate) should have been cleaned up. So it's safe
-           * to let the remaining captured event listeners to handle about the DOM event.
-           */
-          callAllEventListeners();
-
-          return Promise.all(loadThenMountPromises.concat(mountPromises))
-            .catch((err) => {
-              pendingPromises.forEach((promise) => promise.reject(err));
-              throw err;
-            })
-            .then(finishUpAndReturn);
-        });
+        // 其他的部分不太重要, 可省略
     });
-  }
+}
 
 ```
 
@@ -474,10 +442,20 @@ function reroute(pendingPromises = [], eventArguments) {
 
 `CustomEvent` 是一个原生 API, 这里稍微介绍下
 
+### 图的描述
+
+
 ## 总结
 
-在后续再来介绍 `qiankun` 和其他的微前端框架(如...)
+single-spa 无疑是微前端的一个重要里程碑,在大型应用场景下, 可支持多类框架, 抹平了框架间的巨大交互成本
+
+他的核心是对子应用进行管理，但还有很多工程化问题没做。比如JavaScript全局对象覆盖、css加载卸载、公共模块管理要求只下载一次等等性能问题
+
+这又促成了其他的框架的诞生, 比较出名的就是 `qiankun`、`Isomorphic Layout Composer`。
+
+而这些就是另一个话题了。
 
 ## 引用
 
 - https://zh-hans.single-spa.js.org/docs/getting-started-overview
+- https://zhuanlan.zhihu.com/p/344145423
