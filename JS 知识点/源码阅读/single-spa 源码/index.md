@@ -442,8 +442,45 @@ function reroute(pendingPromises = [], eventArguments) {
 
 `CustomEvent` 是一个原生 API, 这里稍微介绍下
 
-### 图的描述
+在某些场景中, 我们会经常做出一些模拟点击的行为, 比如这样:
 
+```js
+<button id="submit" onclick="alert('Click!');">btn</button>
+
+<script>
+    const btn = document.getElementById('submit');
+    btn.click()
+</script>
+```
+
+通过 `CustomEvent` 也能实现这种事件:
+
+```js
+<button id="submit" onclick="alert('Click!');">btn</button>
+
+<script>
+    const btn = document.getElementById('submit');
+    btn.dispatchEvent(new CustomEvent('click'))
+    // 使用 btn.dispatchEvent(new Event('click')) 也是一样的
+    // 区别在于 CustomEvent 可以传递自定义参数
+</script>
+```
+
+不仅是浏览器原生的事件，如'click'，'mousedown'，'change'，'mouseover'，'mouseenter'等可以触发，任意的自定义名称的事件也是可以触发的
+
+```js
+document.body.addEventListener('测试自定义事件', (ev) => {
+    console.log(ev.detail)
+})
+
+document.body.dispatchEvent(new CustomEvent('测试自定义事件', {
+    detail: {
+        foo: 1
+    }
+}))
+```
+
+### 图的描述
 
 ## 总结
 
@@ -459,3 +496,4 @@ single-spa 无疑是微前端的一个重要里程碑,在大型应用场景下, 
 
 - https://zh-hans.single-spa.js.org/docs/getting-started-overview
 - https://zhuanlan.zhihu.com/p/344145423
+- https://www.zhangxinxu.com/wordpress/2020/08/js-customevent-pass-param/
