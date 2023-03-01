@@ -143,7 +143,7 @@ function registerApplication(
 
 ### reroute
 
-reroute 比较复杂, 简单来说, 在注册应用时, 调用此函数, 就是将应用的 promise 加载函数, 注入一个待加载的数组中 等后面正式启动时再调用, 类似于 `()=>import('xxx')`
+`reroute` 是 `single-spa` 的核心函数, 在注册应用时调用此函数的作用, 就是将应用的 promise 加载函数, 注入一个待加载的数组中 等后面正式启动时再调用, 类似于 `()=>import('xxx')`
 
 ```js
 export function reroute(pendingPromises = [], eventArguments) {
@@ -165,6 +165,7 @@ export function reroute(pendingPromises = [], eventArguments) {
         appsToMount,
     } = getAppChanges();
     // 遍历所有应用数组 apps , 根据 app 的状态, 来分类到这四个数组中
+    // 会根据 url 和 whenActive 判断是否该 load
     // unload , unmount, to load, to mount
     
     let appsThatChanged,
@@ -358,6 +359,7 @@ function reroute(pendingPromises = [], eventArguments) {
         // 返回 performAppChanges 函数
         return performAppChanges();
     }
+}
 ```
 
 ### performAppChanges
@@ -480,7 +482,13 @@ document.body.dispatchEvent(new CustomEvent('测试自定义事件', {
 }))
 ```
 
-### 图的描述
+### 整体流程
+
+1. 在正式环境使用 `registerApplication` 来注册应用
+2. 这时候在 `single-spa` 内部会将注册的信息, 初始化加载函数
+3. 使用 url 进行匹配, 是否要加载, 如果需要加载, 则归类
+4. 如果匹配上, 开始加载应用的文件 (即使还没使用 `start`)
+5. 最后使用 `start`, 开始发送各类事件, 调用应用的各类生命周期方法
 
 ## 总结
 

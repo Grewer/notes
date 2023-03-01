@@ -17,6 +17,7 @@ const app = () => import('./app1/app1.js');
  */
 const activeWhen = '/app1';
 singleSpa.registerApplication({ name, app, activeWhen });
+console.log('还没开始使用 start')
 singleSpa.start();
 // const root = ReactDOM.createRoot(document.getElementById('root'));
 // root.render(
