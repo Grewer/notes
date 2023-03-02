@@ -51,8 +51,6 @@ singleSpa.start();
 
 single-spa 的文件结构为:
 
-// TODO 添加文件的注释
-
 ```
 ├── applications
 │   ├── app-errors.js
@@ -135,7 +133,7 @@ function registerApplication(
     
     // 判断 window 是否为空, 进入条件
     if (isInBrowser) {
-        ensureJQuerySupport(); // 使用 js 来监听路径变化的事件
+        ensureJQuerySupport(); // 确保 jq 可用
         reroute();
     }
 }
@@ -144,6 +142,8 @@ function registerApplication(
 ### reroute
 
 `reroute` 是 `single-spa` 的核心函数, 在注册应用时调用此函数的作用, 就是将应用的 promise 加载函数, 注入一个待加载的数组中 等后面正式启动时再调用, 类似于 `()=>import('xxx')`
+
+主要流程: 判断是否符合加载条件 -> 开始加载代码
 
 ```js
 export function reroute(pendingPromises = [], eventArguments) {
@@ -175,14 +175,7 @@ export function reroute(pendingPromises = [], eventArguments) {
     
     // 存储着一个闭包变量, 是否已经启动, 在注册步骤中, 是未启动的
     if (isStarted()) {
-        appChangeUnderway = true;
-        appsThatChanged = appsToUnload.concat(
-            appsToLoad,
-            appsToUnmount,
-            appsToMount
-        );
-        // performAppChanges 放在后面讲解
-        return performAppChanges();
+        // 省略, 当前是未开始的
     } else {
         // 未启动, 直接返回 loadApps, 他的定义在下方
         appsThatChanged = appsToLoad;
@@ -216,22 +209,13 @@ export function reroute(pendingPromises = [], eventArguments) {
             );
         });
     }
-    
-    // 调用 pendingPromises, 在注册应用时, pendingPromises 为空, 可忽略
-    function callAllEventListeners() {
-        pendingPromises.forEach((pendingPromise) => {
-            callCapturedEventListeners(pendingPromise.eventArguments);
-        });
-        // 根据 eventArguments 调用路由事件, 如 "hashchange", "popstate"
-        //  在注册应用时因为 eventArguments为空, 不会产生调用结果
-        callCapturedEventListeners(eventArguments);
-    }
 
 }
 ```
 
 ### toLoadPromise
 
+注册流程中 `reroute` 中的主要执行函数  
 主要功能是赋值 loadPromise 给 app, 其中 loadPromise 函数中包括了 执行函数,来加载应用的资源, 定义加载完毕的回调函数, 状态的修改, 还有加载错误的一些处理
 
 ```js
@@ -482,6 +466,9 @@ document.body.dispatchEvent(new CustomEvent('测试自定义事件', {
 }))
 ```
 
+### 小结
+
+
 ### 整体流程
 
 1. 在正式环境使用 `registerApplication` 来注册应用
@@ -505,3 +492,4 @@ single-spa 无疑是微前端的一个重要里程碑,在大型应用场景下, 
 - https://zh-hans.single-spa.js.org/docs/getting-started-overview
 - https://zhuanlan.zhihu.com/p/344145423
 - https://www.zhangxinxu.com/wordpress/2020/08/js-customevent-pass-param/
+- https://juejin.cn/post/7054454791803502628
