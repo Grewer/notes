@@ -5,7 +5,7 @@
 
 所以本文基于 `single-spa` 源码, 来介绍 `single-spa`
 
-当前使用版本 5.9.4
+当前使用版本 _5.9.4_
 
 ## 启动
 
@@ -216,7 +216,7 @@ export function reroute(pendingPromises = [], eventArguments) {
 ### toLoadPromise
 
 注册流程中 `reroute` 中的主要执行函数  
-主要功能是赋值 loadPromise 给 app, 其中 loadPromise 函数中包括了 执行函数,来加载应用的资源, 定义加载完毕的回调函数, 状态的修改, 还有加载错误的一些处理
+主要功能是赋值 `loadPromise` 给 `app`, 其中 `loadPromise` 函数中包括了: 执行函数、来加载应用的资源、定义加载完毕的回调函数、状态的修改、还有加载错误的一些处理
 
 ```js
 export function toLoadPromise(app) {
@@ -465,9 +465,6 @@ document.body.dispatchEvent(new CustomEvent('测试自定义事件', {
     }
 }))
 ```
-
-### 小结
-
 
 ### 整体流程
 
