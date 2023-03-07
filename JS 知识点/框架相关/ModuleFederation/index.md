@@ -1,4 +1,4 @@
-# module Federation 在微前端中的应用
+# module Federation 模块联邦在微前端中的应用
 
 ## 什么是 module Federation
 
