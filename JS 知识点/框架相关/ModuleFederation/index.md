@@ -15,7 +15,39 @@ MF 的粒度, 最小可以是一个组件/组件库, 最大可以是一个页面
 
 ## 基础使用
 
-首先我们需要两个应用, 一个来提供组件, 另一个来使用:
+首先我们来看 `ModuleFederationPlugin` 的一些基础配置参数:
+
+```js
+const { ModuleFederationPlugin } = require('webpack').container;
+module.exports = {
+  plugins: [
+    new ModuleFederationPlugin({
+      // options
+    }),
+  ],
+};
+```
+
+### 参数
+
+#### runtime
+
+新的运行时模块名称
+
+// todo 是否必须
+
+#### shared
+
+使用 `shared` 可以最大限度地减少依赖关系的重复，因为远程依赖于主机的依赖关系。如果主机缺少一个依赖项，远程只在必要时下载其依赖项
 
 
 
+`ModuleFederationPlugin` 插件组合了 `ContainerPlugin` 和 `ContainerReferencePlugin`
+所以它既是一个入口, 也是一个出口
+
+
+
+
+## 引用
+
+- https://www.syncfusion.com/blogs/post/what-is-webpack-module-federation-and-why-does-it-matter.aspx
