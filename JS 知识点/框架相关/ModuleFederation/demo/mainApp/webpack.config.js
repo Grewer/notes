@@ -1,7 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { ModuleFederationPlugin } = require('webpack').container;
+const ModuleFederationPlugin = require('webpack').container.ModuleFederationPlugin;
 const path = require('path');
-const deps = require('./package.json').dependencies;
+
 module.exports = {
   entry: './src/index',
   mode: 'development',
@@ -10,7 +10,7 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'dist'),
     },
-    port: 3002,
+    port: 3001,
   },
   output: {
     publicPath: 'auto',
@@ -29,22 +29,22 @@ module.exports = {
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'app2',
-      filename: 'remoteEntry.js',
-      exposes: {
-        './Widget': './src/Widget',
+      name: 'mainApp',
+      // adds react as shared module
+      // version is inferred from package.json
+      // there is no version check for the required version
+      // so it will always use the higher version found
+      remotes: {
+        app1: 'app1@http://localhost:3001/remoteEntry.js',
       },
       shared: {
-        moment: deps.moment,
         react: {
-          requiredVersion: deps.react,
           import: 'react', // the "react" package will be used a provided and fallback module
           shareKey: 'react', // under this name the shared module will be placed in the share scope
           shareScope: 'default', // share scope with this name will be used
           singleton: true, // only a single version of the shared module is allowed
         },
         'react-dom': {
-          requiredVersion: deps['react-dom'],
           singleton: true, // only a single version of the shared module is allowed
         },
       },
