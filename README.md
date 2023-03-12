@@ -120,6 +120,17 @@
 
     - 框架相关
         - ModuleFederation
+            - demo
+                - componentApp
+                    - public
+
+                    - src
+
+                - mainApp
+                    - public
+
+                    - src
+
             - index
 
     - 源码阅读
