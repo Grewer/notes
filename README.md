@@ -131,6 +131,8 @@
 
                     - src
 
+            - images
+
             - index
 
     - 源码阅读
