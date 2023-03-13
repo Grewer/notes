@@ -114,14 +114,47 @@ new ModuleFederationPlugin({
 })
 ```
 
-当然 `remotes` 还可以有其他的扩展, 我们将它放在后面
+当然 `remotes` 还可以有其他的扩展, 在后面会详细说明
 
 ### 引用 MF
 
 `MF` 插件组合了 `ContainerPlugin` 和 `ContainerReferencePlugin`
 所以它既是一个入口, 也是一个出口
 
+所以我们再使用 MF 时, 也是需要添加对应插件:
 
+```js
+new ModuleFederationPlugin({
+  name: 'mainApp',
+  remotes: {
+    app2: 'app2@http://localhost:3002/remoteEntry.js',
+  },
+  // 省略 shared
+})
+```
+
+运行时截图:
+
+![img.png](images%2Fimg.png)
+
+之后我们就可以直接使用组件了:
+
+```js
+import App2Widget from 'app2/Widget';
+
+function App() {
+  // 当成正常组件一样使用
+  return (
+    <div>
+      <h1>Dynamic System Host</h1>
+      <h2>main App</h2>
+      <App2Widget/>
+    </div>
+  );
+}
+```
+
+因为这个组件是由请求获取的, 所以我们也需要添加 `lazy`
 
 
 ## 引用

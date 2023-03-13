@@ -1,7 +1,7 @@
 import React from 'react';
+import App2Widget from 'app2/Widget';
 
 function App() {
-
   return (
     <div
       style={{
@@ -11,8 +11,7 @@ function App() {
     >
       <h1>Dynamic System Host</h1>
       <h2>main App</h2>
-
-
+      <App2Widget/>
     </div>
   );
 }
