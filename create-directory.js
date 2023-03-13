@@ -3,18 +3,18 @@ const path = require('path')
 
 function getStatus(fullPath) {
     const stat = fs.statSync(fullPath);
-    
+
     return {
         isDirectory: stat.isDirectory()
     }
 }
 
-const ignoreDir = ['bin', 'build', 'src', 'images', 'static', 'reactDemo', 'examples', 'demo']
+const ignoreDir = ['bin', 'build', 'src', 'images', 'static', 'reactDemo', 'examples', 'demo', 'dist']
 
 
 function readFileList(dir, filesList = []) {
     const files = fs.readdirSync(dir);
-    
+
     files.forEach((item, index) => {
         const fullPath = path.join(dir, item);
         const stat = getStatus(fullPath);
