@@ -15,8 +15,6 @@
 
     - grid布局
 
-    - images
-
     - unocss
 
     - 行内元素和块元素
@@ -35,20 +33,12 @@
     - eslint
         - 项目中的 eslint 插件
 
-    - images
-
     - instanceof 和 typeof
 
     - node_modules 瘦身
         - README-v2
 
-        - bin
-
-        - images
-
         - index
-
-        - src
 
     - 代码实现
         - bind 实现
@@ -76,98 +66,43 @@
     - 前端缓存
 
     - 图片优化
-        - images
-
         - 聊聊图片的优化
 
     - 垃圾回收机制
 
     - 富文本
         - quill.js 2.0升级和添加表格
-            - images
-
             - index
 
         - quill.js 富文本中的光标和选区
-            - demo
-
-            - images
-
             - index
 
         - quill.js 自定义工具栏开发指南
             - example
                 - public
 
-                - src
-
-            - images
-
             - index
 
     - 性能优化
         - 大量数据渲染优化
-            - images
-
-            - reactDemo
-                - public
-
-                - src
-
             - 多数据下的性能优化
 
     - 拖拽和虚拟列表的结合
 
     - 框架相关
         - ModuleFederation
-            - demo
-                - componentApp
-                    - public
-
-                    - src
-
-                - mainApp
-                    - public
-
-                    - src
-
-            - images
-
             - index
 
     - 源码阅读
         - react-loadable
 
         - single-spa 源码
-            - demo
-
-            - images
-
             - index
 
             - single-demo
                 - public
 
-                - src
-                    - app1
-
-                    - single-spa
-                        - src
-                            - applications
-
-                            - devtools
-
-                            - lifecycles
-
-                            - navigation
-
-                            - parcels
-
-                            - utils
-
     - 瀑布流原理
-        - images
-
         - 瀑布流原理
 
     - 装箱与拆箱
@@ -201,8 +136,6 @@
 
     <details>
       <summary>点我展开</summary>
-
-    - images
 
     - 写给前端的 react-native 开发指南
 
@@ -249,8 +182,6 @@
     <details>
       <summary>点我展开</summary>
 
-    - images
-
     - 二叉查找树
 
     - 二叉树相关
@@ -284,8 +215,6 @@
 
     - https 的特点
 
-    - images
-
     - tcp 与 udp
 
     - tcp 拥塞控制原理
@@ -307,10 +236,6 @@
 
     - 框架
         - Bun-一个新的JavaScript运行环境
-
-        - examples
-
-        - images
 
         - 有意思的 CSS 框架
 
