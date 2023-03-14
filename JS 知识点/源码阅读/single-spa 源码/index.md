@@ -474,7 +474,7 @@ document.body.dispatchEvent(new CustomEvent('测试自定义事件', {
 4. 如果匹配上, 开始加载应用的文件 (即使还没使用 `start`)
 5. 最后使用 `start`, 开始发送各类事件, 调用应用的各类生命周期方法
 
-这里用一个简单的流程图来说明下:
+这里用一个简单的图来说明下:
 
 ![](images/img.png)
 

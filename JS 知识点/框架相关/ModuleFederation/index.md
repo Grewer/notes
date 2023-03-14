@@ -157,7 +157,117 @@ function App() {
 因为这个组件是由请求获取的, 所以我们也需要添加 `lazy`
 
 
+todo
+
+
+## remotes 的方案
+
+### 环境变量
+
+在不同的环境中使用不同的链接, 可以解决 pro 和 dev 的不同环境问题
+但是在大型应用中, 环境较多, 配置(添加/修改 url)就比较麻烦了
+
+```js
+new ModuleFederationPlugin({
+  name: "Host",
+  remotes: {
+    RemoteA: `RemoteA@${env.A_URL}/remoteEntry.js`,
+    RemoteB: `RemoteB@${env.B_URL}/remoteEntry.js`,
+  },
+})
+```
+
+### Webpack External Remotes Plugin
+
+有一个方便的 Webpack 插件，由 Module Federation 的创建者之一 [Zack Jackson](https://github.com/ScriptedAlchemy) 开发，称为 [external-remotes-plugin](https://www.npmjs.com/package/external-remotes-plugin)。它允许我们使用模板在运行时解析 URL
+
+
+```js
+plugins: [
+  new ModuleFederationPlugin({
+    name: "Host",
+    remotes: {
+      RemoteA: "RemoteA@[window.appAUrl]/remoteEntry.js",
+      RemoteB: "RemoteB@[window.appBUrl]/remoteEntry.js",
+    },
+  }),
+  new ExternalTemplateRemotesPlugin(),
+]
+```
+
+在从远程应用程序加载任何代码之前, 我们加可以定义 window 的属性来灵活地定义我们的 URL
+
+这种方法是完全动态的，可以解决我们的用例，但这种方法仍有一点限制。我们不能完全控制加载的生命周期。
+
+### Promise
+
+基于 promise 的 获取方案, 此方案在官网也有所[提及](https://webpack.docschina.org/concepts/module-federation/#promisebaseddynamicremotes)
+
+
+> 但是你也可以向 remote 传递一个 promise，其会在运行时被调用。你应该用任何符合上面描述的 get/init 接口的模块来调用这个 promise。例如，如果你想传递你应该使用哪个版本的联邦模块，你可以通过一个查询参数做以下事情：
+
+```js
+module.exports = {
+  plugins: [
+    new ModuleFederationPlugin({
+      name: 'host',
+      remotes: {
+        app1: `promise new Promise(resolve => {
+        
+      const urlParams = new URLSearchParams(window.location.search)
+      const version = urlParams.get('app1VersionParam')
+      
+      const remoteUrlWithVersion = 'http://localhost:3001/' + version + '/remoteEntry.js'
+      
+      const script = document.createElement('script')
+      script.src = remoteUrlWithVersion
+      
+      script.onload = () => {
+        // the injected script has loaded and is available on window
+        // we can now resolve this Promise
+        const proxy = {
+          get: (request) => window.app1.get(request),
+          init: (arg) => {
+            try {
+              return window.app1.init(arg)
+            } catch(e) {
+              console.log('remote container already initialized')
+            }
+          }
+        }
+        resolve(proxy)
+      }
+      document.head.appendChild(script);
+    })
+    `,
+      },
+      // ...
+    }),
+  ],
+};
+```
+请注意当使用该 API 时，你 _必须_ resolve 一个包含 get/init API 的对象。
+
+
+在 promise 中我们创建一个 script 标签, 同时添加动态 URL, 不过此方案是比较死板的, 因为 url 仍旧是写在配置中
+
+
+### Dynamic Remote Containers
+
+在 webpack 官网中有一种方案, 即[动态远程容器](https://webpack.docschina.org/concepts/module-federation/#dynamic-remote-containers)
+
+我们的插件可以不用设置 remotes:
+```js
+plugins: [
+  new ModuleFederationPlugin({
+    name: "Host",
+    remotes: {},
+  }),
+]
+```
+
 ## 引用
 
 - https://www.syncfusion.com/blogs/post/what-is-webpack-module-federation-and-why-does-it-matter.aspx
 - https://juejin.cn/post/7005450458009600036
+- https://oskari.io/blog/dynamic-remotes-module-federation/
