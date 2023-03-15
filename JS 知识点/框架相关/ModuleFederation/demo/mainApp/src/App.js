@@ -1,7 +1,11 @@
-import React from 'react';
-import App2Widget from 'app2/Widget';
+import React, {useEffect, Suspense} from 'react';
+import {useFederatedComponent} from "./useFederatedComponent";
+// import App2Widget from 'app2/Widget';
+
 
 function App() {
+  const { Component: FederatedComponent, errorLoading } = useFederatedComponent('http://localhost:3002/remoteEntry.js', 'app2', './Widget');
+
   return (
     <div
       style={{
@@ -11,7 +15,12 @@ function App() {
     >
       <h1>Dynamic System Host</h1>
       <h2>main App</h2>
-      <App2Widget/>
+      <Suspense fallback={'loading...'}>
+        {errorLoading
+          ? `Error loading module "${module}"`
+          : FederatedComponent && <FederatedComponent />}
+      </Suspense>
+      {/*<App2Widget/>*/}
     </div>
   );
 }
