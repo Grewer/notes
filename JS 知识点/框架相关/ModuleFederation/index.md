@@ -256,6 +256,8 @@ module.exports = {
 
 在 webpack 官网中有一种方案, 即[动态远程容器](https://webpack.docschina.org/concepts/module-federation/#dynamic-remote-containers)
 
+这种方案就是像加载 `react` 子应用一样加载 `MF` 应用
+
 我们的插件可以不用设置 remotes:
 ```js
 plugins: [
@@ -265,6 +267,66 @@ plugins: [
   }),
 ]
 ```
+
+核心加载程序:
+
+```js
+function loadComponent(scope, module) {
+  return async () => {
+    // 初始化共享作用域（shared scope）用提供的已知此构建和所有远程的模块填充它
+    await __webpack_init_sharing__('default');
+    const container = window[scope]; // or get the container somewhere else
+    // 初始化容器 它可能提供共享模块
+    await container.init(__webpack_share_scopes__.default);
+    const factory = await window[scope].get(module);
+    const Module = factory();
+    return Module;
+  };
+}
+```
+
+`container` 指的是我们在 `webpack` 配置的 `remotes` 中配置的一个应用。
+
+`module` 指的是另一个 `exposes` 字段中的定义。
+
+最后封装获取到 `hooks`:
+
+```js
+// 这里的 url, scope, module  都是可以通过接口什么的异步获取, 做到完全动态
+// 原理还是通过 script 标签加载js 代码
+const { Component: FederatedComponent, errorLoading } = useFederatedComponent('http://localhost:3002/remoteEntry.js', 'app2', './Widget');
+
+<Suspense fallback={'loading...'}>
+  {errorLoading
+    ? `Error loading module "${module}"`
+    : FederatedComponent && <FederatedComponent />}
+</Suspense>
+```
+
+![img_1.png](images%2Fimg_1.png)
+
+其中 `remoteEntry` 就是我们的入口了, 762 和 700, 这两个是 `moment` 的主题和多语言文件
+而 630 则是 `Widget` 文件的内容
+
+子组件单独加载 `moment`, 而没有 `react`, `react-dom`, 就是因为我们的 `shared` 配置
+
+// TODO 一图流:
+
+
+
+具体例子可查看,最后文章所给出的 demo
+
+
+
+
+
+## 总结
+
+问题点:
+
+1. 需要使用 webpack5, 现在很多老项目是在用 webpack4, 新项目又使用了 vite
+2. shared 依赖不能 tree sharking
+
 
 ## 引用
 
