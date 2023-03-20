@@ -285,6 +285,9 @@ function loadComponent(scope, module) {
 }
 ```
 
+> __webpack_init_sharing__ 是一些 webpack 编译的变量, 最后运行时都是会转换成 __webpack_require__
+> __webpack_require__ 是 webpack 运行时引用文件内容的方法
+
 `container` 指的是我们在 `webpack` 配置的 `remotes` 中配置的一个应用。
 
 `module` 指的是另一个 `exposes` 字段中的定义。
@@ -317,7 +320,19 @@ const { Component: FederatedComponent, errorLoading } = useFederatedComponent('h
 具体例子可查看,最后文章所给出的 demo
 
 
+## 扩展的可能性
 
+`MF` 目前的 定位在于公共组件库/业务库的复用、统一, 但是他能作为子应用的载体吗
+
+在 `qiankun` 中, 子应用的获取, 是通过 fetch 来获取实例, 并在沙盒中解析的
+
+但是 `MF` 的组件就不能实现这种场景, 因为我们一开始引用的是入口文件, 后续具体文件不能通过接口获取
+
+只能通过 script 来拿到, 这样就没有了 js 环境的隔离
+
+所以想要应用在微应用上, 目前的结论是, 可以当做一个乞丐版微前端的框架,
+
+需要注意的是各个应用直接的重复关系, JS/css 的隔离问题, 同时他也缺少对应生命周期来管理
 
 
 ## 总结
