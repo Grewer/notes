@@ -2,16 +2,16 @@
 
 ## 什么是 module Federation
 
-`module Federation`(下面简称 MF) 是 webpack5 推出的最新的概念
+`module Federation`(下面简称 `MF`) 是 `webpack5` 推出的最新的概念
 
-有用过 webpack 的小伙伴都知道, 在我们打包时, 都会对资源进行分包, 或者使用异步加载路由的方案,
-这样打出来的包(也叫 chunk), 在我们使用时, 就是一个单独的加载
+有用过 `webpack` 的小伙伴都知道, 在我们打包时, 都会对资源进行分包, 或者使用异步加载路由的方案,
+这样打出来的包(也叫 `chunk`), 在我们使用时, 就是一个单独的加载
 
-在过去, chunk 只是在一个项目中使用,  webpack5 中, chunk 通过路径/fetch 等方式也可以提供给其他应用使用
+在过去, chunk 只是在一个项目中使用,  `webpack5` 中, `chunk` 通过 路径/fetch 等方式也可以提供给其他应用使用
 
-这便是 MF 的发展由来, 不得不说这是一个很有想象力的API
+这便是 `MF` 的发展由来, 不得不说这是一个很有想象力的API
 
-MF 的粒度, 最小可以是一个组件/组件库, 最大可以是一个页面, 取决于你怎样使用
+`MF` 的粒度, 最小可以是一个组件/组件库, 最大可以是一个页面, 取决于你怎样使用
 
 ## 基础使用
 
@@ -103,7 +103,7 @@ new ModuleFederationPlugin({
 
 #### remotes
 
-一般来说，remote 是使用 URL 配置的，示例如下
+一般来说，`remote` 是使用 `URL` 配置的，示例如下
 
 ```js
 new ModuleFederationPlugin({
@@ -121,7 +121,7 @@ new ModuleFederationPlugin({
 `MF` 插件组合了 `ContainerPlugin` 和 `ContainerReferencePlugin`
 所以它既是一个入口, 也是一个出口
 
-所以我们再使用 MF 时, 也是需要添加对应插件:
+所以我们再使用 `MF` 时, 也是需要添加对应插件:
 
 ```js
 new ModuleFederationPlugin({
@@ -154,18 +154,12 @@ function App() {
 }
 ```
 
-因为这个组件是由请求获取的, 所以我们也需要添加 `lazy`
-
-
-todo
-
-
 ## remotes 的方案
 
 ### 环境变量
 
-在不同的环境中使用不同的链接, 可以解决 pro 和 dev 的不同环境问题
-但是在大型应用中, 环境较多, 配置(添加/修改 url)就比较麻烦了
+在不同的环境中使用不同的链接, 可以解决 `pro` 和 `dev` 的不同环境问题
+但是在大型应用中, 环境较多, 配置(添加/修改 `url`)就比较麻烦了
 
 ```js
 new ModuleFederationPlugin({
@@ -179,7 +173,7 @@ new ModuleFederationPlugin({
 
 ### Webpack External Remotes Plugin
 
-有一个方便的 Webpack 插件，由 Module Federation 的创建者之一 [Zack Jackson](https://github.com/ScriptedAlchemy) 开发，称为 [external-remotes-plugin](https://www.npmjs.com/package/external-remotes-plugin)。它允许我们使用模板在运行时解析 URL
+有一个方便的 `Webpack` 插件，由 `MF` 的创建者之一 [Zack Jackson](https://github.com/ScriptedAlchemy) 开发，称为 [external-remotes-plugin](https://www.npmjs.com/package/external-remotes-plugin)。它允许我们使用模板在运行时解析 URL
 
 
 ```js
@@ -195,13 +189,14 @@ plugins: [
 ]
 ```
 
-在从远程应用程序加载任何代码之前, 我们加可以定义 window 的属性来灵活地定义我们的 URL
+在从远程应用程序加载任何代码之前, 我们加可以定义 `window` 的属性来灵活地定义我们的 `URL`
 
-这种方法是完全动态的，可以解决我们的用例，但这种方法仍有一点限制。我们不能完全控制加载的生命周期。
+这种方法是完全动态的，可以解决我们的用例，但这种方法仍有一点限制。
+我们不能完全控制加载的生命周期。
 
 ### Promise
 
-基于 promise 的 获取方案, 此方案在官网也有所[提及](https://webpack.docschina.org/concepts/module-federation/#promisebaseddynamicremotes)
+基于 `promise` 的获取方案, 此方案在官网也有所[提及](https://webpack.docschina.org/concepts/module-federation/#promisebaseddynamicremotes)
 
 
 > 但是你也可以向 remote 传递一个 promise，其会在运行时被调用。你应该用任何符合上面描述的 get/init 接口的模块来调用这个 promise。例如，如果你想传递你应该使用哪个版本的联邦模块，你可以通过一个查询参数做以下事情：
@@ -246,19 +241,21 @@ module.exports = {
   ],
 };
 ```
-请注意当使用该 API 时，你 _必须_ resolve 一个包含 get/init API 的对象。
+
+请注意当使用该 `API` 时，你 _必须_ `resolve` 一个包含 `get/init` `API` 的对象。
 
 
-在 promise 中我们创建一个 script 标签, 同时添加动态 URL, 不过此方案是比较死板的, 因为 url 仍旧是写在配置中
+在 `promise` 中我们创建一个 `script` 标签, 同时添加动态 `URL`, 不过此方案是比较死板的, 因为 `url` 仍旧是写在配置中
 
 
 ### Dynamic Remote Containers
 
-在 webpack 官网中有一种方案, 即[动态远程容器](https://webpack.docschina.org/concepts/module-federation/#dynamic-remote-containers)
+在 `webpack` 官网中有一种方案, 即[动态远程容器](https://webpack.docschina.org/concepts/module-federation/#dynamic-remote-containers)
 
 这种方案就是像加载 `react` 子应用一样加载 `MF` 应用
 
-我们的插件可以不用设置 remotes:
+我们的插件可以不用设置 `remotes`:
+
 ```js
 plugins: [
   new ModuleFederationPlugin({
@@ -328,19 +325,23 @@ const { Component: FederatedComponent, errorLoading } = useFederatedComponent('h
 
 但是 `MF` 的组件就不能实现这种场景, 因为我们一开始引用的是入口文件, 后续具体文件不能通过接口获取
 
-只能通过 script 来拿到, 这样就没有了 js 环境的隔离
+只能通过 `script` 来拿到, 这样就没有了 `js` 环境的隔离
 
 所以想要应用在微应用上, 目前的结论是, 可以当做一个乞丐版微前端的框架,
 
-需要注意的是各个应用直接的重复关系, JS/css 的隔离问题, 同时他也缺少对应生命周期来管理
+需要注意的是各个应用直接的重复关系, `JS/css` 的隔离问题, 同时他也缺少对应生命周期来管理
 
 
 ## 总结
 
+
+
 问题点:
 
-1. 需要使用 webpack5, 现在很多老项目是在用 webpack4, 新项目又使用了 vite
-2. shared 依赖不能 tree sharking
+1. 需要使用 `webpack5`, 现在很多老项目是在用 `webpack4`, 新项目又使用了 `vite`
+2. `shared` 依赖不能 `tree sharking`
+3. 代码执行不能使用沙箱隔离
+4. 
 
 
 ## 引用
