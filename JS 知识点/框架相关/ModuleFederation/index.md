@@ -191,7 +191,7 @@ plugins: [
 
 在从远程应用程序加载任何代码之前, 我们加可以定义 `window` 的属性来灵活地定义我们的 `URL`
 
-这种方法是完全动态的，可以解决我们的用例，但这种方法仍有一点限制。
+这种方法是完全动态的，可以解决我们的用例，但这种方法仍有一点限制:  
 我们不能完全控制加载的生命周期。
 
 ### Promise
@@ -310,22 +310,19 @@ const { Component: FederatedComponent, errorLoading } = useFederatedComponent('h
 
 子组件单独加载 `moment`, 而没有 `react`, `react-dom`, 就是因为我们的 `shared` 配置
 
-整个 `Dynamic Remote Containers` 的加载流程图:
+整个 `Dynamic Remote Containers` 的加载流:
 
 
-TODO
+![img_2.png](images%2Fimg_2.png)
 
-
-具体例子可查看 
+具体例子可[点此查看](https://github.com/Grewer/notes/tree/master/JS%20%E7%9F%A5%E8%AF%86%E7%82%B9/%E6%A1%86%E6%9E%B6%E7%9B%B8%E5%85%B3/ModuleFederation/demo) 
 
 
 ## 基于 MF 的框架
 
-这里也有一个框架是基于 `MF` 的: EMP
+这里也有一个框架是基于 `MF` 的: [EMP](https://emp2.netlify.app/)
 
-
-
-缺点: 目前无法涵盖所有框架
+该框架通过灵活的共享配置, 可自定义选择 `MF` / `CDN` / `ES import` / `Dll` 多种方式来共享库
 
 ## 扩展的可能性
 
@@ -352,7 +349,6 @@ TODO
 1. 需要使用 `webpack5`, 现在很多老项目是在用 `webpack4`, 而又有一些新项目使用了 `vite`
 2. `shared` 依赖不能 `tree sharking`
 3. 代码执行不能使用沙箱隔离, 不太推荐做到应用级别
-
 
 
 ## 引用
