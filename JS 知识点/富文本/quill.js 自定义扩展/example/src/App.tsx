@@ -8,23 +8,33 @@ import EmojiBlot from "./formats/emoji";
 
 Quill.register(EmojiBlot);
 
-const CustomToolbar = () => <div id="toolbar">
-  <select
-    className="ql-header"
-    defaultValue={''}
-    onChange={(e) => e.persist()}
-  >
-    <option value="1"></option>
-    <option value="2"></option>
-    <option selected></option>
-  </select>
-  <button className="ql-bold"></button>
-  <button className="ql-italic"></button>
+const CustomToolbar = () => {
+  const proxyEmojiClick = ev => {
+    const img = ev.target
+    if(img?.nodeName === 'IMG'){
+      // quill.insert()
+    }
+  }
 
-  <Popover content={'选择 11'}>
-    <button className="ql-emoji">emoji</button>
-  </Popover>
-</div>
+  return <div id="toolbar">
+    <select
+      className="ql-header"
+      onChange={(e) => e.persist()}
+    >
+      <option value="1"></option>
+      <option value="2"></option>
+    </select>
+    <button className="ql-bold"></button>
+    <button className="ql-italic"></button>
+
+    <Popover content={<div className={'emoji-popover'} onClick={proxyEmojiClick}>
+      <img src="https://grewer.github.io/dataSave/emoji/img.png"/>
+      <img src="https://grewer.github.io/dataSave/emoji/img_1.png"/>
+    </div>}>
+      <button className="ql-emoji">emoji</button>
+    </Popover>
+  </div>;
+}
 
 
 function App() {
@@ -50,7 +60,6 @@ function App() {
 
   return (<div className={'container'}>
     <CustomToolbar/>
-    {/*@ts-ignore*/}
     <ReactQuill ref={editorRef} theme="snow" value={value} modules={modules} onChange={setValue}/>
   </div>)
 }
