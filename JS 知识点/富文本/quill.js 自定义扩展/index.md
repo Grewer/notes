@@ -65,6 +65,7 @@ class EmojiBlot extends Embed {
   }
 
   static value(node: HTMLImageElement) {
+    // 主要在有初始值时起作用
     return {
       alt: node.getAttribute('alt'),
       src: node.getAttribute('src'),
@@ -93,3 +94,14 @@ import EmojiBlot from "./formats/emoji";
 
 Quill.register(EmojiBlot);
 ```
+
+这里我们在加上自定义的 popover, 用来点击获取 emoji:
+
+// TODO
+
+
+### 基础格式说明
+
+
+
+详情可参考: https://www.npmjs.com/package/parchment#blots

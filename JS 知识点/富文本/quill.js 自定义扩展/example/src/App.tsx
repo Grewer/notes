@@ -8,11 +8,19 @@ import EmojiBlot from "./formats/emoji";
 
 Quill.register(EmojiBlot);
 
-const CustomToolbar = () => {
+const CustomToolbar = ({getEditor}) => {
   const proxyEmojiClick = ev => {
     const img = ev.target
     if(img?.nodeName === 'IMG'){
-      // quill.insert()
+      const quill = getEditor();
+      const range = quill.getSelection();
+      // 这里可以用 img 的属性, 也可以通过 data-* 来传递一些数据
+      quill.insertEmbed(range.index, 'emoji', {
+        alt: img.alt,
+        src: img.src,
+        width: img.width,
+        height: img.height,
+      });
     }
   }
 
@@ -28,8 +36,8 @@ const CustomToolbar = () => {
     <button className="ql-italic"></button>
 
     <Popover content={<div className={'emoji-popover'} onClick={proxyEmojiClick}>
-      <img src="https://grewer.github.io/dataSave/emoji/img.png"/>
-      <img src="https://grewer.github.io/dataSave/emoji/img_1.png"/>
+      <img alt={'图片说明'} width={32} height={32} src="https://grewer.github.io/dataSave/emoji/img.png"/>
+      <img alt={'图片说明'} width={32} height={32} src="https://grewer.github.io/dataSave/emoji/img_1.png"/>
     </div>}>
       <button className="ql-emoji">emoji</button>
     </Popover>
@@ -38,7 +46,7 @@ const CustomToolbar = () => {
 
 
 function App() {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState('<p><img class="emoji_icon" alt="图片说明" src="https://grewer.github.io/dataSave/emoji/img.png" width="32" height="32">323232</p>');
   const emojiHandle = () => {
     console.log(1111)
   }
@@ -59,7 +67,7 @@ function App() {
   }
 
   return (<div className={'container'}>
-    <CustomToolbar/>
+    <CustomToolbar getEditor={getEditor}/>
     <ReactQuill ref={editorRef} theme="snow" value={value} modules={modules} onChange={setValue}/>
   </div>)
 }

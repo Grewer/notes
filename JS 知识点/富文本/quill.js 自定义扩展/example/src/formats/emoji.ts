@@ -8,6 +8,7 @@ class EmojiBlot extends Embed {
 
   static create(value: HTMLImageElement) {
     const node = super.create();
+    console.log('create',value)
     node.setAttribute('alt', value.alt);
     node.setAttribute('src', value.src);
     node.setAttribute('width', value.width);
