@@ -97,10 +97,46 @@ Quill.register(EmojiBlot);
 
 这里我们在加上自定义的 popover, 用来点击获取 emoji:
 
-// TODO
+```tsx
+    <Popover content={<div className={'emoji-popover'} onClick={proxyEmojiClick}>
+      <img alt={'图片说明'} width={32} height={32} src="https://grewer.github.io/dataSave/emoji/img.png"/>
+      <img alt={'图片说明'} width={32} height={32} src="https://grewer.github.io/dataSave/emoji/img_1.png"/>
+    </div>}>
+      <button className="ql-emoji">emoji</button>
+    </Popover>
+```
+
+通过代理的方式, 来获取 dom 上的具体属性:
+
+```tsx
+  const proxyEmojiClick = ev => {
+   const img = ev.target
+   if (img?.nodeName === 'IMG') {
+      const quill = getEditor();
+      const range = quill.getSelection();
+      // 这里可以用 img 的属性, 也可以通过 data-* 来传递一些数据
+      quill.insertEmbed(range.index, 'emoji', {
+         alt: img.alt,
+         src: img.src,
+         width: img.width,
+         height: img.height,
+      });
+      quill.setSelection(range.index + 1);
+   }
+}
+```
+
+展示下新增 emoji 的效果:
+
+![1.gif](images%2F1.gif)
+
+## 基础格式说明
+
+我们的自定义格式都是基于 quill 的基础库: [parchment](https://www.npmjs.com/package/parchment)
+
+这里我们就介绍下他的几个重要 API:
 
 
-### 基础格式说明
 
 
 
