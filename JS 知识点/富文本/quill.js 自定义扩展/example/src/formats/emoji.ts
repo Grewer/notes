@@ -1,4 +1,4 @@
-import  Quill from 'quill';
+import Quill from 'quill';
 
 const Embed = Quill.import('blots/embed');
 
@@ -8,7 +8,7 @@ class EmojiBlot extends Embed {
 
   static create(value: HTMLImageElement) {
     const node = super.create();
-    console.log('create',value)
+    console.log('create', value)
     node.setAttribute('alt', value.alt);
     node.setAttribute('src', value.src);
     node.setAttribute('width', value.width);
@@ -17,7 +17,7 @@ class EmojiBlot extends Embed {
   }
 
   static formats(node: HTMLImageElement) {
-    console.log('查看运行几次')
+    console.log('formats')
 
     return {
       alt: node.getAttribute('alt'),
@@ -28,7 +28,7 @@ class EmojiBlot extends Embed {
   }
 
   static value(node: HTMLImageElement) {
-    console.log('查看运行几次2')
+    console.log('value')
 
     return {
       alt: node.getAttribute('alt'),
@@ -37,6 +37,15 @@ class EmojiBlot extends Embed {
       height: node.getAttribute('height'),
     };
   }
+
+  // format(name, value) {
+  //   // console.log('format', name, value)
+  //   if (['alt', 'src', 'width', 'height'].includes(name)) {
+  //     this.domNode.setAttribute(name, value);
+  //   } else {
+  //     super.format(name, value);
+  //   }
+  // }
 }
 
 EmojiBlot.blotName = 'emoji';

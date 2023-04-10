@@ -136,8 +136,27 @@ Quill.register(EmojiBlot);
 
 这里我们就介绍下他的几个重要 API:
 
+```tsx
+class Blot {
+  // 在手动创建/初始值时, 都会触发 create 函数
+   static create(value?: any): Node;
 
+   // 从 domNode 上获取想要的数据
+   static formats(domNode: Node);
 
+   // static formats 返回的数据会被传递给 format
+   // 此函数的作用是将数据设置到 domNode
+   // 如果 name 是 quill 里的格式走默认逻辑是会被正确使用的
+   // 如果是特殊的name, 不处理就不会起效
+   format(format: name, value: any);
+
+   // 返回一个值, 通常在初始化的时候传给 static create
+   // 通常实现一个自定义格式, value 和 format 使用一个即可达到目标
+   value(): any;
+}
+```
+
+上述几个 api 便是创建自定义格式时常用到的
 
 
 详情可参考: https://www.npmjs.com/package/parchment#blots

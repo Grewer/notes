@@ -48,8 +48,8 @@ const CustomToolbar = ({getEditor}) => {
 
 function App() {
   const [value, setValue] = useState(
-    ''
-    // '<p><img class="emoji_icon" alt="图片说明" src="https://grewer.github.io/dataSave/emoji/img.png" width="32" height="32">323232</p>'
+    // ''
+    '<p><img class="emoji_icon" alt="图片说明" src="https://grewer.github.io/dataSave/emoji/img.png" width="32" height="32">323232</p>'
   );
   const emojiHandle = () => {
     console.log(1111)
