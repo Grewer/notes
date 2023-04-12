@@ -159,4 +159,45 @@ class Blot {
 上述几个 api 便是创建自定义格式时常用到的
 
 
-详情可参考: https://www.npmjs.com/package/parchment#blots
+> 详情可参考: https://www.npmjs.com/package/parchment#blots
+
+
+在上文讲到了 `format` 和 `value` 的作用, 我们也可以对于 `EmojiBlot` 做出一些改造:
+
+```tsx
+class EmojiBlot extends Embed {
+  static blotName: string;
+  static tagName: string;
+
+  static create(value: HTMLImageElement) {
+    const node = super.create();
+    node.setAttribute('alt', value.alt);
+    node.setAttribute('src', value.src);
+    node.setAttribute('width', value.width);
+    node.setAttribute('height', value.height);
+    return node;
+  }
+
+  static formats(node: HTMLImageElement) {
+    return {
+      alt: node.getAttribute('alt'),
+      src: node.getAttribute('src'),
+      width: node.getAttribute('width'),
+      height: node.getAttribute('height'),
+    };
+  }
+
+
+  format(name, value) {
+    if (['alt', 'src', 'width', 'height'].includes(name)) {
+      this.domNode.setAttribute(name, value);
+    } else {
+      super.format(name, value);
+    }
+  }
+}
+```
+
+目前来说, 这两种方案都能实现我们的 `EmojiBlot`
+
+当然 `format` 的作用, 并不仅仅在于 **新增属性到 dom 上**, 也可以针对某些属性, 修改、删除 dom 上的信息

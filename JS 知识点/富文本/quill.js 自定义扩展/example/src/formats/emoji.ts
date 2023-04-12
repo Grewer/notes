@@ -39,7 +39,7 @@ class EmojiBlot extends Embed {
   }
 
   // format(name, value) {
-  //   // console.log('format', name, value)
+  //   console.log('format', name, value)
   //   if (['alt', 'src', 'width', 'height'].includes(name)) {
   //     this.domNode.setAttribute(name, value);
   //   } else {
