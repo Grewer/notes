@@ -21,7 +21,7 @@
 
 ## quill 的格式类型
 
-说起 quill 的格式类型, 他可以分成 3 类:
+说起 quill 的格式类型, 他的常用格式可以分成 3 类:
 
 1. Inline
    常见的有 `Bold`, `Color`, `Font` 等等, 不占据一行的标签, 类似于 html 里 span 的特性, 是一个行内样式, `Inline` 格式之间可以相互影响
@@ -201,3 +201,58 @@ class EmojiBlot extends Embed {
 目前来说, 这两种方案都能实现我们的 `EmojiBlot`
 
 当然 `format` 的作用, 并不仅仅在于 **新增属性到 dom 上**, 也可以针对某些属性, 修改、删除 dom 上的信息
+
+## 其他格式
+
+上面我们讲述了三个常见的格式: `Inline` 、`Embeds` 、`Block`, 其实在 `quill` 还有一些特殊的 `blot`:
+如: `TextBlot` 、 `ContainerBlot` 、 `ScrollBlot`
+
+其中 `ScrollBlot` 属于是所有 blot 的根节点:
+
+```tsx
+class Scroll extends ScrollBlot {
+  // ...
+}
+
+Scroll.blotName = 'scroll';
+Scroll.className = 'ql-editor';
+Scroll.tagName = 'DIV';
+Scroll.defaultChild = Block;
+Scroll.allowedChildren = [Block, BlockEmbed, Container];
+```
+
+---
+
+至于 `TextBlot`, 是在定义一些属性时常用到的值:
+
+例如源码中 `CodeBlock` 的部分: 
+
+```tsx
+CodeBlock.allowedChildren = [TextBlot, Break, Cursor];
+```
+
+意味着 `CodeBlock` 的格式下, 他的**子节点**, 只能是*文本, 换行, 光标*
+(换行符和光标都属于 `EmbedBlot`)
+
+这样就控制住了子节点的类型, 避免结构错乱
+
+最后要说一下 `ContainerBlot`, 这是一个在自定义节点时, 创建 `Block` 类型时经常会用到的值:
+
+
+
+
+
+// todo 各类图
+// scroll -> block -> other
+
+
+## 属性
+
+这里的属性, 主要指: `StyleAttributor` 和 `ClassAttributor`
+
+## 模块 module
+
+
+## 总结
+
+
