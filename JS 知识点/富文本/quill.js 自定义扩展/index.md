@@ -236,22 +236,24 @@ CodeBlock.allowedChildren = [TextBlot, Break, Cursor];
 
 这样就控制住了子节点的类型, 避免结构错乱
 
+### ContainerBlot
+
 最后要说一下 `ContainerBlot`, 这是一个在自定义节点时, 创建 `Block` 类型时经常会用到的值:
 
+![img.png](images%2Fimg.png)
 
+在源码中, 并没有默认的子节点配置, 所以导致看上去就像这样, 但其实 `container` 的自由度是非常强的
 
+这里就给出一个我之前创建的信件格式例子:
 
-
-// todo 各类图
-// scroll -> block -> other
+> 在富文本中扩展格式生成能兼容大部分信件的外层格式, 格式要求: 
 
 
 ## 属性
 
 这里的属性, 主要指: `StyleAttributor` 和 `ClassAttributor`
 
-## 模块 module
-
+[//]: # (// todo 放到下一篇中)
 
 ## 总结
 
