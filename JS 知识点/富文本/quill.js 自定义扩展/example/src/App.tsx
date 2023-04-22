@@ -1,7 +1,7 @@
 import React, {useMemo, useRef, useState} from 'react';
 import './App.css';
-import ReactQuill, {Quill} from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import ReactQuill, {Quill} from './quill';
+import './quill/quill.snow.less';
 import {Popover} from 'antd';
 
 import EmojiBlot from "./formats/emoji";
@@ -28,13 +28,6 @@ const CustomToolbar = ({getEditor}) => {
   }
 
   return <div id="toolbar">
-    <select
-      className="ql-header"
-      onChange={(e) => e.persist()}
-    >
-      <option value="1"></option>
-      <option value="2"></option>
-    </select>
     <button className="ql-bold"></button>
     <button className="ql-italic"></button>
 
@@ -56,8 +49,8 @@ function App() {
   );
 
   const widthFormatHandle = () => {
-    console.log('widthFormatHandle')
     const editor = getEditor();
+    console.log('widthFormatHandle', editor)
     editor.format('width-format', {})
   }
 
@@ -73,7 +66,7 @@ function App() {
   const editorRef = useRef<any>()
 
   const getEditor = () => {
-    return editorRef.current?.editor
+    return editorRef.current?.getEditor?.()
   }
 
   return (<div className={'container'}>

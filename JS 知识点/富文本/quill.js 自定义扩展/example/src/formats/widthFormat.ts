@@ -1,4 +1,4 @@
-import Quill from 'quill';
+import Quill from '../quillCore/quill';
 
 const Block = Quill.import('blots/block');
 const Container = Quill.import('blots/container');
