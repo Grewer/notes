@@ -5,13 +5,15 @@ import 'react-quill/dist/quill.snow.css';
 import {Popover} from 'antd';
 
 import EmojiBlot from "./formats/emoji";
+import WidthFormat from "./formats/widthFormat";
 
 Quill.register(EmojiBlot);
+Quill.register(WidthFormat);
 
 const CustomToolbar = ({getEditor}) => {
   const proxyEmojiClick = ev => {
     const img = ev.target
-    if(img?.nodeName === 'IMG'){
+    if (img?.nodeName === 'IMG') {
       const quill = getEditor();
       const range = quill.getSelection();
       // 这里可以用 img 的属性, 也可以通过 data-* 来传递一些数据
@@ -40,8 +42,9 @@ const CustomToolbar = ({getEditor}) => {
       <img alt={'图片说明'} width={32} height={32} src="https://grewer.github.io/dataSave/emoji/img.png"/>
       <img alt={'图片说明'} width={32} height={32} src="https://grewer.github.io/dataSave/emoji/img_1.png"/>
     </div>}>
-      <button className="ql-emoji">emoji</button>
+      <button className="ql-emoji">e</button>
     </Popover>
+    <button className={"ql-widthFormat"}>WF</button>
   </div>;
 }
 
@@ -51,15 +54,18 @@ function App() {
     // ''
     '<p><img class="emoji_icon" alt="图片说明" src="https://grewer.github.io/dataSave/emoji/img.png" width="32" height="32">323232</p>'
   );
-  const emojiHandle = () => {
-    console.log(1111)
+
+  const widthFormatHandle = () => {
+    console.log('widthFormatHandle')
+    const editor = getEditor();
+    editor.format('width-format', {})
   }
 
   const modules = useMemo(() => ({
     toolbar: {
       container: '#toolbar',
       handlers: {
-        emoji: emojiHandle
+        widthFormat: widthFormatHandle
       },
     },
   }), []);
