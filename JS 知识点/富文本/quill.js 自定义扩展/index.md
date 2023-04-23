@@ -5,7 +5,7 @@
 因为各类眼花缭乱的需求, quill.js 的编辑器也收到了各种挑战, 比如我们要添加 `table` 布局的样式来适配邮件的发送格式、
 手动扩展 emoji 功能、图片的自由拖动等等, 本文就这些可定制化功能做一下讲解和实现
 
-## 区分 format 和 module 
+## 区分 format 和 module
 
 首先要明确自己需要的扩展是什么样子的?
 
@@ -24,7 +24,8 @@
 说起 quill 的格式类型, 他的常用格式可以分成 3 类:
 
 1. Inline
-   常见的有 `Bold`, `Color`, `Font` 等等, 不占据一行的标签, 类似于 html 里 span 的特性, 是一个行内样式, `Inline` 格式之间可以相互影响
+   常见的有 `Bold`, `Color`, `Font` 等等, 不占据一行的标签, 类似于 html 里 span 的特性, 是一个行内样式, `Inline`
+   格式之间可以相互影响
 2. Block
    添加 `Block` 样式, 必然会占据一整行, 并且 `Block` 样式之间不能兼容(共存), 常见的有 `List`, `Header`, `Code Block` 等等
 3. Embeds
@@ -38,7 +39,7 @@
 2. 他需要和字体并列, 所以也不能是 `Block` 类型
 
 ```tsx
-import  Quill from 'quill';
+import Quill from 'quill';
 
 const Embed = Quill.import('blots/embed');
 
@@ -87,7 +88,7 @@ export default EmojiBlot;
 
 这样一个 emoji 类型就创建完成了!
 
-最后我们注册到 Quill 上即可:  
+最后我们注册到 Quill 上即可:
 
 ```tsx
 import EmojiBlot from "./formats/emoji";
@@ -99,30 +100,30 @@ Quill.register(EmojiBlot);
 
 ```tsx
     <Popover content={<div className={'emoji-popover'} onClick={proxyEmojiClick}>
-      <img alt={'图片说明'} width={32} height={32} src="https://grewer.github.io/dataSave/emoji/img.png"/>
-      <img alt={'图片说明'} width={32} height={32} src="https://grewer.github.io/dataSave/emoji/img_1.png"/>
-    </div>}>
-      <button className="ql-emoji">emoji</button>
-    </Popover>
+  <img alt={'图片说明'} width={32} height={32} src="https://grewer.github.io/dataSave/emoji/img.png"/>
+  <img alt={'图片说明'} width={32} height={32} src="https://grewer.github.io/dataSave/emoji/img_1.png"/>
+</div>}>
+  <button className="ql-emoji">emoji</button>
+</Popover>
 ```
 
 通过代理的方式, 来获取 dom 上的具体属性:
 
 ```tsx
   const proxyEmojiClick = ev => {
-   const img = ev.target
-   if (img?.nodeName === 'IMG') {
-      const quill = getEditor();
-      const range = quill.getSelection();
-      // 这里可以用 img 的属性, 也可以通过 data-* 来传递一些数据
-      quill.insertEmbed(range.index, 'emoji', {
-         alt: img.alt,
-         src: img.src,
-         width: img.width,
-         height: img.height,
-      });
-      quill.setSelection(range.index + 1);
-   }
+  const img = ev.target
+  if (img?.nodeName === 'IMG') {
+    const quill = getEditor();
+    const range = quill.getSelection();
+    // 这里可以用 img 的属性, 也可以通过 data-* 来传递一些数据
+    quill.insertEmbed(range.index, 'emoji', {
+      alt: img.alt,
+      src: img.src,
+      width: img.width,
+      height: img.height,
+    });
+    quill.setSelection(range.index + 1);
+  }
 }
 ```
 
@@ -139,20 +140,20 @@ Quill.register(EmojiBlot);
 ```tsx
 class Blot {
   // 在手动创建/初始值时, 都会触发 create 函数
-   static create(value?: any): Node;
+  static create(value?: any): Node;
 
-   // 从 domNode 上获取想要的数据
-   static formats(domNode: Node);
+  // 从 domNode 上获取想要的数据
+  static formats(domNode: Node);
 
-   // static formats 返回的数据会被传递给 format
-   // 此函数的作用是将数据设置到 domNode
-   // 如果 name 是 quill 里的格式走默认逻辑是会被正确使用的
-   // 如果是特殊的name, 不处理就不会起效
-   format(format: name, value: any);
+  // static formats 返回的数据会被传递给 format
+  // 此函数的作用是将数据设置到 domNode
+  // 如果 name 是 quill 里的格式走默认逻辑是会被正确使用的
+  // 如果是特殊的name, 不处理就不会起效
+  format(format: name, value: any);
 
-   // 返回一个值, 通常在初始化的时候传给 static create
-   // 通常实现一个自定义格式, value 和 format 使用一个即可达到目标
-   value(): any;
+  // 返回一个值, 通常在初始化的时候传给 static create
+  // 通常实现一个自定义格式, value 和 format 使用一个即可达到目标
+  value(): any;
 }
 ```
 
@@ -225,7 +226,7 @@ Scroll.allowedChildren = [Block, BlockEmbed, Container];
 
 至于 `TextBlot`, 是在定义一些属性时常用到的值:
 
-例如源码中 `CodeBlock` 的部分: 
+例如源码中 `CodeBlock` 的部分:
 
 ```tsx
 CodeBlock.allowedChildren = [TextBlot, Break, Cursor];
@@ -246,7 +247,7 @@ CodeBlock.allowedChildren = [TextBlot, Break, Cursor];
 
 这里就给出一个我之前创建的信件格式例子:
 
-> 在富文本中扩展格式生成能兼容大部分信件的外层格式, 格式要求: 
+> 在富文本中扩展格式生成能兼容大部分信件的外层格式, 格式要求:
 > 格式占据一定宽度, 如 500px, 需要让这部分居中, 格式内可以输入其他的样式
 
 大家可能觉得简单, 只需要 `div` 套上, 再加上一个样式 `width` 和 `text-align` 即可
@@ -257,13 +258,83 @@ CodeBlock.allowedChildren = [TextBlot, Break, Cursor];
 
 所以我们开始创建一个 `table` 布局的外壳:
 
+```ts
+class WidthFormatTable extends Container {
+  static create() {
+    const node = super.create();
+    node.setAttribute('cellspacing', 0);
+    node.setAttribute('align', 'center');
+    return node;
+  }
+}
+
+WidthFormatTable.blotName = 'width-format-table';
+WidthFormatTable.className = 'width-format-table';
+WidthFormatTable.tagName = 'table';
+```
+
+有了 `table` 标签, 那么同样也会需要 `tr` 和 `rd`:
+
+也是类似的创建方法:
+
+```ts
+class WidthFormatTR extends Container {
+}
+
+class WidthFormatTD extends Container {
+}
+```
+
+最后通过 API 将其关联起来:
+
+```ts
+WidthFormatTable.allowedChildren = [WidthFormatTR];
+
+WidthFormatTR.allowedChildren = [WidthFormatTD];
+WidthFormatTR.requiredContainer = WidthFormatTable;
+
+WidthFormatTD.requiredContainer = WidthFormatTR;
+WidthFormatTD.allowedChildren = [WidthFormat];
+
+WidthFormat.requiredContainer = WidthFormatTD;
+```
+
+这一段的含义就是, **保证各个格式的父元素与子元素分别是什么**, 不会出现乱套的情况
 
 
-## 属性
+格式中最后的主体:
 
-这里的属性, 主要指: `StyleAttributor` 和 `ClassAttributor`
+```ts
+class WidthFormat extends Block {
+  static register() {
+    Quill.register(WidthFormatTable);
+    Quill.register(WidthFormatTR);
+    Quill.register(WidthFormatTD);
+  }
+}
 
-[//]: # (module 待定)
+
+WidthFormat.blotName = 'width-format';
+WidthFormat.className = 'width-format';
+WidthFormat.tagName = 'div';
+```
+
+
+最后我们新增一个按钮, 来格式化编辑器内容:
+
+```ts
+  const widthFormatHandle = () => {
+  const editor = getEditor();
+  editor.format('width-format', {})
+}
+```
+
+展示下效果:
+
+![img_1.png](images%2Fimg_1.png)
+
+
+
 
 ## 总结
 

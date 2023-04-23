@@ -15,6 +15,7 @@ const CustomToolbar = ({getEditor}) => {
     const img = ev.target
     if (img?.nodeName === 'IMG') {
       const quill = getEditor();
+      quill.focus();
       const range = quill.getSelection();
       // 这里可以用 img 的属性, 也可以通过 data-* 来传递一些数据
       quill.insertEmbed(range.index, 'emoji', {
