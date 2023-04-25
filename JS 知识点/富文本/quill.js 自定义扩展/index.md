@@ -2,14 +2,13 @@
 
 ## 前言
 
-因为各类眼花缭乱的需求, quill.js 的编辑器也收到了各种挑战, 比如我们要添加 `table` 布局的样式来适配邮件的发送格式、
-手动扩展 emoji 功能、图片的自由拖动等等, 本文就这些可定制化功能做一下讲解和实现
+鉴于各种繁杂的需求，`quill.js` 编辑器也面临着各种挑战，例如我们需要添加“table”布局样式以适应邮件发送格式，手动扩展表情符号功能等等。本文将对这些可定制化功能进行讲解和实现。
 
 ## 区分 format 和 module
 
-首先要明确自己需要的扩展是什么样子的?
+首先我们要明确自己需要的扩展是什么样子的?
 
-比如我想要新增一个**自定义 emoji**, 那么想象一下步骤:
+比如想要新增一个**自定义 emoji**, 那么想象一下步骤:
 
 1. 点击工具栏
 2. 弹出弹窗或者对应的 popover
@@ -18,6 +17,8 @@
 上述步骤就是一个常见的添加流程
 
 首先我们需要确定的是, 添加自定义 emoji, 必然需要一个*对应的格式*
+
+本文就 `format` 来做一个具体的讲解
 
 ## quill 的格式类型
 
@@ -33,10 +34,10 @@
 
 ## 自定义样式
 
-新增 emoji.ts 文件来存储格式, 他的类型, 我们选择 `Embeds` 格式, 使用这种格式的原因:
+新增 emoji.ts 文件来存储格式, 关于他的类型, 我们选择 `Embeds` 格式, 使用这种格式有以下原因:
 
 1. 他是一种独特的类型, 不能和颜色, 字体大小等等用在一起
-2. 他需要和字体并列, 所以也不能是 `Block` 类型
+2. 需要和字体并列, 所以也不能是 `Block` 类型
 
 ```tsx
 import Quill from 'quill';
@@ -83,12 +84,12 @@ EmojiBlot.className = 'emoji_icon'
 export default EmojiBlot;
 ```
 
-因为还有正常的图片类型会使用 img, 这里就需要加上 className, 来消除歧义
-一般来说, 新开发的扩展性类型, 尽量都加上 className
+因为还有正常的图片类型会使用 `img`, 这里就需要加上 `className`, 来消除歧义
+一般来说, 新开发的扩展性类型, 尽量都加上 `className`
 
-这样一个 emoji 类型就创建完成了!
+**这样一个 `emoji` 类型就创建完成了!**
 
-最后我们注册到 Quill 上即可:
+最后我们注册到 `Quill` 上即可:
 
 ```tsx
 import EmojiBlot from "./formats/emoji";
@@ -96,7 +97,7 @@ import EmojiBlot from "./formats/emoji";
 Quill.register(EmojiBlot);
 ```
 
-这里我们在加上自定义的 popover, 用来点击获取 emoji:
+这里我们在加上自定义的 `popover`, 用来点击获取 `emoji`:
 
 ```tsx
     <Popover content={<div className={'emoji-popover'} onClick={proxyEmojiClick}>
@@ -107,7 +108,7 @@ Quill.register(EmojiBlot);
 </Popover>
 ```
 
-通过代理的方式, 来获取 dom 上的具体属性:
+通过代理的方式, 来获取 `dom` 上的具体属性:
 
 ```tsx
   const proxyEmojiClick = ev => {
@@ -127,15 +128,15 @@ Quill.register(EmojiBlot);
 }
 ```
 
-展示下新增 emoji 的效果:
+展示下新增 `emoji` 的效果:
 
 ![1.gif](images%2F1.gif)
 
 ## 基础格式说明
 
-我们的自定义格式都是基于 quill 的基础库: [parchment](https://www.npmjs.com/package/parchment)
+我们的自定义格式都是基于 `quill` 的基础库: [parchment](https://www.npmjs.com/package/parchment)
 
-这里我们就介绍下他的几个重要 API:
+这里我们就介绍下他的几个重要 `API`:
 
 ```tsx
 class Blot {
@@ -157,7 +158,7 @@ class Blot {
 }
 ```
 
-上述几个 api 便是创建自定义格式时常用到的
+上述几个 `API` 便是创建自定义格式时常用到的
 
 
 > 详情可参考: https://www.npmjs.com/package/parchment#blots
@@ -208,7 +209,7 @@ class EmojiBlot extends Embed {
 上面我们讲述了三个常见的格式: `Inline` 、`Embeds` 、`Block`, 其实在 `quill` 还有一些特殊的 `blot`:
 如: `TextBlot` 、 `ContainerBlot` 、 `ScrollBlot`
 
-其中 `ScrollBlot` 属于是所有 blot 的根节点:
+其中 `ScrollBlot` 属于是所有 `blot` 的根节点:
 
 ```tsx
 class Scroll extends ScrollBlot {
@@ -301,7 +302,6 @@ WidthFormat.requiredContainer = WidthFormatTD;
 
 这一段的含义就是, **保证各个格式的父元素与子元素分别是什么**, 不会出现乱套的情况
 
-
 格式中最后的主体:
 
 ```ts
@@ -319,6 +319,7 @@ WidthFormat.className = 'width-format';
 WidthFormat.tagName = 'div';
 ```
 
+`register` 函数的作用就是在注册当前的 `WidthFormat` 格式时, 自动注册其他的依赖格式; 避免人多注册多次
 
 最后我们新增一个按钮, 来格式化编辑器内容:
 
@@ -333,9 +334,11 @@ WidthFormat.tagName = 'div';
 
 ![img_1.png](images%2Fimg_1.png)
 
-
-
+## Attribute
 
 ## 总结
 
+demo:
 
+本文介绍了 quill.js 在面临多种需求挑战时需要添加可定制化功能。quill.js 的常用格式包括 Inline、Block 和 Embeds 三类，而
+ContainerBlot 则是创建 Block 类型时常用的值，具有极高的自由度。希望本文能够帮助读者更好地了解和思考富文本编辑的相关问题。
