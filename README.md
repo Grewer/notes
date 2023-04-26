@@ -83,7 +83,7 @@
 
             - index
 
-        - quill.js 自定义扩展
+        - quill.js 自定义格式扩展
             - example
                 - public
 
