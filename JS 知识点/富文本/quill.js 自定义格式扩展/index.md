@@ -6,7 +6,7 @@
 
 ## 区分 format 和 module
 
-首先我们要明确自己需要的扩展是什么样子的?
+首先需要明确的是，我们应该清楚自己所需的扩展具体是什么?
 
 比如想要新增一个**自定义 emoji**, 那么想象一下步骤:
 
@@ -14,11 +14,11 @@
 2. 弹出弹窗或者对应的 popover
 3. 在 2 中选中 emoji
 
-上述步骤就是一个常见的添加流程
+这些步骤是一种常见的添加流程。
 
-首先我们需要确定的是, 添加自定义 emoji, 必然需要一个*对应的格式*
+我们需要明确的是，添加自定义表情符号必然需要一个相应的格式。
 
-本文就 `format` 来做一个具体的讲解
+本文将以 `format` 为例，对此进行详细讲解。
 
 ## quill 的格式类型
 
@@ -334,11 +334,13 @@ WidthFormat.tagName = 'div';
 
 ![img_1.png](images%2Fimg_1.png)
 
-## Attribute
+
+比较遗憾的是, 同样作为 `Block` 格式, 这两类是不能兼容的, 也就是说在 `width-format` 格式中, 不能使用 `List` , `Header` , `Code` 这几项属性
+个人吐槽几句, 之前尝试兼容过, 但是在 `HTML` 和 `delta` 相互转换时被卡主了, 感觉转换的方式没做好
 
 ## 总结
 
-demo:
+demo链接: [点此查看](https://github.com/Grewer/notes/tree/master/JS%20%E7%9F%A5%E8%AF%86%E7%82%B9/%E5%AF%8C%E6%96%87%E6%9C%AC/quill.js%20%E8%87%AA%E5%AE%9A%E4%B9%89%E6%89%A9%E5%B1%95/example)
 
 本文介绍了 quill.js 在面临多种需求挑战时需要添加可定制化功能。quill.js 的常用格式包括 Inline、Block 和 Embeds 三类，而
 ContainerBlot 则是创建 Block 类型时常用的值，具有极高的自由度。希望本文能够帮助读者更好地了解和思考富文本编辑的相关问题。
