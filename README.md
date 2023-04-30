@@ -136,6 +136,9 @@
 
     - 生命周期
 
+    - 记一次 React 性能 debug
+        - index
+
     </details>
             
 - react-native
