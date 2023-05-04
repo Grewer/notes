@@ -1,7 +1,8 @@
 import React, {useMemo, useRef, useState} from 'react';
-import './App.css';
+import 'src/App.css';
 import ReactQuill, {Quill} from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import useHooks from "./customHooks";
 
 const CustomButton = () => <span className="iconfont">
     find
@@ -28,6 +29,18 @@ const CustomToolbar = () => <div id="toolbar">
 function App() {
     const [value, setValue] = useState('');
 
+    // mock 调用多次 hooks
+
+    const hook1 = useHooks();
+    const hook2 = useHooks();
+    const hook3 = useHooks();
+    const hook4 = useHooks();
+    const hook5 = useHooks();
+    const hook6 = useHooks();
+    const hook7 = useHooks();
+    const hook8 = useHooks();
+    const hook9 = useHooks();
+    const hook10 = useHooks();
 
     const modules = useMemo(() => ({
         toolbar: {
