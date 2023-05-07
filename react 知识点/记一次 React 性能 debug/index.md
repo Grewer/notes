@@ -5,6 +5,36 @@
 
 在基于富文本的输入场景中，我们发现在输入回车后会出现明显的卡顿现象。为了更好地复现此类场景，这里使用了一个demo进行测试。
 
+```tsx
+function App() {
+    const [value, setValue] = useState('');
+
+    // mock 调用多次 hooks
+
+    const hook1 = useHooks();
+    //...
+    const hook10 = useHooks();
+
+    const modules = useMemo(() => ({
+        toolbar: {
+            container: '#toolbar',
+            handlers: {
+            },
+        },
+    }), []);
+    
+
+    return (<div className={'container'}>
+        <CustomToolbar/>
+        <ReactQuill ref={editorRef} theme="snow" value={value} modules={modules} onChange={setValue}/>
+        <form className="todo-list">
+            {/* ... */}
+        </form>
+    </div>)
+}
+```
+
+这是页面的主要结构, 内容分别是一堆 hooks + quill + 其他操作(这里用一个 TODO list 来替代)
 
 
 
