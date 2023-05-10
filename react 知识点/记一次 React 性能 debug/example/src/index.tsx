@@ -1,15 +1,28 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import MyContext from "./context";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+const Wrapper = () => {
+  const [lang, setLang] = useState(0);
+  const handle = () => {
+    setLang(lang + 1)
+  }
+
+  return <MyContext.Provider value={{lang, handle}}>
+    <App></App>
+  </MyContext.Provider>
+}
+
 root.render(
   <React.StrictMode>
-    <App />
+    <Wrapper/>
   </React.StrictMode>
 );
 

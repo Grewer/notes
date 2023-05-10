@@ -1,13 +1,15 @@
-import {useState} from "react";
+import {useContext, useState} from "react";
+import myContext from "./context";
 
 const useHooks = () => {
   const [state, setState] = useState(0);
+  const {lang, handle:langHandle} = useContext(myContext);
 
-
-  const wrapperNumber = state * 10 + 2;
+  const wrapperNumber = state * 10 + 2 + lang;
 
   const handle = (number) => {
-    setState(number)
+    setState(number);
+    langHandle();
   }
   const handle2 = (number) => {
     setState(number)
