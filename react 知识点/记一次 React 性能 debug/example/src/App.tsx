@@ -81,6 +81,7 @@ function App() {
 
     function handleKeyDown(e, i) {
         if (e.key === 'Enter') {
+            hook19.setValue(111)
             createTodoAtIndex(e, i);
         }
         if (e.key === 'Backspace' && todos[i].content === '') {
