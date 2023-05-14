@@ -3,7 +3,7 @@
 
 ## 问题点
 
-在基于富文本的输入场景中，我们发现在输入回车后会出现明显的卡顿现象。为了更好地复现此类场景，这里使用了一个简单的demo展示。
+在基于富文本的输入场景中，我们发现在输入回车后会出现明显的卡顿现象。为了更好地复现此类场景，这里使用了一个简单的例子展示。
 
 ```tsx
 function App() {
@@ -35,15 +35,76 @@ function App() {
 
 这是页面的主要结构, 内容分别是一堆 hooks + quill + 其他操作(这里用一个 TODO list 来替代)
 
-这里展示下当时通过 Chrome 的性能监控显示的图片, 在触发按钮时出现了, 肉眼可见的卡顿, 同时用性能监控, 可以看到这个报错
+## 性能监控
 
-![img.png](images%2Fimg.png)
+这里就轮到 Chrome 的性能监控出场了, 重复复现步骤, 最后缩短监控范围, 点击卡顿的任务
 
-此时点击自上而下, 可以进行排序, 之后可以发现占用时间最多的函数, 从这里入手:
-
-
+![img_1.png](images%2Fimg_1.png)
 
 
+再来看下调用树:
+
+![img_1.png](images%2Fimg_1.png)
+
+光看这里很难发现是页面那个地方的问题, 因为都是 react 的源码执行函数
+
+
+最关键的点在于`自上而下`那一栏:
+
+![img_2.png](images%2Fimg_2.png)
+
+从这里, 我们很明显的就能看到是这个 hooks - useI18n 影响到了
+
+> 因为这是一个多语言 hooks, 所以它的引用范围特别广
+> 
+
+这里因为不方便透露源码, 大概的逻辑是这样的:
+
+```ts
+const useHooks = () => {
+  const {lang, handle:langHandle} = useContext(myContext);
+  
+  const handle = (number) => {
+    langHandle();
+  }
+
+  return {
+    value: lang,
+    setValue: handle
+  }
+}
+```
+
+## 解决
+
+这里我尝试加上 react 的性能优化 `useMemo`:
+
+```ts
+const useHooks = () => {
+  const {lang, handle:langHandle} = useContext(myContext);
+  
+  const handle = (number) => {
+    langHandle();
+  }
+
+  return useMemo(() => ({
+    value: lang,
+    setValue: handle
+  }), [lang, handle])
+}
+```
+
+再通使用 Chrome 的性能监控, 发现问题已经缓解
+
+![img_3.png](images%2Fimg_3.png)
+
+由此可得出结论, 在多场景使用的 hooks 中, 可通过在返回值中加上 useMemo, 来提高性能
+
+---
+
+当然, 除了 hooks 的优化, 其他组件的重渲染, 也可以缓解一定的渲染性能问题
+
+这里又回到了我们老生常谈的 `react` 性能优化那一套, 这里就不赘述了
 
 
 
