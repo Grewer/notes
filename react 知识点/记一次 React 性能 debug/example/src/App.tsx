@@ -29,33 +29,19 @@ function App() {
     // mock 调用多次 hooks
 
     const hook1 = useHooks();
-    const hook2 = useHooks();
-    const hook3 = useHooks();
-    const hook4 = useHooks();
-    const hook5 = useHooks();
-    const hook6 = useHooks();
-    const hook7 = useHooks();
-    const hook8 = useHooks();
-    const hook9 = useHooks();
-    const hook10 = useHooks();
-    const hook11 = useHooks();
-    const hook12 = useHooks();
-    const hook13 = useHooks();
-    const hook14 = useHooks();
-    const hook15 = useHooks();
-    const hook16 = useHooks();
-    const hook17 = useHooks();
-    const hook18 = useHooks();
-    const hook19 = useHooks();
-    const hook20 = useHooks();
 
-    const modules = useMemo(() => ({
+    const handleClick = ()=>{
+
+    }
+
+    const modules = {
         toolbar: {
             container: '#toolbar',
             handlers: {
+                handleClick
             },
         },
-    }), []);
+    }
 
     const editorRef = useRef<any>()
 
@@ -81,7 +67,7 @@ function App() {
 
     function handleKeyDown(e, i) {
         if (e.key === 'Enter') {
-            hook19.setValue(111)
+            hook1.setValue(111)
             createTodoAtIndex(e, i);
         }
         if (e.key === 'Backspace' && todos[i].content === '') {
@@ -118,30 +104,27 @@ function App() {
 
     return (<div className={'container'}>
         <CustomToolbar/>
-        {/*@ts-ignore*/}
         <ReactQuill ref={editorRef} theme="snow" value={value} modules={modules} onChange={setValue}/>
 
-
-
-        <form className="todo-list">
-            <ul>
-                {todos.map((todo, i) => (
-                  <div className={`todo ${todo.isCompleted && 'todo-is-completed'}`}>
-                      <div className={'checkbox'} onClick={() => toggleTodoCompleteAtIndex(i)}>
-                          {todo.isCompleted && (
-                            <span>&#x2714;</span>
-                          )}
-                      </div>
-                      <input
-                        type="text"
-                        value={todo.content}
-                        onKeyDown={e => handleKeyDown(e, i)}
-                        onChange={e => updateTodoAtIndex(e, i)}
-                      />
-                  </div>
-                ))}
-            </ul>
-        </form>
+        {/*<form className="todo-list">*/}
+        {/*    <ul>*/}
+        {/*        {todos.map((todo, i) => (*/}
+        {/*          <div className={`todo ${todo.isCompleted && 'todo-is-completed'}`}>*/}
+        {/*              <div className={'checkbox'} onClick={() => toggleTodoCompleteAtIndex(i)}>*/}
+        {/*                  {todo.isCompleted && (*/}
+        {/*                    <span>&#x2714;</span>*/}
+        {/*                  )}*/}
+        {/*              </div>*/}
+        {/*              <input*/}
+        {/*                type="text"*/}
+        {/*                value={todo.content}*/}
+        {/*                onKeyDown={e => handleKeyDown(e, i)}*/}
+        {/*                onChange={e => updateTodoAtIndex(e, i)}*/}
+        {/*              />*/}
+        {/*          </div>*/}
+        {/*        ))}*/}
+        {/*    </ul>*/}
+        {/*</form>*/}
     </div>)
 }
 

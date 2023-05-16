@@ -106,6 +106,17 @@ const useHooks = () => {
 
 这里又回到了我们老生常谈的 `react` 性能优化那一套, 这里就不赘述了
 
+## quill.js 的重渲染
+
+在 function 组件中添加 `quill.js` 富文本的时候, 会出现重复渲染导致编辑器加载出现问题的场景, 如图:
+
+![img_4.png](images%2Fimg_4.png)
+
+一般来说都是因为 quill 的 modules 对象指向变成了另一个, 这一点在 hooks 组件中会经常遇到:
+
+```ts
+
+```
 
 
 ## 
