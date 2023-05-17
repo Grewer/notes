@@ -114,9 +114,26 @@ const useHooks = () => {
 
 一般来说都是因为 quill 的 modules 对象指向变成了另一个, 这一点在 hooks 组件中会经常遇到:
 
-```ts
-
+```tsx
+function App(){
+  const modules = {
+    toolbar: {
+      container: '#toolbar',
+      handlers: {
+        handleClick
+      },
+    },
+  }
+  
+  return (
+    <ReactQuill ref={editorRef} theme="snow" value={value} modules={modules} onChange={setValue}/>
+  )
+}
 ```
+
+如上述的代码, 由于 react 的机制问题, 在每次 render 时, 都会触发 reRender, 重新声明一个 `modules`, 造成 `react-quill` 中的传值问题
+
+常见的解决方案就是万能的 `useRef` 了
 
 
 ## 
