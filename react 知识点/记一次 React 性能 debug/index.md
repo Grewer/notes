@@ -133,7 +133,34 @@ function App(){
 
 如上述的代码, 由于 react 的机制问题, 在每次 render 时, 都会触发 reRender, 重新声明一个 `modules`, 造成 `react-quill` 中的传值问题
 
-常见的解决方案就是万能的 `useRef` 了
+常见的解决方案就是万能的 `useRef` 了:
+
+```tsx
+function App(){
+  const modulesRef = useRef({
+    toolbar: {
+      container: '#toolbar',
+      handlers: {
+        handleClick
+      },
+    },
+  })
+  
+  return (
+    <ReactQuill ref={editorRef} theme="snow" value={value} modules={modulesRef.current} onChange={setValue}/>
+  )
+}
+```
+
+在 react 的 hooks 中, `useRef` 反而是一个比较 `OOP` 的函数, 因为设置之后, 不管 `render` 几次, 他的对象引用都不会变化;  
+
+就像是 class 中构造函数里设置了 `this.query = {}`, 在 `render` 过程中 `query` 值引用都是不变的
+
+
+由此, 很多自定义 hooks, 都用上了他
+
+比如最常见的 `useMount`:
+
 
 
 ## 
