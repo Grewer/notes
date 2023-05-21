@@ -159,12 +159,38 @@ function App(){
 
 由此, 很多自定义 hooks, 都用上了他
 
-比如最常见的 `useMount`:
+比如最常见的 `useUpdateEffect`:
+
+```tsx
+const createUpdateEffect = (hook) => (effect, deps) => {
+    const isMounted = useRef(false);
+
+    // for react-refresh
+    hook(() => {
+      return () => {
+        isMounted.current = false;
+      };
+    }, []);
+
+    hook(() => {
+      if (!isMounted.current) {
+        isMounted.current = true;
+      } else {
+        return effect();
+      }
+    }, deps);
+  };
 
 
 
-## 
+useUpdateEffect = createUpdateEffect(useEffect)
+```
 
-我们在使用 hooks 进行组件开发时，发现在组件频繁更新的情况下，hooks 的性能会受到一定的影响。我们通过对代码进行优化，避免过多的无用渲染，从而提高了组件的性能。
+代码来源于 [ahooks](https://github.com/alibaba/hooks/blob/master/packages/hooks/src/useUpdateEffect/index.ts),  使用 `ref` 的值来标记一个私有化值
+
+
+## 总结
+
+我们在使用 hooks 进行组件开发时，发现在组件频繁更新的情况下，hooks 的性能会受到一定的影响。可以通过对代码进行优化，避免过多的无用渲染，从而提高了组件的性能。
 另外，我们在使用 quill 编辑器时，发现在重载页面或组件时，quill 的编辑内容会丢失。这给我们的开发带来了一定的困扰。我们通过对 quill 的初始化和销毁进行优化，解决了这个问题，保证了编辑器的稳定性和可靠性。
 总的来说，在开发过程中遇到问题是很常见的，我们需要及时记录和解决这些问题，以提高开发效率和质量。
