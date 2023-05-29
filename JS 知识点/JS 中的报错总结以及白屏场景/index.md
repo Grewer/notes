@@ -3,11 +3,57 @@
 本文就 JS 中存在的报错, 在 react 场景中, 一些错误会比较容易造成"白屏"场景,
 而又有一些方法是能解决这些问题的, 作出一个汇总
 
-## 报错的类型
+## 常见的错误
 
-运行时代码错误
 
-SyntaxError：语法错误；
+### SyntaxError
+
+> SyntaxError（语法错误）对象代表尝试解析不符合语法的代码的错误。当 Javascript 引擎解析代码时，遇到了不符合语法规范的标记（token）或标记顺序，则会抛出 SyntaxError。
+> 
+> 
+
+#### 保留字错误
+
+`SyntaxError: "x" is a reserved identifier` (Firefox)
+`SyntaxError: Unexpected reserved word` (Chrome)
+
+如在控制台执行下方代码,则会上述错误出现
+```js
+const enum = 1
+```
+
+`enum` 在**严格模式和非严格模式**下都是保留字。
+
+而以下标记符只会在**严格模式**下才作为保留字：
+
+* `implements`
+
+* `interface`
+
+* `let`
+
+* `package`
+
+* `private`
+
+* `protected`
+
+* `public`
+
+* `static`
+
+
+例如:
+
+```js
+
+const implements = 1 // ✅
+
+
+"use strict";
+const implements = 1; // ❌ caught SyntaxError: Unexpected strict mode reserved word
+```
+
 
 // 以数字开头的变量名
 var 1a       // Uncaught SyntaxError: Invalid or unexpected token
@@ -79,3 +125,8 @@ throw new RangeError("出错了，变量超出有效范围！");
 throw new TypeError("出错了，变量类型无效！");
 
 好了，以上就是我总结常见错误问题，我也会持续补充。
+
+
+## 引用
+
+> https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Errors
