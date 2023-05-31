@@ -5,12 +5,12 @@
 
 ## 常见的错误
 
-
 ### SyntaxError
 
 > SyntaxError（语法错误）对象代表尝试解析不符合语法的代码的错误。当 Javascript 引擎解析代码时，遇到了不符合语法规范的标记（token）或标记顺序，则会抛出 SyntaxError。
 > 
-> 
+
+这里陈列下 `SyntaxError` 的常见错误
 
 #### 保留字错误
 
@@ -51,20 +51,90 @@ const implements = 1 // ✅
 
 
 "use strict";
-const implements = 1; // ❌ caught SyntaxError: Unexpected strict mode reserved word
+const implements = 1; // caught SyntaxError: Unexpected strict mode reserved word
 ```
 
 
-// 以数字开头的变量名
-var 1a       // Uncaught SyntaxError: Invalid or unexpected token
-// 给关键字赋值
-function = 5     // Uncaught SyntaxError: Unexpected token =
-// 没有写完的花括号
-if (true) {
-console.log(1)
-else {
-console.error(1)
-}
+#### 命名错误
+
+> 一个 JavaScript 标识符必须以字母开头，下划线（_）或美元符号（$）。他们不能以数字开头。只有后续字符可以是数字（0-9）。
+
+```js
+var 1life = 'foo';
+// SyntaxError: identifier starts immediately after numeric literal
+
+var foo = 1life;
+// SyntaxError: identifier starts immediately after numeric literal
+```
+
+#### 错误的标点
+
+> 在代码中有非法的或者不期望出现的标记符号出现在不该出现的位置。
+
+```js
+“This looks like a string”;
+// SyntaxError: illegal character
+
+42 – 13;
+// SyntaxError: illegal character
+```
+
+代码里使用了中文的引号和横杠, 造成了解析错误, 这里就提现了编辑器的重要性
+
+#### JSON 解析
+
+```js
+JSON.parse('[1, 2, 3, 4, ]');
+JSON.parse('{"foo" : 1, }');
+// SyntaxError JSON.parse: unexpected character
+// at line 1 column 14 of the JSON data
+```
+
+json 解析失败的类型有很多, 这里就不赘述了, 我们在进行 `json` 解析的时候, 一定要加上 `try...catch` 语句来避免错误
+
+
+#### 分号问题
+
+> 通常情况下，这个错误只是另一个错误一个导致的，如不正确转义字符串，使用 var 的错误
+
+```js
+const foo = 'Tom's bar';
+// SyntaxError: missing ; before statement
+```
+
+通过其他方案声明:
+
+```js
+var foo = "Tom's bar";
+var foo = 'Tom\'s bar';
+var foo = `Tom's bar`; // 推荐这种方案
+```
+
+---
+
+使用 `var` 错误
+
+```js
+var array = [];
+var array[0] = "there"; // SyntaxError missing ; before 
+```
+
+
+类似当前错误的还有很多, 比如: 
+
+- `SyntaxError: missing ) after argument list`
+- `SyntaxError: missing ) after condition`
+- `SyntaxError: missing } after function body`
+- `SyntaxError: missing } after property list`
+
+等等, 这些都是语法的错误, 在编辑器/IDE使用时期都能解析, 但是在某些比较古老的框架下, 
+编辑器可能并不能识别出来他的语法, 这便是此错误经常出现的场景
+
+#### 小结
+
+`SyntaxError` 属于运行时代码错误, 通常也是新手开发者容易犯得的错误 , 在 `dev` 时期就可以发现, 不然无法通过编译, 是属于比较容易发现的问题
+
+### TypeError
 
 2. Uncaught ReferenceError：引用错误
 
