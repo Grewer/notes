@@ -7,7 +7,9 @@
 
 ### SyntaxError
 
-> SyntaxError（语法错误）对象代表尝试解析不符合语法的代码的错误。当 Javascript 引擎解析代码时，遇到了不符合语法规范的标记（token）或标记顺序，则会抛出 SyntaxError。
+> #
+
+**`SyntaxError`**（语法错误）对象代表尝试解析不符合语法的代码的错误。当 Javascript 引擎解析代码时，遇到了不符合语法规范的标记（token）或标记顺序，则会抛出 `SyntaxError`。
 > 
 
 这里陈列下 `SyntaxError` 的常见错误
@@ -135,6 +137,29 @@ var array[0] = "there"; // SyntaxError missing ; before
 `SyntaxError` 属于运行时代码错误, 通常也是新手开发者容易犯得的错误 , 在 `dev` 时期就可以发现, 不然无法通过编译, 是属于比较容易发现的问题
 
 ### TypeError
+
+> **`TypeError`**（类型错误）对象通常（但并不只是）用来表示值的类型非预期类型时发生的错误。
+
+以下情况会抛出 `TypeError`：
+
+* 传递给运算符的操作数或传递给函数的参数与预期的类型不兼容； 
+* 尝试修改无法更改的值； 
+* 尝试以不适当的方法使用一个值。
+
+### RangeError
+
+> **`RangeError`** 对象表示一个特定值不在所允许的范围或者集合中的错误。
+
+### ReferenceError
+
+> **`ReferenceError`**（引用错误）对象代表当一个不存在（或尚未初始化）的变量被引用时发生的错误。
+
+
+### 其他 
+
+InternalError 和 EvalError 和 URIError
+
+
 
 2. Uncaught ReferenceError：引用错误
 
