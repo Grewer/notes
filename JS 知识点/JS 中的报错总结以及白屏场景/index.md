@@ -8,7 +8,6 @@
 ### SyntaxError
 
 > #
-
 **`SyntaxError`**（语法错误）对象代表尝试解析不符合语法的代码的错误。当 Javascript 引擎解析代码时，遇到了不符合语法规范的标记（token）或标记顺序，则会抛出 `SyntaxError`。
 > 
 
@@ -145,6 +144,56 @@ var array[0] = "there"; // SyntaxError missing ; before
 * 传递给运算符的操作数或传递给函数的参数与预期的类型不兼容； 
 * 尝试修改无法更改的值； 
 * 尝试以不适当的方法使用一个值。
+
+#### 不可迭代属性
+
+当使用 `for...of` , 右侧的值不是一个可迭代值时, 或者作为数组解构赋值时, 会报此问题
+
+例如:
+
+```js
+const myobj = { arrayOrObjProp1: {}, arrayOrObjProp2: [42] };
+
+const {
+  arrayOrObjProp1: [value1],
+  arrayOrObjProp2: [value2],
+} = myobj; // TypeError: object is not iterable
+
+
+const obj = { France: "Paris", England: "London" };
+for (const p of obj) {
+  // …
+} // TypeError: obj is not iterable
+```
+
+JS 中有内置的可迭代对象, 如: `String`、`Array`、`TypedArray`、`Map`、`Set` 以及 `Intl.Segments (en-US)`, 因为它们的每个 `prototype` 对象都实现了 `@@iterator` 方法。
+
+`Object` 是不可迭代的，除非它们实现了迭代协议。
+
+简单来说, 对象中缺少一个可迭代属性: `next` 函数
+
+将上述 `obj` 改造:
+
+```js
+const obj = {
+  France: "Paris", England: "London",
+  [Symbol.iterator]() {
+    // 用原生的空数组迭代器来兼容
+    return [][Symbol.iterator]();
+  },
+};
+for (const p of obj) {
+  // …
+}
+```
+
+如此可不报错, 但是也不会进入循环中
+
+[点此查看什么是迭代协议](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol)
+
+#### 空值问题
+
+
 
 ### RangeError
 
