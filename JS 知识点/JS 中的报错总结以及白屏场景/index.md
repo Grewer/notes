@@ -193,7 +193,45 @@ for (const p of obj) {
 
 #### 空值问题
 
+```js
+null.foo;
+// 错误类型：null 没有这个属性
 
+undefined.bar;
+// 错误类型：undefined 没有这个属性
+```
+
+虽然看起来简单, 但是他是出现白屏最为频繁的报错原因之一
+
+在以前我们通常这样解决问题:
+
+```js
+var value = null;
+
+value && value.foo;
+```
+
+现在我们可以使用 **可选链** [Optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) 来解决这个问题
+
+
+```js
+var value = null;
+
+value?.foo;
+
+// 但是他也不能用来赋值:
+value?.foo = 1
+```
+
+可选链语法:
+
+```js
+obj.val?.prop
+obj.val?.[expr]
+obj.func?.(args)
+```
+
+#### 
 
 ### RangeError
 
