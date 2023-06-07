@@ -199,6 +199,9 @@ null.foo;
 
 undefined.bar;
 // 错误类型：undefined 没有这个属性
+
+const foo = undefined;
+foo.substring(1); // TypeError: foo is undefined
 ```
 
 虽然看起来简单, 但是他是出现白屏最为频繁的报错原因之一
@@ -231,7 +234,56 @@ obj.val?.[expr]
 obj.func?.(args)
 ```
 
-#### 
+#### 错误的函数执行
+
+错误的函数名称: 
+```js
+var x = document.getElementByID("foo");
+// TypeError: document.getElementByID is not a function
+
+var x = document.getElementById("foo"); // 正确的函数
+```
+
+---
+
+不存在的函数:
+
+```js
+var obj = { a: 13, b: 37, c: 42 };
+
+obj.map(function(num) {
+  return num * 2;
+});
+// TypeError: obj.map is not a function
+```
+
+#### `in` 的错误场景
+
+在判断一个对象中是否存在某个值时, 比较常用的是一种方法是使用 `in` 来判断:
+
+```js
+var foo = { baz: "bar" };
+
+if('baz' in foo){
+  // operation 
+}
+```
+
+因为不能确定 foo['baz'] 的具体值, 所以这种方案也是不错的, 但是当 `foo` 的类型也不能确认的时候就会容易出现报错了
+
+```js
+var foo = null;
+"bar" in foo;
+// TypeError: invalid 'in' operand "foo"
+
+"Hello" in "Hello World";
+// TypeError: invalid 'in' operand "Hello World"
+```
+字符串和空值不适合使用此语法
+
+_另外需要注意的是_, 我们在数组中不能使用它
+
+
 
 ### RangeError
 
