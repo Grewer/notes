@@ -281,9 +281,21 @@ var foo = null;
 ```
 字符串和空值不适合使用此语法
 
-_另外需要注意的是_, 我们在数组中不能使用它
+_另外需要注意的是_, 我们在**数组**中需要小心使用
 
+```js
+const number = [2, 3, 4, 5];
 
+3 in number // 返回 true.
+2 in number // 返回 true.
+
+5 in number // 返回 false，因为 5 不是数组上现有的索引，而是一个值;
+```
+
+#### 小结
+
+因为错误是跟随着不同的值类型来的, 而数据的接收/转变我们并不能做到 100% 的把控。
+它是我们平时线上报错最频繁的一种类型,也是最容易造成页面白屏的。需要保持 120% 的小心。
 
 ### RangeError
 
@@ -364,3 +376,4 @@ throw new TypeError("出错了，变量类型无效！");
 ## 引用
 
 > https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Errors
+> https://zhuanlan.zhihu.com/p/602293047
