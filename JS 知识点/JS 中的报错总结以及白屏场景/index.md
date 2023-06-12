@@ -301,6 +301,35 @@ const number = [2, 3, 4, 5];
 
 > **`RangeError`** 对象表示一个特定值不在所允许的范围或者集合中的错误。
 
+在以下的情况中，可能会遇到这个问题：
+
+* 将不允许的字符串值传递给 [`String.prototype.normalize()`](/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/normalize)，或
+* 尝试使用 [`Array`](/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array) 构造函数创建一个具有不合法的长度的字符串，或
+* 传递错误值到数值计算方法（[`Number.toExponential()`](/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential)、[`Number.toFixed()`](/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed) 或 [`Number.toPrecision()`](/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision)）。
+
+这里举几个例子: 
+
+```js
+String.fromCodePoint("_"); // RangeError
+
+new Array(-1); // RangeError
+
+new Date("2014-25-23").toISOString(); // RangeError
+
+(2.34).toFixed(-100); // RangeError
+
+(42).toString(1);
+
+const b = BigInt(NaN);
+// RangeError: NaN cannot be converted to a BigInt because it is not an integer
+```
+
+---
+
+总的来说 RangeError 都是因为传入了不正确的值而导致的该问题, 这种情况发生的概率较小, 部分数字都是自己可以手动控制或者写死在代码里的,
+除非是定制化很高的情况, 比如低代码, 让用户随意输入的时候, 在使用的时候, 最好先做出判断, 或者加上 try...catch 即可
+
+
 ### ReferenceError
 
 > **`ReferenceError`**（引用错误）对象代表当一个不存在（或尚未初始化）的变量被引用时发生的错误。
