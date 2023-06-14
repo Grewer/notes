@@ -351,9 +351,30 @@ foo?.bar = 123
 
 这一类在编码因为容易分析, 一般在编辑器中就能容易发现, 所以并不会带来很多困扰。
 
-### 其他 
+### 其他
 
-InternalError 和 EvalError 和 URIError
+**`InternalError` 对象**表示出现在 JavaScript 引擎内部的错误。尚未成为任何规范的一部分, 所以我们可以忽略。
+
+---
+
+**`EvalError`** 代表了一个关于 `eval()` 全局函数的错误。
+
+他不在当前的 `ECMAScript` 规范中使用，因此不会被运行时抛出。但是对象本身仍然与规范的早期版本向后兼容。
+
+--- 
+
+**`URIError`** 对象用来表示以一种错误的方式使用全局 URI 处理函数而产生的错误。
+
+例如:
+
+```js
+decodeURIComponent('%')
+// caught URIError: URI malformed
+```
+
+所以使用 `decodeURIComponent` 函数时, 需要加上 `try...catch` 来保持正确性
+
+
 
 
 
