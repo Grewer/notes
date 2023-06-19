@@ -407,11 +407,25 @@ throw new TypeError("出错了，变量类型无效！");
 ```
 
 
-同样的, 此种方案, 我们可以使用在 `Promise` 的 `then` 中:
+同样的, 此种方案我们可以使用在 `Promise` 的 `then` 中:
 
 ```js
-
+// 模拟一个接口的返回
+Promise.resolve({code: 3000, message: '这是一个报错！'}).then(res => {
+  if (res.code !== 200) {
+    throw new Error(`code 3000: ${res.message}`)
+  }
+  console.log(res); // 这里可以看做是执行正常操作, 抛出错误时, 此处就不会执行了
+}).catch(err => {
+  alert(err.message)
+});
 ```
+
+在 `catch` 中我们可以通过 `name` 来判断不同的 `Error`:
+
+
+
+
 
 ## 引用
 
