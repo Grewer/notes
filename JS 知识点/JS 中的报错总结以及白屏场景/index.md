@@ -424,6 +424,38 @@ Promise.resolve({code: 3000, message: '这是一个报错！'}).then(res => {
 在 `catch` 中我们可以通过 `name` 来判断不同的 `Error`:
 
 
+```js
+try {
+  throw new TypeError(`This is an Error`)
+} catch (e) {
+  console.log(e.name); // TypeError
+}
+```
+
+再加上自定义的 `Error`, 我们就可以制作更加自由的报错信息:
+
+```js
+class ValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "ValidationError";
+  }
+}
+
+try {
+  throw new ValidationError(`This is an Error`)
+} catch (e) {
+  console.log(e.name);
+  // 'ValidationError'
+  if (e instanceof ValidationError) {
+    alert("Invalid data: " + e.message); // Invalid data: This is an Error
+  }
+}
+```
+
+在 `Error` 的基础上我们还可以做更深入的继承, 来制作更多的自定义 `Error`
+
+## 报错在 react 中的影响
 
 
 
