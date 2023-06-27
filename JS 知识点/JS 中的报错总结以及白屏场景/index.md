@@ -474,11 +474,94 @@ try {
 
 ### 错误边界
 
+在 react 中存在此生命周期 `componentDidCatch`, 他会在一个子组件抛出错误后被调用。
+
+```js
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  // 最新的官方推荐, 通过此 api 获取是否触发错误
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  // 旧方案是在此处 setState
+  componentDidCatch(error, info) {
+    // Example "componentStack":
+    //   in ComponentThatThrows (created by App)
+    //   in ErrorBoundary (created by App)
+    //   in div (created by App)
+    //   in App
+    logComponentStackToMyService(info.componentStack);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <h1>Something went wrong.</h1>;
+    }
+
+    return this.props.children;
+  }
+}
+```
+
+```
+<ErrorBoundary fallback={<p>Something went wrong</p>}>
+  <Profile />
+</ErrorBoundary>
+```
+
+这是来自官网的一个简单例子, 可以覆盖子组件出错的情况, 避免本身组件或兄弟组件收到波及, 而错误边界组件的粒度就需要开发者本身来界定
+
 
 ### 降级和熔断
 
-react-error-boundary
+在官方的文档中他更加推荐此组件 [react-error-boundary](https://github.com/bvaughn/react-error-boundary), 它有着更加丰富的使用:
 
+他可以简单的显示错误:
+
+```
+function Fallback({ error }) {
+  return (
+    <div role="alert">
+      <p>Something went wrong:</p>
+      <pre style={{ color: "red" }}>{error.message}</pre>
+    </div>
+  );
+}
+
+<ErrorBoundary
+  FallbackComponent={Fallback}
+>
+  <ExampleApplication />
+</ErrorBoundary>;
+```
+
+![img.png](image%2Fimg.png)
+
+也可以使用*重置*方案:
+
+```js
+function Fallback({ error, resetErrorBoundary }) {
+  return (
+    <div role="alert">
+      <p>Something went wrong:</p>
+      <pre style={{ color: "red" }}>{error.message}</pre>
+      <button onclick={resetErrorBoundary}></button>
+    </div>
+  );
+}
+```
+
+![gif.gif](image%2Fgif.gif)
+
+通过此方法, 可以重置组件, 避免了刷新页面, 对于用户来说更加友好
+
+
+> 此组件还有更加丰富的使用, 可以查看[博客](https://kentcdodds.com/blog/use-react-error-boundary-to-handle-errors-in-react)
 
 ## 总结
 

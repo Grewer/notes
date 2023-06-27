@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "react": "^16.13.0",
-    "react-dom": "^16.13.0"
+    "react-dom": "^16.13.0",
+    "react-error-boundary": "^4.0.10"
   }
 }
