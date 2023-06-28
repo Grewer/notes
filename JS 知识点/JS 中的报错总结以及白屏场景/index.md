@@ -574,6 +574,6 @@ JS中有很多报错，但是编辑器/编译，已经帮助我们过滤了一�
 
 ## 引用
 
-> https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Errors
-> https://zhuanlan.zhihu.com/p/602293047
-> https://baobangdong.cn/the-story-about-blank-screen/
+- https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Errors
+- https://zhuanlan.zhihu.com/p/602293047
+- https://baobangdong.cn/the-story-about-blank-screen/
