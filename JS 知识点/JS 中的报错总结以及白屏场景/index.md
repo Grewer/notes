@@ -2,16 +2,15 @@
 
 ## 前言
 
-导致白屏的原因大概有两种, 一为资源的加载, 二为 JS 执行出错
+导致白屏的原因大概有两种，一为资源的加载，二为 JS 执行出错
 
-本文就 JS 中执行的报错, 会比较容易造成"白屏"场景, 和能解决这些问题的一些方法, 作出一个汇总
+本文就 JS 中执行的报错，会比较容易造成"**白屏**"场景，和能解决这些问题的一些方法，作出一个汇总
 
 ## 常见的错误
 
 ### SyntaxError
 
-> #
-**`SyntaxError`**（语法错误）对象代表尝试解析不符合语法的代码的错误。当 Javascript 引擎解析代码时，遇到了不符合语法规范的标记（token）或标记顺序，则会抛出 `SyntaxError`。
+> **`SyntaxError`**（语法错误）对象代表尝试解析不符合语法的代码的错误。当 Javascript 引擎解析代码时，遇到了不符合语法规范的标记（token）或标记顺序，则会抛出 `SyntaxError`。
 > 
 
 这里陈列下 `SyntaxError` 的常见错误
@@ -21,7 +20,7 @@
 `SyntaxError: "x" is a reserved identifier` (Firefox)
 `SyntaxError: Unexpected reserved word` (Chrome)
 
-如在控制台执行下方代码,则会上述错误出现
+如在控制台执行下方代码，则会上述错误出现
 ```js
 const enum = 1
 ```
@@ -83,7 +82,7 @@ var foo = 1life;
 // SyntaxError: illegal character
 ```
 
-代码里使用了中文的引号和横杠, 造成了解析错误, 这里就提现了编辑器的重要性
+代码里使用了中文的引号和横杠，造成了解析错误，这里就体现了编辑器的重要性
 
 #### JSON 解析
 
@@ -94,7 +93,7 @@ JSON.parse('{"foo" : 1, }');
 // at line 1 column 14 of the JSON data
 ```
 
-json 解析失败的类型有很多, 这里就不赘述了, 我们在进行 `json` 解析的时候, 一定要加上 `try...catch` 语句来避免错误
+`json` 解析失败的类型有很多，这里就不赘述了，我们在进行 `json` 解析的时候，一定要加上 `try...catch` 语句来避免错误
 
 
 #### 分号问题
@@ -124,19 +123,19 @@ var array[0] = "there"; // SyntaxError missing ; before
 ```
 
 
-类似当前错误的还有很多, 比如: 
+类似当前错误的还有很多，比如: 
 
 - `SyntaxError: missing ) after argument list`
 - `SyntaxError: missing ) after condition`
 - `SyntaxError: missing } after function body`
 - `SyntaxError: missing } after property list`
 
-等等, 这些都是语法的错误, 在编辑器/IDE使用时期都能解析, 但是在某些比较古老的框架下, 
-编辑器可能并不能识别出来他的语法, 这便是此错误经常出现的场景
+这些都是语法的错误，在编辑器/IDE使用时期都能解析，但是在某些比较古老的框架下，
+编辑器可能并不能识别出来他的语法，这便是此错误经常出现的场景
 
 #### 小结
 
-`SyntaxError` 属于运行时代码错误, 通常也是新手开发者容易犯得的错误 , 在 `dev` 时期就可以发现, 不然无法通过编译, 是属于比较容易发现的问题
+`SyntaxError` 属于运行时代码错误，通常也是新手开发者容易犯得的错误 ，在 `dev` 时期就可以发现，不然无法通过编译，是属于比较容易发现的问题
 
 ### TypeError
 
@@ -150,7 +149,7 @@ var array[0] = "there"; // SyntaxError missing ; before
 
 #### 不可迭代属性
 
-当使用 `for...of` , 右侧的值不是一个可迭代值时, 或者作为数组解构赋值时, 会报此问题
+当使用 `for...of` ，右侧的值不是一个可迭代值时，或者作为数组解构赋值时，会报此问题
 
 例如:
 
@@ -169,11 +168,11 @@ for (const p of obj) {
 } // TypeError: obj is not iterable
 ```
 
-JS 中有内置的可迭代对象, 如: `String`、`Array`、`TypedArray`、`Map`、`Set` 以及 `Intl.Segments (en-US)`, 因为它们的每个 `prototype` 对象都实现了 `@@iterator` 方法。
+JS 中有内置的可迭代对象，如: `String`、`Array`、`TypedArray`、`Map`、`Set` 以及 `Intl.Segments (en-US)`，因为它们的每个 `prototype` 对象都实现了 `@@iterator` 方法。
 
 `Object` 是不可迭代的，除非它们实现了迭代协议。
 
-简单来说, 对象中缺少一个可迭代属性: `next` 函数
+简单来说，对象中缺少一个可迭代属性: `next` 函数
 
 将上述 `obj` 改造:
 
@@ -190,7 +189,7 @@ for (const p of obj) {
 }
 ```
 
-如此可不报错, 但是也不会进入循环中
+如此可不报错，但是也不会进入循环中
 
 [点此查看什么是迭代协议](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol)
 
@@ -207,7 +206,7 @@ const foo = undefined;
 foo.substring(1); // TypeError: foo is undefined
 ```
 
-虽然看起来简单, 但是他是出现白屏最为频繁的报错原因之一
+虽然看起来简单，但是他是出现白屏最为频繁的报错原因之一
 
 在以前我们通常这样解决问题:
 
@@ -262,7 +261,7 @@ obj.map(function(num) {
 
 #### `in` 的错误场景
 
-在判断一个对象中是否存在某个值时, 比较常用的是一种方法是使用 `in` 来判断:
+在判断一个对象中是否存在某个值时，比较常用的是一种方法是使用 `in` 来判断:
 
 ```js
 var foo = { baz: "bar" };
@@ -272,7 +271,7 @@ if('baz' in foo){
 }
 ```
 
-因为不能确定 foo['baz'] 的具体值, 所以这种方案也是不错的, 但是当 `foo` 的类型也不能确认的时候就会容易出现报错了
+因为不能确定 foo['baz'] 的具体值，所以这种方案也是不错的，但是当 `foo` 的类型也不能确认的时候就会容易出现报错了
 
 ```js
 var foo = null;
@@ -284,7 +283,7 @@ var foo = null;
 ```
 字符串和空值不适合使用此语法
 
-_另外需要注意的是_, 我们在**数组**中需要小心使用
+_另外需要注意的是_，在**数组**中需要小心使用
 
 ```js
 const number = [2, 3, 4, 5];
@@ -297,8 +296,8 @@ const number = [2, 3, 4, 5];
 
 #### 小结
 
-因为错误是跟随着不同的值类型来的, 而数据的接收/转变我们并不能做到 100% 的把控。
-它是我们平时线上报错最频繁的一种类型,也是最容易造成页面白屏的。需要保持 120% 的小心。
+因为错误是跟随着不同的值类型，而数据的接收/转变我们并不能做到 100% 的把控。
+它是我们平时线上报错最频繁的一种类型，也是最容易造成页面白屏的。需要保持 120% 的小心。
 
 ### RangeError
 
@@ -329,33 +328,33 @@ const b = BigInt(NaN);
 
 ---
 
-总的来说 RangeError 都是因为传入了不正确的值而导致的该问题, 这种情况发生的概率较小, 部分数字都是自己可以手动控制或者写死在代码里的,
-除非是定制化很高的情况, 比如低代码, 让用户随意输入的时候, 在使用的时候, 最好先做出判断, 或者加上 try...catch 即可
+总的来说 RangeError 都是因为传入了不正确的值而导致的，这种情况发生的概率较小，部分数字都是自己可以手动控制或者写死在代码里的  
+除非是定制化很高的情况，比如低代码，让用户随意输入的时候，在使用的时候，最好先做出判断，或者加上 `try...catch` 
 
 ### ReferenceError
 
 > **`ReferenceError`**（引用错误）对象代表当一个不存在（或尚未初始化）的变量被引用时发生的错误。
 
-这种报错的场景大多处于严格模式下, 在正常情况下 **"变量未定义"** 这种报错出现的情况较多
+这种报错的场景大多处于严格模式下，在正常情况下 **"变量未定义"** 这种报错出现的情况较多
 
 
 ```js
 foo.substring(1); // ReferenceError: foo is not defined
 ```
 
-如上, `foo` 未定义即直接使用, 则就会出现报错
+如上，`foo` 未定义即直接使用，则就会出现报错
 
-还有一类报错是赋值的问题, 比如上方讲过的**_可选链_**功能, 他是不能赋值的:
+还有一类报错是赋值的问题，比如上方讲过的**_可选链_**功能，他是不能赋值的:
 
 ```js
 foo?.bar = 123
 ```
 
-这一类在编码因为容易分析, 一般在编辑器中就能容易发现, 所以并不会带来很多困扰。
+这一类在编码因为容易分析，一般在编辑器中就能容易发现，所以并不会带来很多困扰。
 
 ### 其他
 
-**`InternalError` 对象**表示出现在 JavaScript 引擎内部的错误。尚未成为任何规范的一部分, 所以我们可以忽略。
+**`InternalError` 对象**表示出现在 JavaScript 引擎内部的错误。尚未成为任何规范的一部分，所以我们可以忽略。
 
 ---
 
@@ -377,7 +376,7 @@ decodeURI("%")
 // Uncaught URIError: URI malformed at decodeURI
 ```
 
-所以使用 `decodeURIComponent` 函数时, 需要加上 `try...catch` 来保持正确性
+所以使用 `decodeURIComponent` 函数时，需要加上 `try...catch` 来保持正确性
 
 ## 另类错误
 
@@ -410,7 +409,7 @@ throw new TypeError("出错了，变量类型无效！");
 ```
 
 
-同样的, 此种方案我们可以使用在 `Promise` 的 `then` 中:
+同样的，此种方案我们可以使用在 `Promise` 的 `then` 中:
 
 ```js
 // 模拟一个接口的返回
@@ -435,7 +434,7 @@ try {
 }
 ```
 
-再加上自定义的 `Error`, 我们就可以制作更加自由的报错信息:
+再加上自定义的 `Error`，我们就可以制作更加自由的报错信息:
 
 ```js
 class ValidationError extends Error {
@@ -456,27 +455,28 @@ try {
 }
 ```
 
-在 `Error` 的基础上我们还可以做更深入的继承, 来制作更多的自定义 `Error`
+在 `Error` 的基础上我们还可以做更深入的继承，来制作更多的自定义 `Error`
 
 ## 报错在 react 中的影响
 
-`react` 报错按照位置, 我将他分成两类, 一类是**渲染报错**, 另一类是**执行报错**;   
-渲染即 `render` 函数中的视图渲染报错, 另一个则是执行函数报错;
+`react` 报错按照位置，我将他分成两类，一类是**渲染报错**，另一类是**执行报错**;   
+渲染即 `render` 函数中的视图渲染报错，另一个则是执行函数报错;
 
-函数的执行报错, 是不会影响视图的渲染的, 即**白屏**, 但是他会有一些不良影响, 如
-- 代码执行暂停, 部分逻辑未执行, 未能闭环整体逻辑, 如点击按钮一直卡在 `loading` 中
-- 数据的渲染出现异常, 两边数据对不上
+函数的执行报错，是不会影响视图的渲染的，即**白屏**，但是他会有一些不良影响，如
+- 代码执行暂停，部分逻辑未执行，未能闭环整体逻辑，如点击按钮一直卡在 `loading` 中
+- 数据的渲染出现异常，两边数据对不上
 
+---
 
-在视图渲染中*(包括函数的 `return`)* ,触发 JS 错误, 都会渲染问题
+在视图渲染中(包括函数的 `return`) ，触发 JS 错误，都会渲染问题
 
-那为什么整个页面都会白屏呢 ?
+_那为什么整个页面都会白屏呢 ?_
 
 原因是自 `React 16` 起，任何未被**错误边界**捕获的错误将会导致整个 `React` 组件树被卸载。
 
 ### 错误边界
 
-在 react 中存在此生命周期 `componentDidCatch`, 他会在一个子组件抛出错误后被调用。
+在 react 中存在此生命周期 `componentDidCatch`，他会在一个子组件抛出错误后被调用。
 
 ```js
 class ErrorBoundary extends React.Component {
@@ -516,12 +516,12 @@ class ErrorBoundary extends React.Component {
 </ErrorBoundary>
 ```
 
-这是来自官网的一个简单例子, 可以覆盖子组件出错的情况, 避免本身组件或兄弟组件收到波及, 而错误边界组件的粒度就需要开发者本身来界定
+这是来自官网的一个简单例子，可以覆盖子组件出错的情况，避免本身组件或兄弟组件收到波及，而错误边界组件的**粒度**需要开发者本身来界定
 
 
 ### 降级和熔断
 
-在官方的文档中他更加推荐此组件 [react-error-boundary](https://github.com/bvaughn/react-error-boundary), 它有着更加丰富的使用:
+在官方的文档中他更加推荐此组件 [react-error-boundary](https://github.com/bvaughn/react-error-boundary)，它有着更加丰富的使用:
 
 他可以简单的显示错误:
 
@@ -560,13 +560,16 @@ function Fallback({ error, resetErrorBoundary }) {
 
 ![gif.gif](image%2Fgif.gif)
 
-通过此方法, 可以重置组件, 避免了刷新页面, 对于用户来说更加友好
+通过此方法重置组件，避免了刷新页面，对于用户来说更加友好
 
 
-> 此组件还有更加丰富的使用, 可以查看[博客](https://kentcdodds.com/blog/use-react-error-boundary-to-handle-errors-in-react)
+> 更多使用，可以查看[此处博客](https://kentcdodds.com/blog/use-react-error-boundary-to-handle-errors-in-react)
 
 ## 总结
 
+JS中有很多报错，但是编辑器/编译，已经帮助我们过滤了一大部分的错误，但是仍然会有部分报错会在特殊条件下出现   
+所以一方面需要充分的测试，如最大值/最小值/特殊值等等，另一方面就是需要积累经验，一些写法就是容易出现问题，可以通过 `codeReview` 来预防部分问题  
+但最终要坚守软件开发的 **不信任原则**，保持 `overly pessimistic` （过于悲观），把和程序有关的一切请求、服务、接口、返回值、机器、框架、中间件等等都当做不可信的，步步为营、处处设防。
 
 
 ## 引用
