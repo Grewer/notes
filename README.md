@@ -82,6 +82,12 @@
         - quill.js 富文本中的光标和选区
             - index
 
+        - quill.js 插件
+            - example
+                - public
+
+            - index
+
         - quill.js 自定义工具栏开发指南
             - example
                 - public
