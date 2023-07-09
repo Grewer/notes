@@ -12,3 +12,61 @@
 
 分别是: 自定义工具栏, 键盘事件控制, 撤销/重做功能配置, 剪贴板配置, 语法高亮
 
+
+## modules 模板
+
+先建立一个简单的 `modules` `demo`
+
+创建文件 `modules/index.ts`:
+
+```js
+export default class QuillResize {
+  private quill: any;
+
+  constructor(quill, options = {}) {
+    // 赋值, 备用
+    this.quill = quill;
+
+    this.onCreate()
+  }
+
+  onCreate () {
+    console.log('onCreate')
+    // 在这里我们开始做一些事情
+  }
+
+}
+```
+
+`App.tsx`  引用 `modules`:
+
+```tsx
+import ImageResize from './modules/index'
+
+Quill.register('modules/resize', ImageResize);
+
+
+function App() {
+
+  const modules = useMemo(() => ({
+    toolbar: {
+      container: '#toolbar',
+    },
+    resize: { // resize 就是上面注册的名字 'modules/resize'
+      foo: 1 // 这里传一个自定义的参数
+    }
+  }), []);
+
+  // ...
+
+  return (<div className={'container'}>
+    <CustomToolbar/>
+    <ReactQuill ref={editorRef} theme="snow" value={value} modules={modules} onChange={setValue}/>
+  </div>)
+}
+```
+
+这就是 modules 的雏形, 现在我们可以做任何想做的事了！
+
+
+

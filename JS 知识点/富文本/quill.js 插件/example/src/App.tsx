@@ -39,9 +39,6 @@ function App() {
   const modules = useMemo(() => ({
     toolbar: {
       container: '#toolbar',
-      handlers: {
-        showFindModal,
-      },
     },
     resize: {
       foo: 1
@@ -56,7 +53,6 @@ function App() {
 
   return (<div className={'container'}>
     <CustomToolbar/>
-    {/*@ts-ignore*/}
     <ReactQuill ref={editorRef} theme="snow" value={value} modules={modules} onChange={setValue}/>
   </div>)
 }
