@@ -1,16 +1,19 @@
-import { Quill } from 'react-quill';
+import {Quill} from 'react-quill';
+import Resize from "./Resize";
 
 const Parchment = Quill.import('parchment');
 
 export default class QuillResize {
   private quill: any;
+  private resizeModule: any;
 
   constructor(quill, options = {}) {
     this.quill = quill;
 
-    this.onCreate()
+    this.quill.root.addEventListener('mousedown', this.handleClick, false);
+
+    this.onCreate();
     // respond to clicks inside the editor
-    // this.quill.root.addEventListener('mousedown', this.handleClick, false);
 
     // this.quill.on('text-change', this.handleChange);
     //
@@ -27,32 +30,33 @@ export default class QuillResize {
     // this.modules = [];
   }
 
-  onCreate (){
+  onCreate() {
     console.log('onCreate')
+    this.resizeModule = new Resize(this);
   }
 
 
-  // handleClick(evt) {
-  //   let show = false;
-  //   let blot;
-  //   const target = evt.target;
-  //
-  //   if (target && target.tagName) {
-  //     blot = this.quill.constructor.find(target);
-  //     if (blot) {
-  //       show = this.judgeShow(blot, target);
-  //     }
-  //   }
-  //   if (show) {
-  //     evt.preventDefault();
-  //     // evt.stopPropagation()
-  //     return;
-  //   }
-  //   if (this.activeEle) {
-  //     // clicked on a non image
-  //     this.hide();
-  //   }
-  // }
+  handleClick(evt) {
+    let show = false;
+    let blot;
+    const target = evt.target;
+
+    if (target && target.tagName) {
+      blot = this.quill.constructor.find(target);
+      if (blot) {
+        show = this.judgeShow(blot, target);
+      }
+    }
+    if (show) {
+      evt.preventDefault();
+      // evt.stopPropagation()
+      return;
+    }
+    if (this.activeEle) {
+      // clicked on a non image
+      this.hide();
+    }
+  }
 
   // handleChange(delta, oldDelta, source) {
   //   if (this.updateFromModule) {
@@ -88,7 +92,6 @@ export default class QuillResize {
   //   this.removeBlotsSelectedClass(blots);
   //   this.selectedBlots = blots;
   // }
-
 
 
 }
