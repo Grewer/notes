@@ -5,13 +5,27 @@ const Parchment = Quill.import('parchment');
 
 export default class QuillResize {
   private quill: any;
-  private resizeModule: any;
+  private resizeModule?: Resize;
   private activeEle?: HTMLElement;
+  private overlay ?: HTMLElement;
+  private blot: any;
+  private activeClass: string;
+  private overlayStyle: { border: string; boxSizing: string; position: string; marginTop?: string };
+  private hideProxy?: () => void;
+
 
   constructor(quill, options = {}) {
     this.quill = quill;
 
     this.quill.root.addEventListener('mousedown', this.handleClick, false);
+
+    this.activeClass = 'active'
+
+    this.overlayStyle = {
+      position: 'absolute',
+      boxSizing: 'border-box',
+      border: '1px dashed #444',
+    }
 
     // respond to clicks inside the editor
 
@@ -92,13 +106,13 @@ export default class QuillResize {
   show() {
     this.showOverlay();
     this.initializeModules();
-    if (this.activeEle) this.activeEle.classList.add('active');
+    if (this.activeEle) this.activeEle.classList.add(this.activeClass);
   }
 
   hide() {
     this.hideOverlay();
     this.removeModules();
-    if (this.activeEle && this.options.activeClass) this.activeEle.classList.remove(this.options.activeClass);
+    if (this.activeEle && this.activeClass) this.activeEle.classList.remove(this.activeClass);
     this.activeEle = undefined;
     this.blot = undefined;
   }
@@ -116,8 +130,8 @@ export default class QuillResize {
     // Create and add the overlay
     this.overlay = document.createElement('div');
     // this.overlay.setAttribute('title', "Double-click to select image");
-    Object.assign(this.overlay.style, this.options.styles.overlay);
-    this.overlay.addEventListener('dblclick', this.handleEdit.bind(this), false);
+    Object.assign(this.overlay.style, this.overlayStyle);
+    this.overlay.addEventListener('dblclick', this.handleEdit, false);
 
     this.quill.root.parentNode.appendChild(this.overlay);
 
@@ -128,48 +142,73 @@ export default class QuillResize {
     // listen for the image being deleted or moved
     this.quill.root.addEventListener('input', this.hideProxy, true);
 
-    this.updateOverlayPositionProxy = this.updateOverlayPosition.bind(this);
-    this.quill.root.addEventListener('scroll', this.updateOverlayPositionProxy);
+    this.quill.root.addEventListener('scroll', this.updateOverlayPosition);
 
     this.repositionElements();
   }
 
 
+  hideOverlay() {
+    if (!this.overlay) {
+      return;
+    }
 
-  // handleChange(delta, oldDelta, source) {
-  //   if (this.updateFromModule) {
-  //     this.updateFromModule = false;
-  //     return;
-  //   }
-  //
-  //   if (source !== 'user' || !this.overlay || !this.activeEle) return;
-  //   this.onUpdate();
-  // }
+    // Remove the overlay
+    this.quill.root.parentNode.removeChild(this.overlay);
+    this.overlay = undefined;
 
-  // handleEdit() {
-  //   if (!this.blot) return;
-  //   const index = this.blot.offset(this.quill.scroll);
-  //   this.hide();
-  //   this.quill.focus();
-  //   this.quill.setSelection(index, 1);
-  // }
+    // stop listening for image deletion or movement
+    this.quill.root.removeEventListener('input', this.hideProxy, true);
+    this.quill.root.removeEventListener('scroll', this.updateOverlayPosition);
 
-  // addBlotsSelectedClass(range) {
-  //   if (!range) {
-  //     this.removeBlotsSelectedClass();
-  //     this.selectedBlots = [];
-  //     return;
-  //   }
-  //
-  //   const leaves = this.quill.scroll.descendants(Parchment.LeafBlot, range.index, range.length);
-  //   const blots = leaves.filter((blot) => {
-  //     const canBeHandle = !!this.options.parchment[blot.statics.blotName];
-  //     if (canBeHandle) blot.domNode.classList.add(this.options.selectedClass);
-  //     return canBeHandle;
-  //   });
-  //   this.removeBlotsSelectedClass(blots);
-  //   this.selectedBlots = blots;
-  // }
+    // reset user-select
+    this.setUserSelect('');
+  }
+
+  removeModules() {
+    // this.resizeModule.onDestroy?.();
+
+    this.resizeModule = undefined;
+  }
+
+  setUserSelect(value) {
+    ['userSelect', 'mozUserSelect', 'webkitUserSelect', 'msUserSelect'].forEach((prop) => {
+      // set on contenteditable element and <html>
+      this.quill.root.style[prop] = value;
+      document.documentElement.style[prop] = value;
+    });
+  }
+
+  handleEdit() {
+    if (!this.blot) return;
+    const index = this.blot.offset(this.quill.scroll);
+    this.hide();
+    this.quill.focus();
+    this.quill.setSelection(index, 1);
+  }
+
+  updateOverlayPosition() {
+    this.overlayStyle.marginTop = `${-1 * this.quill.root.scrollTop}px`;
+  }
+
+  repositionElements() {
+    if (!this.overlay || !this.activeEle) {
+      return;
+    }
+
+    // position the overlay over the image
+    const parent = this.quill.root.parentNode;
+    const eleRect = this.activeEle.getBoundingClientRect();
+    const containerRect = parent.getBoundingClientRect();
+
+    Object.assign(this.overlay.style, {
+      left: `${eleRect.left - containerRect.left - 1 + parent.scrollLeft}px`,
+      top: `${eleRect.top - containerRect.top + this.quill.root.scrollTop}px`,
+      width: `${eleRect.width}px`,
+      height: `${eleRect.height}px`,
+      marginTop: `${-1 * this.quill.root.scrollTop}px`,
+    });
+  }
 
 
 }
