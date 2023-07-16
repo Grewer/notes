@@ -49,7 +49,7 @@ export default class QuillResize {
   }
 
 
-  handleClick(evt) {
+  handleClick = (evt)=> {
     let show = false;
     let blot;
     const target = evt.target;
@@ -60,6 +60,7 @@ export default class QuillResize {
         show = this.judgeShow(blot, target);
       }
     }
+    console.log(this, show, blot, target)
     if (show) {
       evt.preventDefault();
       // evt.stopPropagation()
@@ -68,21 +69,25 @@ export default class QuillResize {
     if (this.activeEle) {
       // clicked on a non image
       this.hide();
+      console.log(this.activeEle)
     }
   }
 
-  judgeShow(blot, target) {
+  judgeShow = (blot, target) => {
     let res = false;
     if (!blot) return res;
 
     if (!target && blot.domNode) target = blot.domNode;
-    const options = {
-      attribute: ['width', 'height'],
-      limit: {
-        minWidth: 10,
-        ratio: true, // 默认按照原图片比例 缩放
-      },
+    let options
+    if(blot.statics.blotName === 'image'){
+      options = {
+        limit: {
+          minWidth: 10,
+          ratio: true, // 默认按照原图片比例 缩放
+        },
+      }
     }
+    if (!options) return res;
     if (this.activeEle === target) return true;
 
     const limit = options.limit || {};
@@ -103,13 +108,13 @@ export default class QuillResize {
     return res;
   }
 
-  show() {
+  show = ()=> {
     this.showOverlay();
     this.initializeModules();
     if (this.activeEle) this.activeEle.classList.add(this.activeClass);
   }
 
-  hide() {
+  hide = ()=> {
     this.hideOverlay();
     this.removeModules();
     if (this.activeEle && this.activeClass) this.activeEle.classList.remove(this.activeClass);
@@ -117,7 +122,7 @@ export default class QuillResize {
     this.blot = undefined;
   }
 
-  showOverlay() {
+  showOverlay = () => {
     if (this.overlay) {
       this.hideOverlay();
     }
@@ -145,10 +150,10 @@ export default class QuillResize {
     this.quill.root.addEventListener('scroll', this.updateOverlayPosition);
 
     this.repositionElements();
-  }
+  };
 
 
-  hideOverlay() {
+  hideOverlay = () => {
     if (!this.overlay) {
       return;
     }
@@ -163,35 +168,35 @@ export default class QuillResize {
 
     // reset user-select
     this.setUserSelect('');
-  }
+  };
 
-  removeModules() {
+  removeModules = () => {
     // this.resizeModule.onDestroy?.();
 
     this.resizeModule = undefined;
-  }
+  };
 
-  setUserSelect(value) {
+  setUserSelect = value => {
     ['userSelect', 'mozUserSelect', 'webkitUserSelect', 'msUserSelect'].forEach((prop) => {
       // set on contenteditable element and <html>
       this.quill.root.style[prop] = value;
       document.documentElement.style[prop] = value;
     });
-  }
+  };
 
-  handleEdit() {
+  handleEdit = () => {
     if (!this.blot) return;
     const index = this.blot.offset(this.quill.scroll);
     this.hide();
     this.quill.focus();
     this.quill.setSelection(index, 1);
-  }
+  };
 
-  updateOverlayPosition() {
-    this.overlayStyle.marginTop = `${-1 * this.quill.root.scrollTop}px`;
-  }
+  updateOverlayPosition = () => {
+    this.overlay!.style.marginTop = `${-1 * this.quill.root.scrollTop}px`;
+  };
 
-  repositionElements() {
+  repositionElements = () => {
     if (!this.overlay || !this.activeEle) {
       return;
     }
@@ -208,7 +213,7 @@ export default class QuillResize {
       height: `${eleRect.height}px`,
       marginTop: `${-1 * this.quill.root.scrollTop}px`,
     });
-  }
+  };
 
 
 }

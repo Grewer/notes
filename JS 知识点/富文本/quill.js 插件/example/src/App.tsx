@@ -22,14 +22,11 @@ const CustomToolbar = () => <div id="toolbar">
   </select>
   <button className="ql-bold"></button>
   <button className="ql-italic"></button>
-  <button className="ql-showFindModal">
-    <CustomButton/>
-  </button>
 </div>
 
 
 function App() {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState('<img src="https://grewer.github.io/dataSave/s.jpg" />');
   const [visible, setVisible] = useState(false)
 
   function showFindModal() {
