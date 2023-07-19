@@ -46,6 +46,7 @@ export default class QuillResize {
 
   initializeModules = () => {
     this.resizeModule = new Resize(this);
+    this.resizeModule.onCreate()
   }
 
 

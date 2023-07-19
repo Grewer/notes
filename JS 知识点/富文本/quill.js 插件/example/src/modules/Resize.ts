@@ -178,8 +178,14 @@ class Resize {
     this.requestUpdate();
   };
 
-  calcSize = (size, limit = {}) => {
-    let { width, height } = size;
+  calcSize = (size, limit: {
+    minWidth?: number;
+    maxWidth?: number;
+    minHeight?: number;
+    maxHeight?: number;
+    ratio?: boolean
+  } = {}) => {
+    let {width, height} = size;
     // keep ratio
     if (limit.ratio) {
       let limitHeight;
@@ -194,7 +200,7 @@ class Resize {
       if (limit.maxWidth) width = Math.min(limit.maxWidth, width);
       if (this.editorMaxWidth) width = Math.min(this.editorMaxWidth, width);
 
-      height = width * this.localRatio;
+      height = width * (this.localRatio || 1);
 
       if (limit.minHeight && height < limit.minHeight) {
         limitHeight = true;
@@ -206,7 +212,7 @@ class Resize {
       }
 
       if (limitHeight) {
-        width = height / this.localRatio;
+        width = height / (this.localRatio || 1);
       }
     } else {
       if (size.width) {
@@ -231,8 +237,8 @@ class Resize {
     this.setCursor('');
     this.blot.handling && this.blot.handling(false);
     // stop listening for movement and mouseup
-    document.removeEventListener('mousemove', this.handleDragProxy);
-    document.removeEventListener('mouseup', this.handleMouseupProxy);
+    document.removeEventListener('mousemove', this.handleDrag);
+    document.removeEventListener('mouseup', this.handleMouseup);
   };
 }
 
