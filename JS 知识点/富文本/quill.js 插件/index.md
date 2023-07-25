@@ -76,7 +76,37 @@ function App() {
 添加监听事件, 知道用户高亮的是什么元素:
 
 ```js
+export default class QuillResize {
+  constructor(quill, options = {}) {
+    this.quill = quill;
+    
+    this.quill.root.addEventListener('mousedown', this.handleClick, false);
+  }
 
+  handleClick = (evt)=> {
+    let show = false;
+    let blot;
+    const target = evt.target;
+
+    if (target && target.tagName) {
+      // 在 quill 编辑器中找到对应的点击结构
+      blot = this.quill.constructor.find(target);
+      if (blot) {
+        // 如果有,再通过 judgeShow 函数判断是否该高亮
+        show = this.judgeShow(blot, target);
+      }
+    }
+    // 如果需要高亮, 则阻止默认动作(如 a 标签等等)
+    if (show) {
+      evt.preventDefault();
+      return;
+    }
+    if (this.activeEle) {
+      // 如果点击在其他位置, 已经聚焦图片了, 那就取消高亮
+      this.hide();
+    }
+  }
+}
 ```
 
 

@@ -12,11 +12,12 @@ export default class QuillResize {
   private activeClass: string;
   private overlayStyle: { border: string; boxSizing: string; position: string; marginTop?: string };
   private hideProxy?: () => void;
+  private updateFromModule?: boolean;
 
 
   constructor(quill, options = {}) {
     this.quill = quill;
-
+    console.log('init modules')
     this.quill.root.addEventListener('mousedown', this.handleClick, false);
 
     this.activeClass = 'active'
@@ -26,6 +27,29 @@ export default class QuillResize {
       boxSizing: 'border-box',
       border: '1px dashed #444',
     }
+
+    //    const listener = (e) => {
+    //       if (!document.body.contains(quill.root)) {
+    //         document.body.removeEventListener('click', listener);
+    //         return;
+    //       }
+    //       if (
+    //         this.tooltip != null &&
+    //         !this.tooltip.root.contains(e.target) &&
+    //         document.activeElement !== this.tooltip.textbox &&
+    //         !this.quill.hasFocus()
+    //       ) {
+    //         this.tooltip.hide();
+    //       }
+    //       if (this.pickers != null) {
+    //         this.pickers.forEach((picker) => {
+    //           if (!picker.container.contains(e.target)) {
+    //             picker.close();
+    //           }
+    //         });
+    //       }
+    //     };
+    //     quill.emitter.listenDOM('click', document.body, listener);
 
     // respond to clicks inside the editor
 
@@ -47,8 +71,14 @@ export default class QuillResize {
   initializeModules = () => {
     this.resizeModule = new Resize(this);
     this.resizeModule.onCreate()
+    this.onUpdate();
   }
 
+  onUpdate(fromModule?) {
+    this.updateFromModule = fromModule;
+    this.repositionElements();
+    // module  onUpdate(); ?
+  }
 
   handleClick = (evt)=> {
     let show = false;

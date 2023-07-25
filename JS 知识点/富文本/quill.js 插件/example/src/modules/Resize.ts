@@ -49,6 +49,7 @@ class Resize {
     this.positionBoxes();
   };
 
+
   addBox = cursor => {
     // create div element for resize handle
     const box = document.createElement('div');
