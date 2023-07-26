@@ -109,5 +109,46 @@ export default class QuillResize {
 }
 ```
 
+`judgeShow` 判断是否应该聚焦图片:
+
+```js
+  judgeShow = (blot, target) => {
+    let res = false;
+    if (!blot) return res;
+    // 数据的一些判断和补充
+    if (!target && blot.domNode) target = blot.domNode;
+    
+    // 参数, 支持最小是 10px 的图片, 可从外部传入
+    const options = {
+        limit: {
+          minWidth: 10,
+        },
+      }
+    
+    if (!options) return res;
+    // 如果当前聚焦的是再次点击的,则直接 return
+    if (this.activeEle === target) return true;
+  
+    // 判断大小的限制
+    const limit = options.limit || {};
+    if (!limit.minWidth || (limit.minWidth && target.offsetWidth >= limit.minWidth)) {
+      res = true;
+      
+      // 当前聚焦和点击的图片不是同一个的时候, 隐藏原有的
+      if (this.activeEle) {
+        this.hide();
+      }
+      // 重新赋值
+      this.activeEle = target;
+      this.blot = blot;
+      
+      // 调用 show 方法, 显示聚焦样式
+      this.show();
+    }
+
+    return res;
+  }
+```
+
 
 
