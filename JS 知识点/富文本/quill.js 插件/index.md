@@ -150,5 +150,50 @@ export default class QuillResize {
   }
 ```
 
+显示图片高亮聚焦样式
 
+```js
+show = ()=> {
+  this.showOverlay(); // 显示样式
+  this.initializeModules(); //初始化拖动事件
+  // 如果有样式, 则添加聚焦样式
+  if (this.activeEle) this.activeEle.classList.add(this.activeClass);
+}
+
+showOverlay = () => {
+  if (this.overlay) {
+    this.hideOverlay();
+  }
+  
+  // 取消光标选中
+  this.quill.setSelection(null);
+
+  // 阻止用户选中
+  this.setUserSelect('none');
+
+  // 创建一个遮罩
+  this.overlay = document.createElement('div');
+  // 添加遮罩样式
+  Object.assign(this.overlay.style, this.overlayStyle);
+  // 插入到编辑器中
+  this.quill.root.parentNode.appendChild(this.overlay);
+
+  this.hideProxy = () => {
+    if (!this.activeEle) return;
+    this.hide();
+  };
+  // 监听输入事件, 发生变化则隐藏
+  this.quill.root.addEventListener('input', this.hideProxy, true);
+  
+  // 监听滚动事件, 遮罩要随着滚动偏移
+  this.quill.root.addEventListener('scroll', this.updateOverlayPosition);
+
+  // 添加具体的坐标
+  this.repositionElements();
+};
+```
+
+// TODO 没有拉伸的截图
+
+// TODO 流程图
 
