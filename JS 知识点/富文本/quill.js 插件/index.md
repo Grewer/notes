@@ -109,6 +109,12 @@ export default class QuillResize {
 }
 ```
 
+`handleClick` 流程:
+
+![img.png](images%2Fimg.png)
+
+
+
 `judgeShow` 判断是否应该聚焦图片:
 
 ```js
@@ -150,6 +156,11 @@ export default class QuillResize {
   }
 ```
 
+`judgeShow` 的具体流程:
+
+
+
+
 显示图片高亮聚焦样式
 
 ```js
@@ -188,7 +199,7 @@ showOverlay = () => {
   // 监听滚动事件, 遮罩要随着滚动偏移
   this.quill.root.addEventListener('scroll', this.updateOverlayPosition);
 
-  // 添加具体的坐标
+  // 样式上添加具体的坐标
   this.repositionElements();
 };
 ```
