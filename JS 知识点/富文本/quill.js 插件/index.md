@@ -166,7 +166,7 @@ export default class QuillResize {
 ```js
 show = ()=> {
   this.showOverlay(); // 显示样式
-  this.initializeModules(); //初始化拖动事件
+  // this.initializeModules(); //初始化拖动事件/其他事件 这里暂不开放
   // 如果有样式, 则添加聚焦样式
   if (this.activeEle) this.activeEle.classList.add(this.activeClass);
 }
@@ -203,6 +203,15 @@ showOverlay = () => {
   this.repositionElements();
 };
 ```
+
+
+图片聚焦样式:
+
+![img2.png](images%2Fimg2.png)
+
+
+
+
 
 // TODO 没有拉伸的截图
 

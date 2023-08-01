@@ -26,7 +26,7 @@ const CustomToolbar = () => <div id="toolbar">
 
 
 function App() {
-  const [value, setValue] = useState('<img src="https://grewer.github.io/dataSave/s.jpg" />');
+  const [value, setValue] = useState('<img src="https://grewer.github.io/dataSave/emoji/img_1.png" />');
   const [visible, setVisible] = useState(true)
 
   function showFindModal() {

@@ -141,7 +141,7 @@ export default class QuillResize {
 
   show = ()=> {
     this.showOverlay();
-    this.initializeModules();
+    // this.initializeModules();
     if (this.activeEle) this.activeEle.classList.add(this.activeClass);
   }
 
@@ -185,9 +185,11 @@ export default class QuillResize {
 
 
   hideOverlay = () => {
+    console.log('run2')
     if (!this.overlay) {
       return;
     }
+    console.log('run')
 
     // Remove the overlay
     this.quill.root.parentNode.removeChild(this.overlay);
