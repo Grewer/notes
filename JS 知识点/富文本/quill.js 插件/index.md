@@ -210,10 +210,56 @@ showOverlay = () => {
 ![img2.png](images%2Fimg2.png)
 
 
-
-
-
-// TODO 没有拉伸的截图
+在
 
 // TODO 流程图
 
+
+
+## 模块扩展
+
+在图片聚焦时, 添加额外功能, 如图片的缩放
+
+新增文件 Resize.ts
+
+```ts
+class Resize {
+  onCreate = () => {
+    this.boxes = [];
+
+    // 添加手柄
+    this.addBox('nwse-resize'); // top left
+    this.addBox('nesw-resize'); // top right
+    this.addBox('nwse-resize'); // bottom right
+    this.addBox('nesw-resize'); // bottom left
+
+    // 计算坐标
+    this.positionBoxes();
+  };
+
+
+  addBox = cursor => {
+    const box = document.createElement('div');
+
+    Object.assign(box.style, this.handleStyles);
+    
+    box.style.width = `${this.handleStyles.width}px`;
+    box.style.height = `${this.handleStyles.height}px`;
+
+    // 监听动作, 拖动时触发函数
+    box.addEventListener('mousedown', this.handleMousedown, false);
+    // 插入元素
+    this.overlay.appendChild(box);
+    // 记录到 boxes 中
+    this.boxes.push(box);
+  };
+}
+
+```
+
+// TODO 截图
+
+触发拖动事件
+```ts
+
+```
