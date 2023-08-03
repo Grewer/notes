@@ -259,7 +259,34 @@ class Resize {
 
 // TODO 截图
 
-触发拖动事件
+按下手柄时触发拖动事件
+
 ```ts
+  handleMousedown = evt => {
+  // 修改状态
+    this.blot.handling && this.blot.handling(true);
+    this.dragBox = evt.target;
+    this.dragStartX = evt.clientX;
+    this.dragStartY = evt.clientY;
+    // 存储坐标
+    this.preDragSize = {
+      width: this.activeEle?.offsetWidth || 0,
+      height: this.activeEle?.offsetHeight || 0,
+    };
+    // 存储原本尺寸
+    this.naturalSize = this.getNaturalSize();
+
+    const {width, height} = this.naturalSize;
+    this.localRatio = height / width;
+    this.editorMaxWidth = this.quill.container.clientWidth - 30;
+    
+    
+    // 修改手柄的 cursor 属性
+    this.setCursor(this.dragBox!.style.cursor);
+
+    // 监听拖动和放开事件
+    document.addEventListener('mousemove', this.handleDrag, false);
+    document.addEventListener('mouseup', this.handleMouseup, false);
+  };
 
 ```
