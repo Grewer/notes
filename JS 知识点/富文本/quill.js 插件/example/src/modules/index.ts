@@ -141,7 +141,7 @@ export default class QuillResize {
 
   show = ()=> {
     this.showOverlay();
-    // this.initializeModules();
+    this.initializeModules();
     if (this.activeEle) this.activeEle.classList.add(this.activeClass);
   }
 

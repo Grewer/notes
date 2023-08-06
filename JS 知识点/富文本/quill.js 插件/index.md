@@ -156,11 +156,6 @@ export default class QuillResize {
   }
 ```
 
-`judgeShow` 的具体流程:
-
-
-
-
 显示图片高亮聚焦样式
 
 ```js
@@ -210,9 +205,9 @@ showOverlay = () => {
 ![img2.png](images%2Fimg2.png)
 
 
-在
+滚动事件:
 
-// TODO 流程图
+![gif.gif](images%2Fgif.gif)
 
 
 
@@ -220,7 +215,7 @@ showOverlay = () => {
 
 在图片聚焦时, 添加额外功能, 如图片的缩放
 
-新增文件 Resize.ts
+新增文件 `Resize.ts`
 
 ```ts
 class Resize {
@@ -257,7 +252,7 @@ class Resize {
 
 ```
 
-// TODO 截图
+![img3.png](images%2Fimg3.png)
 
 按下手柄时触发拖动事件
 
@@ -285,8 +280,19 @@ class Resize {
     this.setCursor(this.dragBox!.style.cursor);
 
     // 监听拖动和放开事件
+    // 根据拖动的距离, 计算图片的尺寸,进行缩放
+    // 在 mouseup 中释放监听事件
     document.addEventListener('mousemove', this.handleDrag, false);
     document.addEventListener('mouseup', this.handleMouseup, false);
   };
 
 ```
+// TODO 流程
+
+
+拖动效果:
+
+![gif2.gif](images%2Fgif2.gif)
+
+
+## 总结
