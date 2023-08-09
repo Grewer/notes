@@ -1,8 +1,8 @@
 
-在 quill.js 中,扩展性最强大的功能就是插件了  
-本文主要以一个图片扩展的 quill.js 插件来介绍 quill 插件开发
+在 `quill.js` 中，扩展性最强大的功能就是插件   
+本文主要以一个图片扩展的插件来介绍 `quill` 插件开发
 
-在 quill.js 中此种功能名为: `Modules`, 目前已有 5 种插件:
+在 `quill.js` 中他有着自己的名字: `Modules`，而他也内置了 5 种插件：
 
 - TOOLBAR
 - KEYBOARD
@@ -10,16 +10,15 @@
 - CLIPBOARD
 - SYNTAX
 
-分别是: 自定义工具栏, 键盘事件控制, 撤销/重做功能配置, 剪贴板配置, 语法高亮
+分别是: 自定义工具栏、键盘事件控制、撤销/重做功能配置、剪贴板配置、语法高亮
 
-
-本文中的例子主要来源于 quill 最有名的图片拖动插件: https://github.com/kensnyder/quill-image-resize-module
+本文中的例子主要来源于 `quill` 最有名插件之一：https://github.com/kensnyder/quill-image-resize-module
 
 ## modules 模板
 
-先建立一个简单的 `modules` `demo`
+先建立一个简单的 `modules` demo
 
-创建文件 `modules/index.ts`:
+创建文件 `modules/index.ts`：
 
 ```js
 export default class QuillResize {
@@ -68,14 +67,13 @@ function App() {
 }
 ```
 
-这就是 modules 的雏形, 现在我们可以做任何想做的事了！
+这就是 `modules` 的雏形, 现在我们可以做任何想做的事了！
 
 ## 图片交互
 
-我们需要缩放图片, 那么就需要给图片添加状态, 即点击图片之后, 用户知道它是能够交互的
+我们需要缩放图片，那么就需要给图片添加状态，即点击图片之后，用户知道它是能够交互的
 
-
-添加监听事件, 知道用户高亮的是什么元素:
+添加监听事件，让用户知道高亮的是什么元素：
 
 ```js
 export default class QuillResize {
@@ -111,13 +109,13 @@ export default class QuillResize {
 }
 ```
 
-`handleClick` 流程:
+`handleClick` 流程：
 
 ![img.png](images%2Fimg.png)
 
 
 
-`judgeShow` 判断是否应该聚焦图片:
+`judgeShow` 判断是否应该聚焦图片：
 
 ```js
   judgeShow = (blot, target) => {
@@ -201,21 +199,21 @@ showOverlay = () => {
 };
 ```
 
-
-图片聚焦样式:
+图片聚焦样式：
 
 ![img2.png](images%2Fimg2.png)
 
 
-滚动事件:
+滚动事件：
 
 ![gif.gif](images%2Fgif.gif)
 
+// todo
 
 
 ## 模块扩展
 
-在图片聚焦时, 添加额外功能, 如图片的缩放
+在图片聚焦时，添加额外功能，如图片的缩放
 
 新增文件 `Resize.ts`
 
@@ -299,10 +297,9 @@ class Resize {
 
 ## 总结
 
-当前例子只讲述了 点击图片之后的缩放功能, 另外还有很多地方值得我们进行扩展,
-如: 点击图片的预览, 展示图片的尺寸, 添加图片的工具按钮, 扩展到视频组件上等等
+当前例子只讲述了点击图片之后的缩放功能，另外还有很多地方值得我们进行扩展，
+如: 点击图片的预览、展示图片的尺寸、添加图片的工具按钮、扩展到视频组件等等
 
-不过即使是一个简单的例子, 也能管中窥豹, 入门插件的开发
+不过即使是一个简单的例子，也能管中窥豹，入门插件的开发
 
-当然这这也只是一个 quill 富文本的开发, 在业界还有很多优秀的富文本编辑器, 他们都有着不同的实现和特殊功能,
-这些都值得我们继续深入学习
+当然这这也只是 `quill` 富文本的开发，在业界还有很多优秀的富文本编辑器，他们都有着不同的实现和特殊功能，这些都值得我们继续深入学习
