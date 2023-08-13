@@ -208,8 +208,6 @@ showOverlay = () => {
 
 ![gif.gif](images%2Fgif.gif)
 
-// todo
-
 
 ## 模块扩展
 
@@ -287,8 +285,10 @@ class Resize {
   };
 
 ```
-// TODO 流程
 
+大体流程：
+
+![img4.png](images%2Fimg4.png)
 
 拖动效果:
 
