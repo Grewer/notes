@@ -79,7 +79,7 @@ function App() {
 export default class QuillResize {
   constructor(quill, options = {}) {
     this.quill = quill;
-    
+
     this.quill.root.addEventListener('mousedown', this.handleClick, false);
   }
 
@@ -119,41 +119,41 @@ export default class QuillResize {
 
 ```js
   judgeShow = (blot, target) => {
-    let res = false;
-    if (!blot) return res;
-    // 数据的一些判断和补充
-    if (!target && blot.domNode) target = blot.domNode;
-    
-    // 参数, 支持最小是 10px 的图片, 可从外部传入
-    const options = {
-        limit: {
-          minWidth: 10,
-        },
-      }
-    
-    if (!options) return res;
-    // 如果当前聚焦的是再次点击的,则直接 return
-    if (this.activeEle === target) return true;
-  
-    // 判断大小的限制
-    const limit = options.limit || {};
-    if (!limit.minWidth || (limit.minWidth && target.offsetWidth >= limit.minWidth)) {
-      res = true;
-      
-      // 当前聚焦和点击的图片不是同一个的时候, 隐藏原有的
-      if (this.activeEle) {
-        this.hide();
-      }
-      // 重新赋值
-      this.activeEle = target;
-      this.blot = blot;
-      
-      // 调用 show 方法, 显示聚焦样式
-      this.show();
-    }
+  let res = false;
+  if (!blot) return res;
+  // 数据的一些判断和补充
+  if (!target && blot.domNode) target = blot.domNode;
 
-    return res;
+  // 参数, 支持最小是 10px 的图片, 可从外部传入
+  const options = {
+    limit: {
+      minWidth: 10,
+    },
   }
+
+  if (!options) return res;
+  // 如果当前聚焦的是再次点击的,则直接 return
+  if (this.activeEle === target) return true;
+
+  // 判断大小的限制
+  const limit = options.limit || {};
+  if (!limit.minWidth || (limit.minWidth && target.offsetWidth >= limit.minWidth)) {
+    res = true;
+
+    // 当前聚焦和点击的图片不是同一个的时候, 隐藏原有的
+    if (this.activeEle) {
+      this.hide();
+    }
+    // 重新赋值
+    this.activeEle = target;
+    this.blot = blot;
+
+    // 调用 show 方法, 显示聚焦样式
+    this.show();
+  }
+
+  return res;
+}
 ```
 
 显示图片高亮聚焦样式
@@ -170,7 +170,7 @@ showOverlay = () => {
   if (this.overlay) {
     this.hideOverlay();
   }
-  
+
   // 取消光标选中
   this.quill.setSelection(null);
 
@@ -190,7 +190,7 @@ showOverlay = () => {
   };
   // 监听输入事件, 发生变化则隐藏
   this.quill.root.addEventListener('input', this.hideProxy, true);
-  
+
   // 监听滚动事件, 遮罩要随着滚动偏移
   this.quill.root.addEventListener('scroll', this.updateOverlayPosition);
 
@@ -235,7 +235,7 @@ class Resize {
     const box = document.createElement('div');
 
     Object.assign(box.style, this.handleStyles);
-    
+
     box.style.width = `${this.handleStyles.width}px`;
     box.style.height = `${this.handleStyles.height}px`;
 
@@ -257,32 +257,32 @@ class Resize {
 ```ts
   handleMousedown = evt => {
   // 修改状态
-    this.blot.handling && this.blot.handling(true);
-    this.dragBox = evt.target;
-    this.dragStartX = evt.clientX;
-    this.dragStartY = evt.clientY;
-    // 存储坐标
-    this.preDragSize = {
-      width: this.activeEle?.offsetWidth || 0,
-      height: this.activeEle?.offsetHeight || 0,
-    };
-    // 存储原本尺寸
-    this.naturalSize = this.getNaturalSize();
-
-    const {width, height} = this.naturalSize;
-    this.localRatio = height / width;
-    this.editorMaxWidth = this.quill.container.clientWidth - 30;
-    
-    
-    // 修改手柄的 cursor 属性
-    this.setCursor(this.dragBox!.style.cursor);
-
-    // 监听拖动和放开事件
-    // 根据拖动的距离, 计算图片的尺寸,进行缩放
-    // 在 mouseup 中释放监听事件
-    document.addEventListener('mousemove', this.handleDrag, false);
-    document.addEventListener('mouseup', this.handleMouseup, false);
+  this.blot.handling && this.blot.handling(true);
+  this.dragBox = evt.target;
+  this.dragStartX = evt.clientX;
+  this.dragStartY = evt.clientY;
+  // 存储坐标
+  this.preDragSize = {
+    width: this.activeEle?.offsetWidth || 0,
+    height: this.activeEle?.offsetHeight || 0,
   };
+  // 存储原本尺寸
+  this.naturalSize = this.getNaturalSize();
+
+  const {width, height} = this.naturalSize;
+  this.localRatio = height / width;
+  this.editorMaxWidth = this.quill.container.clientWidth - 30;
+
+
+  // 修改手柄的 cursor 属性
+  this.setCursor(this.dragBox!.style.cursor);
+
+  // 监听拖动和放开事件
+  // 根据拖动的距离, 计算图片的尺寸,进行缩放
+  // 在 mouseup 中释放监听事件
+  document.addEventListener('mousemove', this.handleDrag, false);
+  document.addEventListener('mouseup', this.handleMouseup, false);
+};
 
 ```
 
