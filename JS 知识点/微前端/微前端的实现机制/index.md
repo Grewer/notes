@@ -6,9 +6,15 @@
 
 ## 首先什么是微前端
 
+>  Techniques, strategies and recipes for building a **modern web app** with **multiple teams** that can **ship features independently**. -- [Micro Frontends](https://micro-frontends.org/)
+>
+>  前端是一种多个团队通过独立发布功能的方式来共同构建现代化 web 应用的技术手段及方法策略。
 
 ## 常见的微前端实现机制
 
+微前端的架构
+
+![img.png](images%2Fimg.png)
 
 ## 微前端沙箱
 
@@ -39,3 +45,6 @@ VM 沙箱使用类似于 node 的 vm 模块，通过创建一个沙箱，然后�
 
 
 ## 引用
+
+- https://www.garfishjs.org/blog
+- https://qiankun.umijs.org/zh/guide
