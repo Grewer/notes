@@ -44,6 +44,32 @@
 
 假设当前一个页面中只有一个微应用在运行，那他可以独占整个 window 环境， 在切换微应用时，只有将 window 环境恢复即可，保证下一个的使用。
 
+这便是**单实例场景**。
+
+一个最简单的实现demo：
+
+```js
+const varBox = {};
+const fakeWindow = new Proxy(window, {
+  get(target, key) {
+    return varBox[key] || window[key];
+  },
+  set(target, key, value) {
+    varBox[key] = value;
+    return true;
+  },
+});
+```
+
+通过一个简单的 `proxy` 即可实现一个 window 的代理，将数据存储到 `varBox` 中，而不影响原有的 `window` 的值
+
+
+而在某些文章里，他把沙箱实现的更加具体，还拥有启用和停用功能：
+
+```js
+
+```
+
 
 
 
@@ -64,6 +90,8 @@ with(windowProxy) {
 
 ## iframe
 
+
+diff 方案就是快照方案
 
 
 ### (Proxy)实现单实例沙箱
