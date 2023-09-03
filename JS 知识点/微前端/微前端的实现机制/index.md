@@ -61,12 +61,14 @@ const fakeWindow = new Proxy(window, {
     return true;
   },
 });
+
+window.test = 1;
 ```
 
 通过一个简单的 `proxy` 即可实现一个 window 的代理，将数据存储到 `varBox` 中，而不影响原有的 `window` 的值
 
 
-而在某些文章里，他把沙箱实现的更加具体，还拥有启用和停用功能：
+而在某些文章里，他把沙箱实现的更加具体，还拥有**启用**和**停用**功能：
 
 ```js
 // 修改全局对象 window 方法
@@ -153,13 +155,81 @@ console.log(window.test, proxyWindow.test) // 1 1 ;
 ```
 
 
-添加了沙箱的 `active` 和 `inactive` 方案来激活或者卸载沙箱，核心的功能 `proxy` 的创建则在构造函数中
+添加了沙箱的 `active` 和 `inactive` 方案来激活或者卸载沙箱，核心的功能 `proxy` 的创建则在构造函数中  
 原理和上述的简单 `demo` 中的实现类似，但是没有直接拦截 `window`， 而是创建一个 `fakeWindow`，这就引出了我们要讲的
 **多实例沙箱**
 
 #### 多实例
 
+我们把 `fakeWindow` 使用起来，将微应用使用到的变量放到 `fakeWindow` 中，而共享的变量都从 `window` 中读取。
 
+```js
+class Sandbox {
+    name;
+    constructor(name, context = {}) {
+        this.name = name;
+        const fakeWindow = Object.create({});
+
+        return new Proxy(fakeWindow, {
+            set(target, name, value) {
+                if (Object.keys(context).includes(name)) {
+                    context[name] = value;
+                }
+                target[name] = value;
+            },
+            get(target, name) {
+                // 优先使用共享对象
+                if (Object.keys(context).includes(name)) {
+                    return context[name];
+                }
+                if (typeof target[name] === 'function' && /^[a-z]/.test(name)) {
+                    return target[name].bind && target[name].bind(target);
+                } else {
+                    return target[name];
+                }
+            }
+        });
+    }
+    //  ...
+}
+
+/**
+ * 注意这里的 context 十分关键，因为我们的 fakeWindow 是一个空对象，window 上的属性都没有，
+ * 实际项目中这里的 context 应该包含大量的 window 属性，
+ */
+
+// 初始化2个沙箱，共享 doucment 与一个全局变量
+const context = { document: window.document, globalData: 'abc' };
+
+const newSandBox1 = new Sandbox('app1', context);
+const newSandBox2 = new Sandbox('app2', context);
+
+newSandBox1.test = 1;
+newSandBox2.test = 2;
+window.test = 3;
+
+/**
+ * 每个环境的私有属性是隔离的
+ */
+console.log(newSandBox1.test, newSandBox2.test, window.test); // 1 2 3;
+
+/**
+ * 共享属性是沙盒共享的，这里 newSandBox2 环境中的 globalData 也被改变了
+ */
+newSandBox1.globalData = '123';
+console.log(newSandBox1.globalData, newSandBox2.globalData); // 123 123;
+```
+
+### 基于 diff 的沙箱
+
+
+也叫做**快照沙箱**，顾名思义，即在某个阶段给当前的运行环境打一个快照，再在需要的时候把快照恢复，从而实现隔离。
+
+类似玩游戏的 SL 大法，在某个时刻保存起来，操作完毕再重新 Load，回到之前的状态。
+
+```js
+
+```
 
 
 //todo  搞清楚， diff  vm  快照  到底是那种沙箱
