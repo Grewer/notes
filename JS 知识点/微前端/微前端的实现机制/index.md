@@ -40,13 +40,13 @@
 实现沙盒的第一步就是创建一个作用域。这个作用域不会包含全局的属性对象。首先需要隔离掉浏览器的原生对象，但是如何隔离，建立一个沙箱环境呢？
 
 
-### 基于代理(Proxy)实现
+## 基于代理(Proxy)的沙箱
 
 假设当前一个页面中只有一个微应用在运行，那他可以独占整个 window 环境， 在切换微应用时，只有将 window 环境恢复即可，保证下一个的使用。
 
 这便是**单实例场景**。
 
-#### 单实例
+### 单实例
 
 一个最简单的实现demo：
 
@@ -159,7 +159,7 @@ console.log(window.test, proxyWindow.test) // 1 1 ;
 原理和上述的简单 `demo` 中的实现类似，但是没有直接拦截 `window`， 而是创建一个 `fakeWindow`，这就引出了我们要讲的
 **多实例沙箱**
 
-#### 多实例
+### 多实例
 
 我们把 `fakeWindow` 使用起来，将微应用使用到的变量放到 `fakeWindow` 中，而共享的变量都从 `window` 中读取。
 
@@ -220,52 +220,74 @@ newSandBox1.globalData = '123';
 console.log(newSandBox1.globalData, newSandBox2.globalData); // 123 123;
 ```
 
-### 基于 diff 的沙箱
+## 基于 diff 的沙箱
 
 
 也叫做**快照沙箱**，顾名思义，即在某个阶段给当前的运行环境打一个快照，再在需要的时候把快照恢复，从而实现隔离。
 
 类似玩游戏的 SL 大法，在某个时刻保存起来，操作完毕再重新 Load，回到之前的状态。
 
-```js
+他的实现可以说是单实例的简化版，分为激活与卸载两个部分的操作。
 
+```js
+active() {
+  // 缓存active状态的沙箱
+  this.windowSnapshot = {};
+  for (const item in window) {
+    this.windowSnapshot[item] = window[item];
+  }
+
+  Object.keys(this.modifyMap).forEach(p => {
+    window[p] = this.modifyMap[p];
+  })
+}
 ```
 
-
-//todo  搞清楚， diff  vm  快照  到底是那种沙箱
-
-在 qiankun 中的沙箱思路：
-
 ```js
-const windowProxy = new Proxy(window, traps);
-
-with(windowProxy) {
-  // 应用代码，通过 with 确保所有的全局变量的操作实际都是在操作 qiankun 提供的代理对象
-  ${appCode}  
+inactive() {
+  for (const item in window) {
+    if (this.windowSnapshot[item] !== window[item]) {
+      // 记录变更
+      this.modifyMap[item] = window[item];
+      // 还原window
+      window[item] = this.windowSnapshot[item];
+    }
+  }
 }
 ```
 
 
-## iframe
+在 `activate` 的时候遍历 `window` 上的变量，存为 `windowSnapshot`
+在 `deactivate` 的时候再次遍历 `window` 上的变量，分别和 `windowSnapshot` 对比，将不同的存到 `modifyMap` 里，将 `window` 恢复
+当应用再次切换的时候，就可以把 `modifyMap` 的变量恢复回 window 上，实现一次沙箱的切换。
 
+```js
+class Sandbox {
+    private windowSnapshot
+    private modifyMap
+    activate: () => void;
+    deactivate: () => void;
+}
 
-diff 方案就是快照方案
+const sandbox = new Sandbox();
+sandbox.activate();
+// 执行任意代码
+sandbox.deactivate();
+```
 
+此方案在实际项目中实现起来要复杂的多，其对比算法需要考虑非常多的情况，比如对于 `window.a.b.c = 123` 这种修改或者对于原型链的修改，这里都不能做到回滚到应用加载前的全局状态。所以这个方案一般不作为首选方案，是对老旧浏览器的一种降级处理。
 
-### (Proxy)实现单实例沙箱
+在 `qiankun` 中也有该降级方案，被称为 `SnapshotSandbox`。
 
-### VM 沙箱
+## 基于 iframe 的沙箱
+
+## 基于 ShadowRealm 的沙箱
+
+## 基于 VM 沙箱
 VM 沙箱使用类似于 node 的 vm 模块，通过创建一个沙箱，然后传入需要执行的代码。
 
 
-
-
-在微前端的场景，由于多个独立的应用被组织到了一起，在没有类似iframe的原生隔离下，势必会出现冲突，如全局变量冲突、样式冲突，这些冲突可能会导致应用样式异常，甚至功能不可用。所以想让微前端达到生产可用的程度，让每个子应用之间达到一定程度隔离的沙箱机制是必不可少的。
-
-## qiankun 中的实现
-
-
-    
+diff 方案就是快照方案
 
 
 ## 总结
