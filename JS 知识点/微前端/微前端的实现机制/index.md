@@ -281,6 +281,65 @@ sandbox.deactivate();
 
 ## 基于 iframe 的沙箱
 
+在上文讲述了 `iframe` 作为微前端的一种实现方式，在沙箱中 iframe 也有他的独特作用。
+iframe 天生就有隔离的特性， 并且拥有 `postMessage` 作为通信手段。
+
+```js
+const iframe = document.createElement('iframe', { url: 'about:blank' });
+
+const sandboxGlobal = iframe.contentWindow;
+sandbox(sandboxGlobal);
+```
+ 
+> 注意：只有同域的 iframe 才能取出对应的的 contentWindow。所以需要提供一个宿主应用空的同域 URL 来作为这个 iframe 初始加载的 URL. 根据 HTML 的规范 这个 URL 用了 about:blank 一定保证保证同域，也不会发生资源加载。
+
+```js
+class SandboxWindow {
+    constructor(options, context, frameWindow) {
+        return new Proxy(frameWindow, {
+            set(target, name, value) {
+                if(Object.keys(context).includes(name)) {
+                    context[name] = value;
+                }
+                target[name] = value;
+            },
+            get(target, name) {
+                // 优先使用共享对象
+                if(Object.keys(context).includes(name)) {
+                    return context[name];
+                }
+
+                if(typeof target[name] === 'function' && /^[a-z]/.test(name)) {
+                    return target[name].bind && target[name].bind(target);
+                } else {
+                    return target[name];
+                }
+            }
+        });
+    }
+    //  ...
+}
+
+const iframe = document.createElement('iframe', { url: 'about:blank' });
+document.body.appendChild(iframe);
+const sandboxGlobal = iframe.contentWindow;
+// 需要全局共享的变量
+const context = { document: window.document, history: window.histroy };
+const newSandBoxWindow = new SandboxWindow({}, context, sandboxGlobal);
+// newSandBoxWindow.history 全局对象
+// newSandBoxWindow.abc 为 'abc' 沙箱环境全局变量
+// window.abc 为 undefined
+```
+
+总结一些，利用 iframe 沙箱可以实现以下特性：
+
+* 全局变量隔离，如 setTimeout, location, react 不同版本隔离
+* 路由隔离，应用可以实现独立路由，也可以共享全局路由
+* 多实例，可以同时存在多个独立的微应用同时运行
+* 安全策略，可以配置微应用对 Cookie, localStorage 资源加载的限制
+
+在沙箱方案上 `iframe` 是比较完美的，除了性能和加载速度方面略有不足
+
 ## 基于 ShadowRealm 的沙箱
 
 ## 基于 VM 沙箱
