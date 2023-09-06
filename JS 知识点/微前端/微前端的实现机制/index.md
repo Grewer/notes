@@ -282,7 +282,6 @@ sandbox.deactivate();
 ## 基于 iframe 的沙箱
 
 在上文讲述了 `iframe` 作为微前端的一种实现方式，在沙箱中 iframe 也有他的独特作用。
-iframe 天生就有隔离的特性， 并且拥有 `postMessage` 作为通信手段。
 
 ```js
 const iframe = document.createElement('iframe', { url: 'about:blank' });
@@ -338,7 +337,11 @@ const newSandBoxWindow = new SandboxWindow({}, context, sandboxGlobal);
 * 多实例，可以同时存在多个独立的微应用同时运行
 * 安全策略，可以配置微应用对 Cookie, localStorage 资源加载的限制
 
-在沙箱方案上 `iframe` 是比较完美的，除了性能和加载速度方面略有不足
+在沙箱方案上 `iframe` 是比较好的，但是仍然存在以下问题：
+
+1. 兼容性问题， 不同的浏览器之间的实现方案可能存在差异，会导致兼容性问题。
+2. 额外的性能开销
+3. 相对于其他的方案，应用间的通信手段更麻烦
 
 ## 基于 ShadowRealm 的沙箱
 
