@@ -345,11 +345,50 @@ const newSandBoxWindow = new SandboxWindow({}, context, sandboxGlobal);
 
 ## 基于 ShadowRealm 的沙箱
 
+`ShadowRealm` 提议提供了一种新的机制，可在新的全局对象和 `JavaScript` 内置程序集的上下文中执行 `JavaScript` 代码。
+
+```js
+const sr = new ShadowRealm();
+
+// Sets a new global within the ShadowRealm only
+sr.evaluate('globalThis.x = "my shadowRealm"');
+
+globalThis.x = "root"; //
+
+const srx = sr.evaluate('globalThis.x');
+
+srx; // "my shadowRealm"
+x; // "root"
+```
+
+除了直接指向字符串代码， 还可以引用文件执行：
+
+```js
+const sr = new ShadowRealm();
+
+const redAdd = await sr.importValue('./inside-code.js', 'add');
+
+let result = redAdd(2, 3);
+
+console.assert(result === 5);
+```
+
+在以下场景中，这将会是它大显身手的地方：
+
+- 第三方脚本
+- 代码测试
+- 代码库分割
+- 模板库
+- DOM虚拟化
+
+
+[点此查看详细介绍](https://github.com/tc39/proposal-shadowrealm/blob/main/explainer.md)
+
+回到正题， 
+
+
 ## 基于 VM 沙箱
 VM 沙箱使用类似于 node 的 vm 模块，通过创建一个沙箱，然后传入需要执行的代码。
-
-
-diff 方案就是快照方案
 
 
 ## 总结
