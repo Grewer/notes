@@ -373,26 +373,41 @@ let result = redAdd(2, 3);
 console.assert(result === 5);
 ```
 
-在以下场景中，这将会是它大显身手的地方：
-
-- 第三方脚本
-- 代码测试
-- 代码库分割
-- 模板库
-- DOM虚拟化
-
-
 [点此查看详细介绍](https://github.com/tc39/proposal-shadowrealm/blob/main/explainer.md)
 
-回到正题， 
+回到正题，`ShadowRealm` 在功能和性能方面确实是最好的微前端沙箱方案，但是他的兼容性也是一大痛点：
 
+截止目前 Chrome 版本 117.0.5938.48， 并未支持此 API，我们仍然需要 polyfill才能使用，他在微前端上发力还需要很长时间。
 
 ## 基于 VM 沙箱
-VM 沙箱使用类似于 node 的 vm 模块，通过创建一个沙箱，然后传入需要执行的代码。
+
+VM 沙箱使用类似于 `node` 的 `vm` 模块，通过创建一个沙箱，然后传入需要执行的代码。
+
+```js
+const vm = require('node:vm');
+
+const x = 1;
+
+const context = { x: 2 };
+vm.createContext(context); // Contextify the object.
+
+const code = 'x += 40; var y = 17;';
+// `x` and `y` are global variables in the context.
+// Initially, x has the value 2 because that is the value of context.x.
+vm.runInContext(code, context);
+
+console.log(context.x); // 42
+console.log(context.y); // 17
+
+console.log(x); // 1; y is not defined. 
+```
+
 
 
 ## 总结
 
+
+[//]: # (传统的 js 沙箱注意是考虑的安全领域，锁定不信任脚本的执行，防止全局变量的获取与修改等。在微前端领域，侧重点不太一样，重要的是不能有全局变量的污染，这也决定了微前端的沙箱实现重点是对于独立运行环境的构造。由于 js 的灵活性，在微前端的沙盒里通过原型链等方式是可以拿到全局 window 变量的内容的。这个时候我们就还需要配合一定的规范来做代码隔离，而不仅仅是依靠沙箱环境)
 
 ## 引用
 
