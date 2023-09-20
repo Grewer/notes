@@ -58,13 +58,7 @@ function App() {
       }}
     >
       <h1>Dynamic System Host</h1>
-      <h2>main App</h2>
-      {/*<Suspense fallback={'loading...'}>*/}
-      {/*  {errorLoading*/}
-      {/*    ? `Error loading module "${module}"`*/}
-      {/*    : FederatedComponent && <FederatedComponent />}*/}
-      {/*</Suspense>*/}
-      {/*<App2Widget/>*/}
+      <div id="Container"></div>
     </div>
   );
 }

@@ -1,5 +1,17 @@
 import App from './App';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { registerMicroApps, start } from './qiankun-master/src/index';
+
+registerMicroApps([
+  {
+    name: 'react app', // app name registered
+    entry: '//localhost:3002',
+    container: '#Container',
+    activeRule: '/yourActiveRule',
+  },
+]);
+
+start();
 
 ReactDOM.render(<App />, document.getElementById('root'));
