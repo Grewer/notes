@@ -1,7 +1,8 @@
 import App from './App';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { registerMicroApps, start } from './qiankun-master/src/index';
+// import { registerMicroApps, start } from './qiankun-master/src/index';
+import { registerMicroApps, start } from 'qiankun';
 
 registerMicroApps([
   {

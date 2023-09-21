@@ -1,5 +1,4 @@
 import React, {useEffect, Suspense} from 'react';
-import {useFederatedComponent} from "./useFederatedComponent";
 // import App2Widget from 'app2/Widget';
 
 // function sandBox(code) {
@@ -39,8 +38,6 @@ import {useFederatedComponent} from "./useFederatedComponent";
 // }
 
 function App() {
-  const { Component: FederatedComponent, errorLoading } = useFederatedComponent('http://localhost:3002/remoteEntry.js', 'app2', './Widget');
-
   // useEffect(()=>{
   //   fetch('http://localhost:3002/remoteEntry.js').then(res=>res.text()).then(res=>{
   //     // console.log(res)
