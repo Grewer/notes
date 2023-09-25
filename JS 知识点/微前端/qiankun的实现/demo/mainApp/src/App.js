@@ -56,6 +56,9 @@ function App() {
     >
       <h1>Dynamic System Host</h1>
       <div id="Container"></div>
+      <button onClick={()=>{
+        history.pushState({}, 'subapp', '/yourActiveRule')
+      }}>link</button>
     </div>
   );
 }
