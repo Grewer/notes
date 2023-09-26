@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 
 export default function Widget() {
   return (
@@ -15,7 +14,6 @@ export default function Widget() {
       <h2>App 2 Widget</h2>
       <p>
         Moment shouldn't download twice, the host has no moment.js <br />{' '}
-        {moment().format('MMMM Do YYYY, h:mm:ss a')}
       </p>
     </div>
   );

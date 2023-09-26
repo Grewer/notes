@@ -8,7 +8,14 @@
 
 在当前的微前端框架中， `qiankun` 是使用量最多的框架，今天本就以此框架来介绍他的运行原理
 
-### 启动
+
+## single-spa
+
+首先我们需要知道的是 qiankun 是基于 single-spa 的封装框架，所以在这之前可以先了解下他是做什么的
+
+TODO
+
+## 启动
 
 我们先从 qiankun 的整体 API 启动来入手：
 
@@ -34,3 +41,42 @@ start();
 
 
 我们先看 `registerMicroApps` 做了什么
+
+```js
+import { registerApplication } from 'single-spa';
+
+
+export function registerMicroApps<T extends ObjectType>(
+  apps: Array<RegistrableApp<T>>,
+  lifeCycles?: FrameworkLifeCycles<T>,
+) {
+  // Each app only needs to be registered once
+  const unregisteredApps = apps.filter((app) => !microApps.some((registeredApp) => registeredApp.name === app.name));
+
+  microApps = [...microApps, ...unregisteredApps];
+
+  unregisteredApps.forEach((app) => {
+    const { name, activeRule, loader = noop, props, ...appConfig } = app;
+
+    registerApplication({
+      name,
+      app: async () => {
+        loader(true);
+        await frameworkStartedDefer.promise;
+
+        const { mount, ...otherMicroAppConfigs } = (
+          await loadApp({ name, props, ...appConfig }, frameworkConfiguration, lifeCycles)
+        )();
+
+        return {
+          mount: [async () => loader(true), ...toArray(mount), async () => loader(false)],
+          ...otherMicroAppConfigs,
+        };
+      },
+      activeWhen: activeRule,
+      customProps: props,
+    });
+  });
+}
+```
+
