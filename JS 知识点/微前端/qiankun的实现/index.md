@@ -42,19 +42,23 @@ start();
 
 我们先看 `registerMicroApps` 做了什么
 
-```js
+```tsx
 import { registerApplication } from 'single-spa';
 
+// todo
+const frameworkStartedDefer = new Deferred<void>();
 
 export function registerMicroApps<T extends ObjectType>(
   apps: Array<RegistrableApp<T>>,
   lifeCycles?: FrameworkLifeCycles<T>,
 ) {
-  // Each app only needs to be registered once
+  // 过滤,保证 name 的唯一
   const unregisteredApps = apps.filter((app) => !microApps.some((registeredApp) => registeredApp.name === app.name));
 
+  // microApps 是缓存的数据， 默认[]
   microApps = [...microApps, ...unregisteredApps];
 
+  // 针对每一个微应用，进行循环注册， registerApplication 是 single-spa 的方法
   unregisteredApps.forEach((app) => {
     const { name, activeRule, loader = noop, props, ...appConfig } = app;
 

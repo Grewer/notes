@@ -11,7 +11,8 @@ module.exports = {
     },
     proxy: {
       '/static': {
-        target: 'http://localhost:3002/static',
+        target: 'http://localhost:3002',
+        // changeOrigin: true,
       }
     },
     port: 3001,
