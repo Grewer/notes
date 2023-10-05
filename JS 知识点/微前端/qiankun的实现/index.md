@@ -121,26 +121,23 @@ export async function loadApp<T extends ObjectType>(
   await getExternalScripts();
 
   
-  // todo 
-  
-// as single-spa load and bootstrap new app parallel with other apps unmounting
-// (see https://github.com/CanopyTax/single-spa/blob/master/src/navigation/reroute.js#L74)
-// we need wait to load the app until all apps are finishing unmount in singular mode
+  // singular 是否为单实例场景，单实例指的是同一时间只会渲染一个微应用。默认为 true。
+  // boolean | ((app: RegistrableApp<any>) => Promise<boolean>);
+  // 相当于加了一个 flag， 保证所有微应用都卸载完毕
+  // https://github.com/CanopyTax/single-spa/blob/master/src/navigation/reroute.js#L74
   if (await validateSingularMode(singular, app)) {
     await (prevAppUnmountedDeferred && prevAppUnmountedDeferred.promise);
   }
 
+  // 在 html 中添加 qiankun 特有的 html 标签属性， 返回模板 html
   const appContent = getDefaultTplWrapper(appInstanceId, sandbox)(template);
-
+  
+  // 样式是否严格隔离
   const strictStyleIsolation = typeof sandbox === 'object' && !!sandbox.strictStyleIsolation;
 
-  if (process.env.NODE_ENV === 'development' && strictStyleIsolation) {
-    console.warn(
-      "[qiankun] strictStyleIsolation configuration will be removed in 3.0, pls don't depend on it or use experimentalStyleIsolation instead!",
-    );
-  }
-
   const scopedCSS = isEnableScopedCSS(sandbox);
+  
+  // 根据模板和对应配置创建 html 元素
   let initialAppWrapperElement: HTMLElement | null = createElement(
     appContent,
     strictStyleIsolation,
@@ -151,10 +148,11 @@ export async function loadApp<T extends ObjectType>(
   const initialContainer = 'container' in app ? app.container : undefined;
   const legacyRender = 'render' in app ? app.render : undefined;
 
+  // 生成渲染函数
   const render = getRender(appInstanceId, appContent, legacyRender);
 
-// 第一次加载设置应用可见区域 dom 结构
-// 确保每次应用加载前容器 dom 结构已经设置完毕
+  // 第一次加载设置应用可见区域 dom 结构
+  // 确保每次应用加载前容器 dom 结构已经设置完毕
   render({element: initialAppWrapperElement, loading: true, container: initialContainer}, 'loading');
 
   const initialAppWrapperGetter = getAppWrapperGetter(
@@ -169,9 +167,12 @@ export async function loadApp<T extends ObjectType>(
   let mountSandbox = () => Promise.resolve();
   let unmountSandbox = () => Promise.resolve();
   const useLooseSandbox = typeof sandbox === 'object' && !!sandbox.loose;
-// enable speedy mode by default
+  
+  // 沙箱的快速模式，默认开启，官网文档还没更新介绍
   const speedySandbox = typeof sandbox === 'object' ? sandbox.speedy !== false : true;
   let sandboxContainer;
+  
+  // 是否开启了沙箱
   if (sandbox) {
     sandboxContainer = createSandboxContainer(
       appInstanceId,
