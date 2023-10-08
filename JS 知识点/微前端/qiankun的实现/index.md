@@ -176,7 +176,6 @@ export async function loadApp<T extends ObjectType>(
   if (sandbox) {
     sandboxContainer = createSandboxContainer(
       appInstanceId,
-      // FIXME should use a strict sandbox logic while remount, see https://github.com/umijs/qiankun/issues/518
       initialAppWrapperGetter,
       scopedCSS,
       useLooseSandbox,
@@ -190,6 +189,7 @@ export async function loadApp<T extends ObjectType>(
     unmountSandbox = sandboxContainer.unmount;
   }
 
+  // 合并参数
   const {
     beforeUnmount = [],
     afterUnmount = [],
@@ -198,12 +198,15 @@ export async function loadApp<T extends ObjectType>(
     beforeLoad = [],
   } = mergeWith({}, getAddOns(global, assetPublicPath), lifeCycles, (v1, v2) => concat(v1 ?? [], v2 ?? []));
 
+  // 执行 beforeLoad 生命周期
   await execHooksChain(toArray(beforeLoad), app, global);
 
-// get the lifecycle hooks from module exports
+  // 正式执行代码，获取生命周期
   const scriptExports: any = await execScripts(global, sandbox && !useLooseSandbox, {
     scopedGlobalVariables: speedySandbox ? cachedGlobals : [],
   });
+  
+  // 从 script 导出中执行生命周期
   const {bootstrap, mount, unmount, update} = getLifecyclesFromExports(
     scriptExports,
     appName,
@@ -211,10 +214,11 @@ export async function loadApp<T extends ObjectType>(
     sandboxContainer?.instance?.latestSetProp,
   );
 
+  // qiankun 提供的一个全局状态，方便 loading 等状态的控制
   const {onGlobalStateChange, setGlobalState, offGlobalStateChange}: Record<string, CallableFunction> =
     getMicroAppStateActions(appInstanceId);
 
-// FIXME temporary way
+
   const syncAppWrapperElement2Sandbox = (element: HTMLElement | null) => (initialAppWrapperElement = element);
 
   const parcelConfigGetter: ParcelConfigObjectGetter = (remountContainer = initialContainer) => {
