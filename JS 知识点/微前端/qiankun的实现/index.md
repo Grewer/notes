@@ -93,13 +93,26 @@ export function registerMicroApps<T extends ObjectType>(
 
 在加载微应用时， 最核心的函数 `loadApp`:
 
+```ts
+const { mount, ...otherMicroAppConfigs } = (
+  await loadApp({ name, props, ...appConfig }, frameworkConfiguration, lifeCycles)
+)()
+```
+
+此函数主要分为三个部分：
+
 ```tsx
-export async function loadApp<T extends ObjectType>(
+async function loadApp<T extends ObjectType>(
   app: LoadableApp<T>,
   configuration: FrameworkConfiguration = {}, // 看成 qiankun 的一个全局配置
   lifeCycles?: FrameworkLifeCycles<T>, // 注册时的生命周期传递
-): Promise<ParcelConfigObjectGetter> {
-  const {entry, name: appName} = app; // app 中的参数获取
+): Promise<ParcelConfigObjectGetter>
+```
+
+### 1. 基础配置
+
+```ts
+ const {entry, name: appName} = app; // app 中的参数获取
   // 存储在 __app_instance_name_map__ 上的 全局唯一名称  根据次数生成名字
   const appInstanceId = genAppInstanceIdByName(appName);
 
@@ -154,7 +167,8 @@ export async function loadApp<T extends ObjectType>(
   // 第一次加载设置应用可见区域 dom 结构
   // 确保每次应用加载前容器 dom 结构已经设置完毕
   render({element: initialAppWrapperElement, loading: true, container: initialContainer}, 'loading');
-
+  
+  // 简单来说看做一个  document.getElementById 即可
   const initialAppWrapperGetter = getAppWrapperGetter(
     appInstanceId,
     !!legacyRender,
@@ -163,6 +177,7 @@ export async function loadApp<T extends ObjectType>(
     () => initialAppWrapperElement,
   );
 
+  // 默认的一些参数值
   let global = globalContext;
   let mountSandbox = () => Promise.resolve();
   let unmountSandbox = () => Promise.resolve();
@@ -198,7 +213,12 @@ export async function loadApp<T extends ObjectType>(
     beforeLoad = [],
   } = mergeWith({}, getAddOns(global, assetPublicPath), lifeCycles, (v1, v2) => concat(v1 ?? [], v2 ?? []));
 
-  // 执行 beforeLoad 生命周期
+```
+
+### 2. hook 以及代码执行
+
+```ts
+ // 执行 beforeLoad 生命周期
   await execHooksChain(toArray(beforeLoad), app, global);
 
   // 正式执行代码，获取生命周期
@@ -218,34 +238,42 @@ export async function loadApp<T extends ObjectType>(
   const {onGlobalStateChange, setGlobalState, offGlobalStateChange}: Record<string, CallableFunction> =
     getMicroAppStateActions(appInstanceId);
 
+```
 
-  const syncAppWrapperElement2Sandbox = (element: HTMLElement | null) => (initialAppWrapperElement = element);
+### 3，返回函数的逻辑
 
+```ts
+export async function loadApp<T extends ObjectType>(
+  app: LoadableApp<T>,
+  configuration: FrameworkConfiguration = {}, // 看成 qiankun 的一个全局配置
+  lifeCycles?: FrameworkLifeCycles<T>, // 注册时的生命周期传递
+): Promise<ParcelConfigObjectGetter> {
+  // ...
+ 
+  // 返回值： 获取配置的一个函数
   const parcelConfigGetter: ParcelConfigObjectGetter = (remountContainer = initialContainer) => {
     let appWrapperElement: HTMLElement | null;
     let appWrapperGetter: ReturnType<typeof getAppWrapperGetter>;
-
+    
+    // 一个配置对象， 在各个周期中手动添加需要执行的逻辑
     const parcelConfig: ParcelConfigObject = {
       name: appInstanceId,
       bootstrap,
       mount: [
         async () => {
           if (process.env.NODE_ENV === 'development') {
-            const marks = performanceGetEntriesByName(markName, 'mark');
-            // mark length is zero means the app is remounting
-            if (marks && !marks.length) {
-              performanceMark(markName);
-            }
+            // dev 场景下的判断，忽略
           }
         },
         async () => {
+          // 同上， 保证所有微应用都卸载完毕
           if ((await validateSingularMode(singular, app)) && prevAppUnmountedDeferred) {
             return prevAppUnmountedDeferred.promise;
           }
 
           return undefined;
         },
-        // initial wrapper element before app mount/remount
+        // 在子应用 mount 之前初始化包装元素
         async () => {
           appWrapperElement = initialAppWrapperElement;
           appWrapperGetter = getAppWrapperGetter(
