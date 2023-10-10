@@ -15,7 +15,7 @@
 
 TODO
 
-## 启动
+## 例子
 
 我们先从 qiankun 的整体 API 启动来入手：
 
@@ -39,13 +39,14 @@ start();
 1. 注册子应用
 2. 启动
 
+## 注册
 
 我们先看 `registerMicroApps` 做了什么
 
 ```tsx
 import { registerApplication } from 'single-spa';
 
-// todo
+// 一个空的 promise
 const frameworkStartedDefer = new Deferred<void>();
 
 export function registerMicroApps<T extends ObjectType>(
@@ -288,22 +289,22 @@ export async function loadApp<T extends ObjectType>(
         async () => {
           const useNewContainer = remountContainer !== initialContainer;
           if (useNewContainer || !appWrapperElement) {
-            // element will be destroyed after unmounted, we need to recreate it if it not exist
-            // or we try to remount into a new container
-            appWrapperElement = createElement(appContent, strictStyleIsolation, scopedCSS, appInstanceId);
+            // 元素在卸载后将被销毁，如果它不存在，需要重新创建它
+            appWrapperElement = createElement(appContent, strictStyleIsolation, scopedCSS, appInstanceId); // 看做一个容器 div 即可
             syncAppWrapperElement2Sandbox(appWrapperElement);
           }
-
+          // 渲染
           render({element: appWrapperElement, loading: true, container: remountContainer}, 'mounting');
         },
         mountSandbox,
-        // exec the chain after rendering to keep the behavior with beforeLoad
+        // 执行 beforeMount 声明周期
         async () => execHooksChain(toArray(beforeMount), app, global),
+        // 子应用的 mount export
         async (props) => mount({...props, container: appWrapperGetter(), setGlobalState, onGlobalStateChange}),
-        // finish loading after app mounted
+        // 切换 loading 在 mounted
         async () => render({element: appWrapperElement, loading: false, container: remountContainer}, 'mounted'),
         async () => execHooksChain(toArray(afterMount), app, global),
-        // initialize the unmount defer after app mounted and resolve the defer after it unmounted
+        // 在应用程序安装后初始化 添加 prevAppUnmountedDeferred 的 promise 事件
         async () => {
           if (await validateSingularMode(singular, app)) {
             prevAppUnmountedDeferred = new Deferred<void>();
@@ -311,28 +312,13 @@ export async function loadApp<T extends ObjectType>(
         },
         async () => {
           if (process.env.NODE_ENV === 'development') {
-            const measureName = `[qiankun] App ${appInstanceId} Loading Consuming`;
-            performanceMeasure(measureName, markName);
+            // dev 场景下的判断，忽略
           }
         },
       ],
       unmount: [
-        async () => execHooksChain(toArray(beforeUnmount), app, global),
-        async (props) => unmount({...props, container: appWrapperGetter()}),
-        unmountSandbox,
-        async () => execHooksChain(toArray(afterUnmount), app, global),
-        async () => {
-          render({element: null, loading: false, container: remountContainer}, 'unmounted');
-          offGlobalStateChange(appInstanceId);
-          // for gc
-          appWrapperElement = null;
-          syncAppWrapperElement2Sandbox(appWrapperElement);
-        },
-        async () => {
-          if ((await validateSingularMode(singular, app)) && prevAppUnmountedDeferred) {
-            prevAppUnmountedDeferred.resolve();
-          }
-        },
+        // unmount 的一些事件执行，和 mount 类似
+        // ...
       ],
     };
 
@@ -347,3 +333,16 @@ export async function loadApp<T extends ObjectType>(
 }
 
 ```
+
+到这里 `single-spa` 的 `registerApplication` 注册阶段已完成
+
+那么注册完就是启动： `start`
+
+## 启动
+
+## 整体流程
+
+
+## 总结
+
+## 引用
