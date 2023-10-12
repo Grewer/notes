@@ -137,7 +137,7 @@ async function loadApp<T extends ObjectType>(
   
   // singular 是否为单实例场景，单实例指的是同一时间只会渲染一个微应用。默认为 true。
   // boolean | ((app: RegistrableApp<any>) => Promise<boolean>);
-  // 相当于加了一个 flag， 保证所有微应用都卸载完毕
+  // 相当于加了一个 flag， 保证 start 的执行
   // https://github.com/CanopyTax/single-spa/blob/master/src/navigation/reroute.js#L74
   if (await validateSingularMode(singular, app)) {
     await (prevAppUnmountedDeferred && prevAppUnmountedDeferred.promise);
@@ -267,7 +267,7 @@ export async function loadApp<T extends ObjectType>(
           }
         },
         async () => {
-          // 同上， 保证所有微应用都卸载完毕
+          // 同上， 保证所有微应用执行了
           if ((await validateSingularMode(singular, app)) && prevAppUnmountedDeferred) {
             return prevAppUnmountedDeferred.promise;
           }
@@ -339,6 +339,46 @@ export async function loadApp<T extends ObjectType>(
 那么注册完就是启动： `start`
 
 ## 启动
+
+```tsx
+function start(opts: FrameworkConfiguration = {}) {
+  // 参数合并，取值
+  frameworkConfiguration = { prefetch: true, singular: true, sandbox: true, ...opts };
+  const { prefetch, urlRerouteOnly = defaultUrlRerouteOnly, ...importEntryOpts } = frameworkConfiguration
+  
+  // 如果有预加载策略
+  // prefetch - boolean | 'all' | string[] | (( apps: RegistrableApp[] ) => { criticalAppNames: string[]; minorAppsName: string[] }) - 可选，是否开启预加载，默认为 true。
+  // 配置为 true 则会在第一个微应用 mount 完成后开始预加载其他微应用的静态资源
+  // 配置为 'all' 则主应用 start 后即开始预加载所有微应用静态资源
+  // 配置为 string[] 则会在第一个微应用 mounted 后开始加载数组内的微应用资源
+  // 配置为 function 则可完全自定义应用的资源加载时机 (首屏应用及次屏应用)
+  if (prefetch) {
+    doPrefetchStrategy(microApps, prefetch, importEntryOpts);
+  }
+
+  // 判断是否支持 Proxy ，不支持则自动降级， 设置 { loose: true }
+  // frameworkConfiguration 是全局变量
+  frameworkConfiguration = autoDowngradeForLowVersionBrowser(frameworkConfiguration);
+
+  // 来自 single-spa 的 API
+  startSingleSpa({ urlRerouteOnly });
+  started = true; // flag 设置
+  
+  // 空 promise 正式添加状态，原本都是挂载，处于 await 状态
+  frameworkStartedDefer.resolve();
+}
+```
+
+### 关于沙箱
+
+在创建沙箱时会根据 start 时的判断切换沙箱模式：
+
+```tsx
+sandbox = useLooseSandbox
+  ? new LegacySandbox(appName, globalContext)
+  : new ProxySandbox(appName, globalContext, { speedy: !!speedySandBox });
+```
+
 
 ## 整体流程
 
