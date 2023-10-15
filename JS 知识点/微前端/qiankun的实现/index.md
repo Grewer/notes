@@ -356,7 +356,7 @@ function start(opts: FrameworkConfiguration = {}) {
     doPrefetchStrategy(microApps, prefetch, importEntryOpts);
   }
 
-  // 判断是否支持 Proxy ，不支持则自动降级， 设置 { loose: true }
+  // 判断是否支持 Proxy 或者一些其他配置 ，不支持则自动降级， 设置 { loose: true } 或者 { speedy: false }
   // frameworkConfiguration 是全局变量
   frameworkConfiguration = autoDowngradeForLowVersionBrowser(frameworkConfiguration);
 
@@ -371,14 +371,19 @@ function start(opts: FrameworkConfiguration = {}) {
 
 ### 关于沙箱
 
-在创建沙箱时会根据 start 时的判断切换沙箱模式：
+在创建沙箱时会根据 `start` 时的判断切换沙箱模式：
 
 ```tsx
-sandbox = useLooseSandbox
-  ? new LegacySandbox(appName, globalContext)
-  : new ProxySandbox(appName, globalContext, { speedy: !!speedySandBox });
+  if (window.Proxy) {
+  sandbox = useLooseSandbox
+    ? new LegacySandbox(appName, globalContext)
+    : new ProxySandbox(appName, globalContext, { speedy: !!speedySandBox });
+} else {
+  sandbox = new SnapshotSandbox(appName);
+}
 ```
 
+他们之间的具体区别，已经在沙箱一文中讲述了，可点此查看
 
 ## 整体流程
 
