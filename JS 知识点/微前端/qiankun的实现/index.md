@@ -1,4 +1,4 @@
-# 微前端的实现-以 qiankun 为例
+# 浅析微前端框架 qiankun 的实现
 
 ## 微前端简介
 
@@ -6,18 +6,21 @@
 >
 >  前端是一种多个团队通过独立发布功能的方式来共同构建现代化 web 应用的技术手段及方法策略。
 
-在当前的微前端框架中， `qiankun` 是使用量最多的框架，今天本就以此框架来介绍他的运行原理
-
+在当前纷繁复杂的微前端框架中， `qiankun` 是使用量最多的框架，今天就来浅浅分析下他的运行原理
 
 ## single-spa
 
-首先我们需要知道的是 qiankun 是基于 single-spa 的封装框架，所以在这之前可以先了解下他是做什么的
+首先我们需要知道的是 `qiankun` 是基于 `single-spa` 的封装框架，所以在这之前可以先了解下他是做什么的
 
-TODO
+`single-spa` 仅仅是一个子应用生命周期的调度者。`single-spa` 为应用定义了 `boostrap`, `load`, `mount`, `unmount` 四个生命周期回调：
+
+![img.png](images/img.png)
+
+single-spa 相关可查看我的另一篇文章： 
 
 ## 例子
 
-我们先从 qiankun 的整体 API 启动来入手：
+我们先从 `qiankun` 的整体 `API` 启动来入手：
 
 ```js
 import { registerMicroApps, start } from 'qiankun';
@@ -34,12 +37,12 @@ registerMicroApps([
 start();
 ```
 
-这便是 qiankun 在主应用最简单的启动方案
+这便是 `qiankun` 在主应用最简单的启动方案
 
 1. 注册子应用
 2. 启动
 
-## 注册
+## 注册子应用
 
 我们先看 `registerMicroApps` 做了什么
 
@@ -88,9 +91,9 @@ export function registerMicroApps<T extends ObjectType>(
 ```
 
 
-这里说下 qiankun 新增的 API loader - `(loading: boolean) => void` - 可选，loading 状态发生变化时会调用的方法。
+这里说下 `qiankun` 新增的 `API` `loader` - `(loading: boolean) => void` - 可选，`loading` 状态发生变化时会调用的方法。
 
-其他的都是 single-spa 自身的 API，不再赘述。
+其他的都是 `single-spa` 自身的 `API`，不再赘述。
 
 在加载微应用时， 最核心的函数 `loadApp`:
 
@@ -383,17 +386,17 @@ function start(opts: FrameworkConfiguration = {}) {
 }
 ```
 
-他们之间的具体区别，已经在沙箱一文中讲述了，可点此查看
+他们之间的具体区别，已经在沙箱一文中讲述了：
 
 ## 小结
 
-在 qiankun 中，总共做了以下几件事情：
+在 `qiankun` 中，总共做了以下几件事情：
 
-- 基于 single-spa 封装，提供了更加开箱即用的 API。
+- 基于 `single-spa` 封装，提供了更加开箱即用的 `API`。
 - 技术栈无关，任意技术栈的应用均可 使用/接入。
-- HTML Entry ，保持技术站的。
+- `HTML Entry` ，保持技术站的。
 - 样式隔离。
-- JS 沙箱，确保微应用之间 全局变量/事件 不冲突。
+- `JS` 沙箱，确保微应用之间 全局变量/事件 不冲突。
 - 资源预加载。
 
 
@@ -414,7 +417,7 @@ microApp.unmout();
 microApp.mount();
 ```
 
-通过这个 API 我们可以自己去控制一个微应用加载/卸载
+通过这个 `API` 我们可以自己去控制一个微应用加载/卸载
 
 我们先来看看 `loadMicroApp` 他做了什么：
 
@@ -476,11 +479,11 @@ export function loadMicroApp<T extends ObjectType>(
 
 ```
 
-这种使用方式就是 Wedget 级别的使用，可以完美替代组件形式， 这里提供下官方的比较：
+这种使用方式就是 `Widget` 级别的使用，可以完美替代组件形式， 这里提供下官方的比较：
 
 ### npm 包分发业务组件背后的工程问题
 
-在以前，我们经常通过发布 npm 包的方式复用/共享我们的业务组件，但这种方式存在几个明显的问题：
+在以前，我们经常通过发布 `npm` 包的方式复用/共享我们的业务组件，但这种方式存在几个明显的问题：
 
 1. npm 包的更新下发需要依赖产品重新部署才会生效
 2. 时间一长就容易出现依赖产品版本割裂导致的体验不一致
@@ -498,9 +501,10 @@ export function loadMicroApp<T extends ObjectType>(
 
 ## 总结
 
-qiankun 作为一个微前端的框架来说，还是较为轻量级的，能把大部分技术栈连接到一起，也存在这一些需要使用者自己去 cover 的场景，比如 `localStorage`、`cookie` 的隔离等等, 在微前端的框架选择上，他是一个不错的尝试
+qiankun 作为一个微前端的框架来说，还是较为轻量级的，能把大部分技术栈连接到一起，当然目前也存在着一些需要使用者自己去 cover 的场景，比如 `localStorage`、`cookie` 的隔离等等, 在微前端的框架选择上，他是一个不错的尝试
 
 ## 引用
 
 - https://qiankun.umijs.org/zh/guide
 - https://www.yuque.com/kuitos/gky7yw/uyp6wi
+- https://zhuanlan.zhihu.com/p/378346507
