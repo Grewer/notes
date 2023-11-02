@@ -25,6 +25,23 @@ V8更加直接的将抽象语法树通过JIT技术转换成本地代码，放弃
 
 ### V8引擎编译
 
+编译本地代码时使用的主要类如下所示：
+
+* Script：表示JavaScript代码，即包含源代码，又包含编译之后生成的本地代码，即是编译入口，又是运行入口；
+* Compiler：编译器类，辅组Script类来编译生成代码，调用解释器(Parser)来生成AST和全代码生成器，将AST转变为本地代码；
+* AstNode：抽象语法树节点类，是其他所有节点的基类，包含非常多的子类，后面会针对不同的子类生成不同的本地代码；
+* AstVisitor：抽象语法树的访问者类，主要用来遍历异构的抽象语法树；
+* FullCodeGenerator：AstVisitor类的子类，通过遍历AST来为JavaScript生成本地可执行代码。
+
+![img_1.png](images%2Fimg_1.png)
+
+JavaScript代码编译的过程大致为：
+Script类调用Compiler类的Compile函数为其生成本地代码。
+Compile函数先使用Parser类生成AST，再使用FullCodeGenerator类来生成本地代码。
+
+
+### v8的具体优化方案
+
 
 
 
