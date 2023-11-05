@@ -40,8 +40,20 @@ Script类调用Compiler类的Compile函数为其生成本地代码。
 Compile函数先使用Parser类生成AST，再使用FullCodeGenerator类来生成本地代码。
 
 
+v8充分多进程，主进程负责获取代码，编译生成机器码，有专门负责优化的进程，，还有一个监控进程负责分析那些代码执行比较慢，以遍Crankshaft 做优化，最后还有一个就是GC进程，负责内存垃圾回收。
+
 ### v8的具体优化方案
 
+第一个优化就是尽可能最大的内联。
+
+![img.png](images/img.png)
+
+内联主要是通过优化被调用函数的调用栈。
+// todo
+
+第二个优化就隐藏类。
+
+js中并没有指针的概念，js的对象访问就是基于隐藏类的。下面理解下隐藏类
 
 
 
@@ -73,3 +85,4 @@ Python:
 - https://v8.dev/
 - https://v8.js.cn/
 - https://www.jianshu.com/p/47afd0ac17fd
+- https://www.jianshu.com/p/81f6ded64ab2
