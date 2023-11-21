@@ -125,15 +125,38 @@ p2.a = 8;
 因此，由于过渡路径不同，`p1` 和 `p2` 最终会拥有不同的隐藏类。
 在这种情况下，最好以相同的顺序初始化动态属性，这样隐藏类就可以重复使用。
 
+##### 小结
+
+1. 使用字面量初始化对象时，要保证属性的顺序是一致的。
+2. 尽量使用字面量一次性初始化完整对象属性。
+3. 尽量避免使用 delete 方法。
+
 想要知道更多隐藏类的信息可查看文章：
 https://juejin.cn/post/7064390052519870501
 
 #### 内联缓存
 
-V8 利用了另一种优化动态类型语言的技术，即内联缓存。内联缓存的原理是，对同一方法的重复调用往往发生在同一类型的对象上。
-
+V8 利用了另一种用于优化动态类型语言的技术，称为**内联缓存**。内联缓存依赖于对作用在相同类型对象的、重复调用相同方法的趋势观察。更深入的讨论内联缓存说明，可以点击[这里](https://github.com/sq/JSIL/wiki/Optimizing-dynamic-JavaScript-with-inline-caches)查看。如果您没时间详细阅读深入说明，我们这里也将介绍一些内联缓存的一般概念
 那么它是如何工作的呢？V8 会对近期方法调用中作为参数传递的对象类型进行缓存，并利用这些信息对未来作为参数传递的对象类型做出假设。如果 V8 能够很好地推测出传递给方法的对象类型，那么它就可以绕过计算如何访问对象属性的过程，转而使用以前查询到的存储信息来访问对象的隐藏类。
 
+V8 维护着一个对象类型缓存，缓存的是最近被作为参数传递到调用方法中对象，并假设这些对象类型将来也会被作为参数传递。如果V8能较准确的预测被传递到方法中的对象类型，那么他就可以绕过寻找如何访问对象属性的过程，使用以前查找到对象的存储信息作为替代。
+
+
+```js
+var arr = [1, 2, 3, 4];
+arr.forEach((item) => console.log(item.toString());
+```
+
+像上面这段代码，数字1在第一次toString()方法时会发起一次动态查询，并记录查询结果。当后续再调用toString方法时，引擎就能根据上次的记录直接获知调用点，不再进行动态查询操作。
+
+
+```js
+var arr = [1, '2', 3, '4'];
+arr.forEach((item) => console.log(item.toString());
+```
+可以看到，调用toString方法的对象类型经常发生改变，这就会导致缓存失效。为了防止这种情况发生，V8引擎采用了  polymorphic inline cache (PIC) 技术， 该技术不仅仅只缓存最后一次查询结果，还会缓存多次的查询结果（取决于记录上限）。
+
+// todo
 
 那么，隐藏类和内联缓存的概念有什么关系呢？每当调用特定对象的方法时，V8 引擎都要对该对象的隐藏类进行查找，以确定访问特定属性的偏移量。在对同一隐藏类成功调用两次同一方法后，V8 会省略隐藏类查找，直接将属性偏移量添加到对象指针本身。在以后对该方法的所有调用中，V8 引擎都会假定隐藏类没有改变，并使用以前查找时存储的偏移量直接跳转到特定属性的内存地址。这大大提高了执行速度。
 
@@ -188,7 +211,12 @@ Python: 3.11.6
 
 
 
-### 
+### 结语
+
+
+最后附上 [JSIL](https://github.com/sq/JSIL/wiki/Optimizing-dynamic-JavaScript-with-inline-caches#final-thoughts) 中看到的一句：
+
+> If your goal is to write the fastest possible JavaScript for your libraries or applications, you may need to go to those same lengths. For many applications, it's not worth the trouble - so resist the temptation to go nuts micro-optimizing something that really isn't particularly slow to begin with :-)
 
 
 ## 引用
@@ -198,3 +226,4 @@ Python: 3.11.6
 - https://www.jianshu.com/p/47afd0ac17fd
 - https://medium.com/sessionstack-blog/how-javascript-works-inside-the-v8-engine-5-tips-on-how-to-write-optimized-code-ac089e62b12e
 - https://juejin.cn/post/6844903758908899341
+  - https://panzhongxian.cn/cn/2021/04/02-inside-the-v8-engine-5-tips-on-how-to-write-optimized-code/
