@@ -185,7 +185,7 @@ Lithium 最终会被编译为机器码。接下来是被称为 OSR 的堆栈替�
 
 标记阶段 (marking phase) 需要停止 JavaScript 执行。为了控制垃圾回收成本并使执行更加稳定，V8使用了增量标记：不是遍历整个堆（尝试对每个可能的对象进行标记），而是只遍历堆的一部分，然后恢复正常执行。下一次垃圾收集，会从上一次堆遍历停止的位置继续进行。这种方式允许在正常执行期间非常短的暂停。如前所述，清除阶段 (sweep phase) 由单独的线程处理。
 
-#### `Ignition` 和 `TurboFan`
+#### `Ignition` 和 `TurboFan`的引入
 
 2017 年早些时候发布的 V8 5.9 引入了新的执行管道。在实际的 JavaScript 应用程序中，新管道实现了更大的性能提升和显著的内存节省。
 
@@ -202,6 +202,47 @@ Lithium 最终会被编译为机器码。接下来是被称为 OSR 的堆栈替�
 
 这些改进仅仅是个开始。新的 `Ignition` 和 `TurboFan` 管道为进一步优化铺平了道路，这些优化将在未来几年内提升 JavaScript 性能并减少 V8 在 Chrome 浏览器和 Node.js 中的占用空间。
 
+### 介绍
+
+现在，V8 的每个组件都有一个特定的名称，具体如下：
+
+- **Ignition**： V8 基于寄存器的快速低级解释器，用于生成字节码。
+- **SparkPlug**： V8 新的非优化 JavaScript 编译器，通过迭代字节码并在访问每个字节码时为其输出机器码，从而根据字节码进行编译。
+- **TurboFan**：V8 的优化编译器，可将字节码转换为机器码，并进行更多和更复杂的代码优化。它还包括 JIT（即时编译）。
+
+综上所述，V8 的编译流程概览如下：
+![[img_8.png]]
+### TurboFan 如何发挥作用
+
+识别代码中的热点函数后，`Ignition` 会将数据发送给 `TurboFan` 进行优化。`TurboFan` 会接收这些代码，并开始运行一些神奇的优化，因为它已经拥有了来自 `Ignition` 的假设数据。然后，它会用新的优化字节码替换原来的字节码，这个过程会在我们程序的整个生命周期中不断重复。
+
+这里举个例子：
+
+```js
+function add(x, y) {
+    return x + y;
+}
+
+add(1, 2);
+add(12, 42);
+add(17, 25);
+add(451, 342);
+add(8, 45);
+```
+
+将代码转换为字节码并运行后，`Ignition` 将执行以下冗长的加法过程：
+
+![[img_9.png]]
+
+现在，当我们多次调用这个带有整数参数的函数时，`Ignition` 会将其归类为热函数，并将收集到的信息发送给 `TurboFan`。`TurboFan` 会针对整数优化这个函数，生成字节码并将其替换为原始字节码。现在，当下次调用 `add(21, 45)` 函数时，所有这些冗长的步骤都将被省略，并能更快地得到结果。
+
+#### 后备机制
+
+如果我们调用带有字符串参数的 add 函数呢？为了处理这种情况，TurboFan 会检查传递的参数类型。如果类型与数字不同，它就会返回到点火器生成的原始字节码，并再次执行这一漫长的过程。这个过程被称为去优化（Deoptimization）。
+
+如果我们多次调用带有字符串参数的 add 函数，Ignition 会将其视为热函数，并将其发送给 TurboFan，同时收集相关信息。TurboFan 还将针对字符串参数优化 add 函数，下次调用 add 函数时，将运行优化后的字节码，从而提高性能。
+
+建议将 JavaScript 变量视为静态类型变量，这样才能保证代码的性能。这不仅适用于原始类型，也适用于对象。
 
 ### 如何编写最优化的 JavaScript
 
@@ -230,3 +271,5 @@ Lithium 最终会被编译为机器码。接下来是被称为 OSR 的堆栈替�
 - https://juejin.cn/post/7064390052519870501
 - https://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html
 - https://juejin.cn/post/7041744820057931813
+- https://jhalon.github.io/chrome-browser-exploitation-1/
+- https://dev.to/amitkhonde/javascript-internals-ignition-and-turbofan-48ef
