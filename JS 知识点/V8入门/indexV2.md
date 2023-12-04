@@ -39,6 +39,20 @@ source ~/.zshrc
 如果你当前是 Windows 系统， 可查看[此文档](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up)了解注意事项。
 
 
+现在新建文件夹，开始拉取仓库：
+
+```zsh
+mkdir ~/v8
+cd ~/v8
+fetch v8
+```
+
+整个仓库大小至少有 1G，时间会比较长，这里比较推荐的做法是在官方镜像直接下载：
+https://github.com/v8/v8
+
+
+
+
 ## 引用
 
 - https://blog.csdn.net/I_can_/article/details/124086670
