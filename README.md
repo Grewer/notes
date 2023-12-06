@@ -38,6 +38,8 @@
     - V8入门
         - index
 
+        - indexV2
+
     - eslint
         - 项目中的 eslint 插件
 
