@@ -50,7 +50,48 @@ fetch v8
 整个仓库大小至少有 1G，时间会比较长，这里比较推荐的做法是在官方镜像直接下载：
 https://github.com/v8/v8
 
+之前再切到 main 分支，更新下代码：
+```zsh
+git checkout main
+git pull
+```
 
+更新依赖库，运行指令：
+```zsh
+gclient sync
+```
+
+还是在当前目录，运行指令，进行编译：
+```zsh
+tools/dev/gm.py x64.release
+```
+
+
+## 遇到的问题
+
+
+```
+ERROR at //build/config/mac/mac_sdk.gni:108:19: Script returned non-zero exit code.
+
+_mac_sdk_result = exec_script(script_name, sdk_info_args, "scope")
+
+                  ^----------
+
+Current dir: /Users/apple/Sites/demo/v8/v8/out/x64.release/
+
+Command: python3 /Users/apple/Sites/demo/v8/v8/build/config/apple/sdk_info.py macosx
+
+Returned 1.
+
+stderr:
+
+  
+
+xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance
+
+Traceback (most recent call last):
+// 省略后面的报错路径
+```
 
 
 ## 引用
