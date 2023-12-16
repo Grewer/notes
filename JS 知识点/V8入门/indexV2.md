@@ -69,6 +69,7 @@ tools/dev/gm.py x64.release
 
 ## 遇到的问题
 
+### xcode-select 
 
 ```
 ERROR at //build/config/mac/mac_sdk.gni:108:19: Script returned non-zero exit code.
@@ -93,6 +94,23 @@ Traceback (most recent call last):
 // 省略后面的报错路径
 ```
 
+接口方案：
+
+首先确认自己已经下载了 Xcode
+
+```zsh
+file /Applications/Xcode.app/Contents/Developer
+```
+
+![[截屏2023-12-17 01.47.21.png]]
+
+如果存在则执行以下指令:
+
+```zsh
+sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+```
+
+输入密码后回车即可
 
 ## 引用
 
