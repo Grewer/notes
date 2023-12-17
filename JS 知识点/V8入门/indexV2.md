@@ -1,10 +1,9 @@
 ## 环境搭建
 
-
 这里先说下我的环境：
 - 系统： Mac Monterey 12.6.8
 - Xcode: 14.2
-- Python: 3.11.6
+- Python: 3.11.6 （不要使用 2.x 版本！）
 
 > 建议全程指令都在FQ工具下进行
 
@@ -66,6 +65,17 @@ gclient sync
 tools/dev/gm.py x64.release
 ```
 
+我们可以将 gm.py 作为一个快捷指令：
+```bash
+// 同上面讲述的环境添加的添加方法在 ~/.zshrc 中添加下面一行，再使用 source 指令即可
+alias gm=/Users/apple/Sites/demo/v8/v8/tools/dev/gm.py
+```
+
+这样我们就可以这样编译了：
+```bash
+gm x64.release
+```
+
 
 ## 遇到的问题
 
@@ -111,6 +121,24 @@ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 ```
 
 输入密码后回车即可
+
+### 其他问题
+
+> 这些问题是从网上类似博客里找到的，给大伙提供帮助
+
+报错：
+
+```bash
+ImportError: cannot import name zip_longest
+```
+
+
+原因就是 python 版本不对，py3是 `zip\_longest` 库，py2下是 `izip\_longest`。
+
+[这里是具体的解决方案](https://blog.csdn.net/I_can_/article/details/124086670)
+
+
+####
 
 ## 引用
 
