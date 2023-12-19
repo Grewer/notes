@@ -76,35 +76,20 @@ alias gm=/Users/apple/Sites/demo/v8/v8/tools/dev/gm.py
 gm x64.release
 ```
 
+注意**这里的编译需要花费较长的时间**，我的电脑性能一般，花了 2 个小时左右。
+
+编译成功直接的显示：
+![[截屏2023-12-20 01.40.05.png]]
 
 ## 遇到的问题
 
 ### xcode-select 
 
 ```
-ERROR at //build/config/mac/mac_sdk.gni:108:19: Script returned non-zero exit code.
-
-_mac_sdk_result = exec_script(script_name, sdk_info_args, "scope")
-
-                  ^----------
-
-Current dir: /Users/apple/Sites/demo/v8/v8/out/x64.release/
-
-Command: python3 /Users/apple/Sites/demo/v8/v8/build/config/apple/sdk_info.py macosx
-
-Returned 1.
-
-stderr:
-
-  
-
 xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance
-
-Traceback (most recent call last):
-// 省略后面的报错路径
 ```
 
-接口方案：
+解决方案：
 
 首先确认自己已经下载了 Xcode
 
@@ -122,6 +107,10 @@ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 
 输入密码后回车即可
 
+
+相关链接：
+https://stackoverflow.com/questions/17980759/xcode-select-active-developer-directory-error
+
 ### 其他问题
 
 > 这些问题是从网上类似博客里找到的，给大伙提供帮助
@@ -137,6 +126,13 @@ ImportError: cannot import name zip_longest
 
 [这里是具体的解决方案](https://blog.csdn.net/I_can_/article/details/124086670)
 
+
+```zsh
+urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1108)
+```
+
+解决：执行以下文件即可
+![[Pasted image 20231220013843.png]]
 
 ####
 
