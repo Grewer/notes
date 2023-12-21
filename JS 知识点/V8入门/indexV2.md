@@ -81,6 +81,37 @@ gm x64.release
 编译成功直接的显示：
 ![[截屏2023-12-20 01.40.05.png]]
 
+进入文件夹：`/out/x64.release` ,  生成文件如下
+
+```
+├── args.gn
+├── build.ninja
+├── build.ninja.d
+├── build.ninja.stamp
+├── bytecode_builtins_list_generator
+├── d8
+├── gen
+├── gen-regexp-special-case
+├── icudtl.dat
+├── mksnapshot
+├── obj
+├── snapshot_blob.bin
+├── toolchain.ninja
+├── torque
+├── v8_build_config.json
+└── v8_features.json
+```
+
+执行指令 `d8` , 之后可运行 js 代码，家乡 Chrome 的控制台一样：
+
+![[截屏2023-12-22 02.44.39.png]]
+
+
+//todo
+官方还有一种手动编译的方案：
+
+
+
 ## 遇到的问题
 
 ### xcode-select 
