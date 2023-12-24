@@ -102,9 +102,25 @@ gm x64.release
 └── v8_features.json
 ```
 
-执行指令 `d8` , 之后可运行 js 代码，家乡 Chrome 的控制台一样：
+执行指令 `d8` , 之后可运行 js 代码，就像 Chrome 的控制台一样：
 
 ![[截屏2023-12-22 02.44.39.png]]
+
+当然我们也可以执行一个 js 文件：
+新建文件 `demo.js`
+
+```js
+function foo(num){
+	var bar = 2;
+	return Math.pow(num, bar)
+}
+
+console.log(10)
+```
+
+运行结果：
+
+![[截屏2023-12-25 02.19.37.png]]
 
 
 //todo
