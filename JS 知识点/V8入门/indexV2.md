@@ -122,9 +122,9 @@ console.log(10)
 
 ![[截屏2023-12-25 02.19.37.png]]
 
+官方还有一种手动编译的方案即使用 `GN`  和 `ninja` 来手动编译， 这是具体使用方式[https://v8.js.cn/docs/build-gn/#generate-build-files](https://v8.js.cn/docs/build-gn/#generate-build-files)
 
-//todo
-官方还有一种手动编译的方案：
+相对 gm 来说， 编译更加繁琐了，需要使用 `GN` 去生成 `ninja` 文件，再生成 `makefile`，最后才是编译
 
 
 
