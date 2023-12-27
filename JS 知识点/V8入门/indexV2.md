@@ -115,12 +115,12 @@ function foo(num){
 	return Math.pow(num, bar)
 }
 
-console.log(10)
+console.log(foo(10))
 ```
 
 运行结果：
+![[截屏2023-12-28 02.12.32.png]]
 
-![[截屏2023-12-25 02.19.37.png]]
 
 官方还有一种手动编译的方案即使用 `GN`  和 `ninja` 来手动编译， 这是具体使用方式[https://v8.js.cn/docs/build-gn/#generate-build-files](https://v8.js.cn/docs/build-gn/#generate-build-files)
 
@@ -181,9 +181,44 @@ urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certifica
 解决：执行以下文件即可
 ![[Pasted image 20231220013843.png]]
 
-####
+
+## 调试
+
+### gdb 配置
+
+
+
+
+### 正式调试
+
+在源代码中插入如下代码进行调试：
+
+```js
+%DebugPrint(x); 打印变量 x 的相关信息
+%SystemBreak(); 抛出中断，令 gdb 在此处断点
+```
+
+以我们刚刚的 demo.js 为例子
+
+```js
+%SystemBreak();
+function foo(num){
+	var bar = 2;
+	return Math.pow(num, bar)
+}
+
+console.log(foo(10));  
+
+%DebugPrint(foo);
+%SystemBreak();
+```
+
+> 这两条代码并非原有的语法，在执行时需添加参数 “--allow-natives-syntax”， 否则会提示 “SyntaxError: Unexpected token '%'”
+
+
 
 ## 引用
 
 - https://blog.csdn.net/I_can_/article/details/124086670
 - https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up
+- https://github.com/ErodedElk/Chaos-me-JavaScript-V8/blob/master/Chapter1-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE.md
