@@ -184,8 +184,17 @@ urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certifica
 
 ## 调试
 
+> `gdb`是一款功能强大的开源调试器，用于帮助开发人员诊断和修复程序中的错误。通过设置断点、查看变量、回溯调用栈等功能，`gdb`使得在程序执行过程中定位问题变得更加容易。它支持多线程调试和提供宏调试功能，帮助开发人员有效地分析和解决复杂的软件错误，提高调试效率。
+
 ### gdb 配置
 
+> 本文只讲述 mac 的安装
+
+首先请确认已安装了 **Homebrew**, 使用它安卓 `gdb` :
+
+```zsh
+brew install gdb
+```
 
 
 
