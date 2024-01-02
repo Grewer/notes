@@ -71,14 +71,14 @@ tools/dev/gm.py x64.release
 alias gm=/Users/apple/Sites/demo/v8/v8/tools/dev/gm.py
 ```
 
-这样我们就可以这样编译了：
+这样我们就可以编译了：
 ```bash
 gm x64.release
 ```
 
 注意**这里的编译需要花费较长的时间**，我的电脑性能一般，花了 2 个小时左右。
 
-编译成功直接的显示：
+编译成功的显示：
 ![[截屏2023-12-20 01.40.05.png]]
 
 进入文件夹：`/out/x64.release` ,  生成文件如下
@@ -102,11 +102,11 @@ gm x64.release
 └── v8_features.json
 ```
 
-执行指令 `d8` , 之后可运行 js 代码，就像 Chrome 的控制台一样：
+执行指令 `d8` , 之后可运行 js 代码，就像 Chrome 的控制台那样：
 
 ![[截屏2023-12-22 02.44.39.png]]
 
-当然我们也可以执行一个 js 文件：
+当然我们也可以执行一个 js 文件  
 新建文件 `demo.js`
 
 ```js
@@ -186,19 +186,37 @@ urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certifica
 
 > `gdb`是一款功能强大的开源调试器，用于帮助开发人员诊断和修复程序中的错误。通过设置断点、查看变量、回溯调用栈等功能，`gdb`使得在程序执行过程中定位问题变得更加容易。它支持多线程调试和提供宏调试功能，帮助开发人员有效地分析和解决复杂的软件错误，提高调试效率。
 
-### gdb 配置
+### 调试前置
 
-> 本文只讲述 mac 的安装
+#### gdb 安装
 
-首先请确认已安装了 **Homebrew**, 使用它安卓 `gdb` :
+> 本文只讲述 mac 的安装, 如果已安装，请跳转到配置
 
-```zsh
-brew install gdb
-```
+1. **使用 Homebrew 安装 `gdb`：** 安装 `gdb` 的最新版本：
+    
+    `brew install gdb`
+    
+2. **配置 Code Signing（签名）：** 由于 SIP 限制，你需要配置 `gdb` 的代码签名，以便在调试时绕过权限问题。执行以下命令：
+    
+    `echo "set startup-with-shell off" >> ~/.gdbinit`
+    
+3. **创建签名文件：** 在终端中执行以下命令：
+    
+    `codesign -s gdb-cert /usr/local/bin/gdb`
+    
+    注意：这里的 `gdb-cert` 是你的证书名称，可以替换为你自己的证书名称。如果没有证书，你可能需要先创建一个。
+    
+4. **启动 `gdb`：** 在终端中启动 `gdb`：
+    
+    `gdb`
+
+#### 配置
+
+在 v8 的 tools 中有 gdb 工具文件：`/v8/tools/gdbinit_v8`
 
 
 
-### 正式调试
+### 正常调试
 
 在源代码中插入如下代码进行调试：
 
