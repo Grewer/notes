@@ -210,6 +210,8 @@ urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certifica
     
     `gdb`
 
+如有问题可参考此[文章](https://blog.csdn.net/qq_33154343/article/details/104784641)
+
 #### 配置
 
 在 v8 的 tools 中有 gdb 工具文件：`/v8/tools/gdbinit_v8`
