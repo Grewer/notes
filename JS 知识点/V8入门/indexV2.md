@@ -186,8 +186,6 @@ urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certifica
 
 > `gdb`是一款功能强大的开源调试器，用于帮助开发人员诊断和修复程序中的错误。通过设置断点、查看变量、回溯调用栈等功能，`gdb`使得在程序执行过程中定位问题变得更加容易。它支持多线程调试和提供宏调试功能，帮助开发人员有效地分析和解决复杂的软件错误，提高调试效率。
 
-### 调试前置
-
 #### gdb 安装
 
 > 本文只讲述 mac 的安装, 如果已安装，请跳转到配置
@@ -212,10 +210,27 @@ urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certifica
 
 如有问题可参考此[文章](https://blog.csdn.net/qq_33154343/article/details/104784641)
 
-#### 配置
+#### lldb
 
-在 v8 的 tools 中有 gdb 工具文件：`/v8/tools/gdbinit_v8`
+> LLDB 是 LLVM 编译器基础上构建的调试器，主要用于 macOS 和其他支持 LLVM 的平台。作为 Xcode 的一部分，它支持多种调试功能，包括断点设置、单步执行、变量查看等。LLDB 提供强大的命令行界面，用于调试本地和远程程序。其灵活性和性能使其成为开发者在分析和修复代码中的问题时的重要工具。
 
+目前来说更加推荐使用这个，在安装 Xcode 后，就应该已经拥有 LLDB。
+
+如果没有则需要设置一下环境变量：
+
+```zsh
+// 将 `/path/to/XcodeCommandLineTools` 替换为实际的 Xcode 命令行工具路径。
+export PATH="/path/to/XcodeCommandLineTools/bin:$PATH"
+```
+
+
+运行以下命令来验证是否可以找到 LLDB：
+
+```zsh
+lldb --version
+```
+
+如果一切正常，应该能够看到 LLDB 的版本信息。
 
 
 ### 正常调试
@@ -245,7 +260,17 @@ console.log(foo(10));
 > 这两条代码并非原有的语法，在执行时需添加参数 “--allow-natives-syntax”， 否则会提示 “SyntaxError: Unexpected token '%'”
 
 
+![[截屏2024-01-06 02.06.10.png]]
 
+如上图所示
+
+1. 进入调试工具
+	 `lldb v8`
+2. 我们需要运行指令来调试对应的文件：
+```zsh
+r --allow-natives-syntax /Users/apple/Sites/demo/v8/v8/out/x64.release/demo.js
+```
+3. 
 ## 引用
 
 - https://blog.csdn.net/I_can_/article/details/124086670
