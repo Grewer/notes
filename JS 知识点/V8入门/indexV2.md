@@ -184,9 +184,10 @@ urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certifica
 
 ## 调试
 
+#### gdb 安装
+
 > `gdb`是一款功能强大的开源调试器，用于帮助开发人员诊断和修复程序中的错误。通过设置断点、查看变量、回溯调用栈等功能，`gdb`使得在程序执行过程中定位问题变得更加容易。它支持多线程调试和提供宏调试功能，帮助开发人员有效地分析和解决复杂的软件错误，提高调试效率。
 
-#### gdb 安装
 
 > 本文只讲述 mac 的安装, 如果已安装，请跳转到配置
 
@@ -270,7 +271,19 @@ console.log(foo(10));
 ```zsh
 r --allow-natives-syntax /Users/apple/Sites/demo/v8/v8/out/x64.release/demo.js
 ```
-3. 
+3. 输入 `continue` 继续， 可以看到 `foo(10)`  的打印结果，同时可以看到打印的 foo, 最后再次进入断点
+![[截屏2024-01-11 01.26.12.png]]
+4. 一直执行，看到 `Process xxx exited` 即是程序运行完毕
+![[截屏2024-01-11 01.28.40.png]]
+
+在 `lldb` 中还存在许多其他的命令： 如 `step`, `next`, `print` 等，来执行单步调试、查看变量等操作。
+
+**更多请查看[官网](https://lldb.llvm.org/man/lldb.html#lldb-the-debugger)**
+
+
+
+
+
 ## 引用
 
 - https://blog.csdn.net/I_can_/article/details/124086670
