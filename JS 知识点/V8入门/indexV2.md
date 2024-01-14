@@ -184,7 +184,7 @@ urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certifica
 
 ## 调试
 
-#### gdb 安装
+#### gdb 
 
 > `gdb`是一款功能强大的开源调试器，用于帮助开发人员诊断和修复程序中的错误。通过设置断点、查看变量、回溯调用栈等功能，`gdb`使得在程序执行过程中定位问题变得更加容易。它支持多线程调试和提供宏调试功能，帮助开发人员有效地分析和解决复杂的软件错误，提高调试效率。
 
@@ -234,7 +234,7 @@ lldb --version
 如果一切正常，应该能够看到 LLDB 的版本信息。
 
 
-### 正常调试
+### 进入调试
 
 在源代码中插入如下代码进行调试：
 
@@ -260,6 +260,7 @@ console.log(foo(10));
 
 > 这两条代码并非原有的语法，在执行时需添加参数 “--allow-natives-syntax”， 否则会提示 “SyntaxError: Unexpected token '%'”
 
+**更多关于 V8 语法的知识，可查看[源码](https://github.com/v8/v8/blob/main/src/runtime/runtime.h)获取**
 
 ![[截屏2024-01-06 02.06.10.png]]
 
@@ -280,9 +281,10 @@ r --allow-natives-syntax /Users/apple/Sites/demo/v8/v8/out/x64.release/demo.js
 
 **更多请查看[官网](https://lldb.llvm.org/man/lldb.html#lldb-the-debugger)**
 
+## 总结
 
-
-
+在本文中，我们着手构建V8环境，并确保其成功编译。透过调试指令，我们能够在V8运行时提取必要的信息并将其输出。这是学习V8引擎过程中的关键步骤。
+在随后的文章中，我们将深入研究V8，并探讨相关主题。如在环境搭建、编译或调试过程中遇到具体问题，请随时提出，我将提供更详细的信息和指导。
 
 ## 引用
 
