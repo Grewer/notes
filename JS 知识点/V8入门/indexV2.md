@@ -1,6 +1,7 @@
 ## 环境搭建
 
-这里先说下我的环境：
+这里先说下我的环境， 这是代码运行的前提。
+
 - 系统： Mac Monterey 12.6.8
 - Xcode: 14.2
 - Python: 3.11.6 （不要使用 2.x 版本！）
@@ -9,27 +10,27 @@
 
 ## 由源码构建 V8
 
-首先我们需要一个工具 [`depot_tools`](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up)
+1. 首先我们需要一个工具 [`depot_tools`](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up)
 
-执行指令克隆，这里我是在文件夹 `/Users/apple/Sites/demo/depot_tools` 下执行的
+2. 执行指令克隆，这里我是在文件夹 `/Users/apple/Sites/demo/depot_tools` 下执行的
 
 ```zsh
 $ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 ```
 
-再在配置文件里添加环境变量（假设我们克隆的地址是 `/path/`）, 因为我使用的是 zsh, 所以在 `~/.zshrc` 中添加 （如果你使用的是原生的终端 `bash`，则在 `~/.bashrc` 中添加）
+3. 再在配置文件里添加环境变量（假设我们克隆的地址是 `/path/`）, 因为使用的是 zsh, 所以在 `~/.zshrc` 中添加 （如果使用的是原生的终端 `bash`，则在 `~/.bashrc` 中添加）
 
 ```zsh
 $ export PATH=/path/depot_tools:$PATH
 ```
 
-这里根据我们刚刚克隆的地址，添加：
+这里根据我们刚刚克隆的地址，添加配置：
 
 ```zsh
 export PATH=/Users/apple/Sites/demo/depot_tools:$PATH
 ```
 
-最后配置让配置生效：
+最后让配置生效：
 
 ```zsh
 source ~/.zshrc 
@@ -38,7 +39,7 @@ source ~/.zshrc
 如果你当前是 Windows 系统， 可查看[此文档](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up)了解注意事项。
 
 
-现在新建文件夹，开始拉取仓库：
+4. 现在新建文件夹，开始拉取仓库：
 
 ```zsh
 mkdir ~/v8
@@ -49,7 +50,7 @@ fetch v8
 整个仓库大小至少有 1G，时间会比较长，这里比较推荐的做法是在官方镜像直接下载：
 https://github.com/v8/v8
 
-之前再切到 main 分支，更新下代码：
+5. 之前再切到 main 分支，更新下代码：
 ```zsh
 git checkout main
 git pull
@@ -60,7 +61,7 @@ git pull
 gclient sync
 ```
 
-还是在当前目录，运行指令，进行编译：
+6. 还是在当前目录，运行指令，进行编译：
 ```zsh
 tools/dev/gm.py x64.release
 ```
@@ -102,7 +103,7 @@ gm x64.release
 └── v8_features.json
 ```
 
-执行指令 `d8` , 之后可运行 js 代码，就像 Chrome 的控制台那样：
+7. 执行指令 `d8` , 之后可运行 js 代码，就像 Chrome 的控制台那样：
 
 ![[截屏2023-12-22 02.44.39.png]]
 
