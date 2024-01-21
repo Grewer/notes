@@ -268,7 +268,7 @@ console.log(foo(10));
 如上图所示
 
 1. 进入调试工具
-	 `lldb v8`
+	 `lldb d8`
 2. 我们需要运行指令来调试对应的文件：
 ```zsh
 r --allow-natives-syntax /Users/apple/Sites/demo/v8/v8/out/x64.release/demo.js
