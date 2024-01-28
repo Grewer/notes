@@ -19,11 +19,20 @@
 
 ### 强连通分量
 
+有向图中，尽可能多的若干顶点组成的子图中，这些顶点都是相互可到达的，则这些顶点成为一个强连通分量。
 
+![[Pasted image 20240129024300.png]]
 
+比如上面这张图当中的{1, 2, 3, 4}节点就可以被看成是一个强连通分量。
 
+### DFS 生成树
+
+在介绍 kosaraju 算法之前，先来了解 **DFS 生成树**，我们以下面的有向图为例：
 
 ## 引用
 
 - https://xie.infoq.cn/article/02144dc8c84e4b85cc9b27779
 - https://zh.wikipedia.org/wiki/%E5%9B%BE_(%E6%95%B0%E5%AD%A6)#%E6%9C%89%E5%90%91%E5%9B%BE
+- https://oi-wiki.org/graph/scc/#kosaraju-%E7%AE%97%E6%B3%95
+- https://www.cnblogs.com/nullzx/p/6437926.html
+- https://www.cnblogs.com/RioTian/p/14026585.html
