@@ -24,9 +24,8 @@
 
 有向图中，尽可能多的若干顶点组成的子图中，这些顶点都是相互可到达的，则这些顶点成为一个强连通分量。
 
-![[Pasted image 20240129024300.png]]
+![[截屏2024-02-05 02.39.27.png]]
 
-比如上面这张图当中的{1, 2, 3, 4}节点就可以被看成是一个强连通分量。
 
 其实求解强连通分量的算法并不止一种，除了**Kosaraju**之外还有大名鼎鼎的**Tarjan**算法可以用来求解。但相比**Tarjan**算法，**Kosaraju**算法更加==直观==，更加==容易理解==。
 
@@ -50,6 +49,24 @@
 
 反证法：假设有个结点 ![](data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 "v") 在该强连通分量中但是不在以 ![](data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 "u") 为根的子树中，那么 ![](data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 "u") 到 ![](data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 "v") 的路径中肯定有一条离开子树的边。但是这样的边只可能是横叉边或者反祖边，然而这两条边都要求指向的结点已经被访问过了，这就和 ![](data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 "u") 是第一个访问的结点矛盾了。得证。
 
+// todo 具体代码
+
+###  Kosaraju 算法
+
+
+该算法依靠两次简单的 DFS 实现：
+
+第一次 DFS，选取任意顶点作为起点，遍历所有未访问过的顶点，并在回溯之前给顶点编号，也就是后序遍历。
+
+第二次 DFS，对于反向后的图，以标号最大的顶点作为起点开始 DFS。这样遍历到的顶点集合就是一个强连通分量。对于所有未访问过的结点，选取标号最大的，重复上述过程。
+
+两次 DFS 结束后，强连通分量就找出来了，Kosaraju 算法的时间复杂度为 ![](data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 "O(n+m)")。
+
+// todo 实现
+
+
+
+
 ## 引用
 
 - https://xie.infoq.cn/article/02144dc8c84e4b85cc9b27779
@@ -57,3 +74,4 @@
 - https://oi-wiki.org/graph/scc/#kosaraju-%E7%AE%97%E6%B3%95
 - https://www.cnblogs.com/nullzx/p/6437926.html
 - https://www.cnblogs.com/RioTian/p/14026585.html
+- https://www.youtube.com/watch?v=TyWtx7q2D7Y
