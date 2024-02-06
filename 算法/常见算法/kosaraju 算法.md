@@ -9,12 +9,10 @@
 
 > 边为有方向的图称作**有向图**（英语：**directed graph**或**digraph**）。
 
-// 这里的图待修改
+有向图的一种比较严格的定义是这样的：一个二元组$G=(V,E)$，其中
 
-有向图的一种比较严格的定义是这样的：一个二元组![{\displaystyle G=(V,E)}](https://wikimedia.org/api/rest_v1/media/math/render/svg/644a8d85ee410b6159ca2bdb5dcb9097e2c8f182)，其中
-
-- ![{\displaystyle V}](https://wikimedia.org/api/rest_v1/media/math/render/svg/af0f6064540e84211d0ffe4dac72098adfa52845)是**节点**的集合；
-- ![{\displaystyle E\subseteq \{(x,y)\mid (x,y)\in V^{2}\wedge x\neq y\}}](https://wikimedia.org/api/rest_v1/media/math/render/svg/823ab5b54c62c1bd1bcbdc70b62c430c88ea0d6f)是**边**（也称为有向边，英语：**directed edge**或**directed link**；或**弧**，英语：**arcs**）的集合，其中的元素是节点的有序对。
+- $V$是**节点**的集合；
+- ${\displaystyle E\subseteq \{(x,y)\mid (x,y)\in V^{2}\wedge x\neq y\}}$是**边**（也称为有向边，英语：**directed edge**或**directed link**；或**弧**，英语：**arcs**）的集合，其中的元素是节点的有序对。
 
 下图是一个简单的有向图：
 
@@ -42,17 +40,27 @@
 3. 横叉边（cross edge）：示意图中以蓝色边表示（即 ![](data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 "9 \rightarrow 7")），它主要是在搜索的时候遇到了一个已经访问过的结点，但是这个结点 **并不是** 当前结点的祖先。
 4. 前向边（forward edge）：示意图中以绿色边表示（即 ![](data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 "3 \rightarrow 6")），它是在搜索的时候遇到子树中的结点的时候形成的。
 
-我们考虑 DFS 生成树与强连通分量之间的关系。
 
+这是使用 js 实现的一个简单的 DFS：
+
+```js
+const depth1 = (dom, nodeList) => {
+	nodeList.push(dom.name) 
+	dom.children.forEach((element) => {
+		depth1(element, nodeList) 
+	}) 
+}
+```
+
+
+我们考虑 DFS 生成树与强连通分量之间的关系。
 
 如果结点 u  是某个强连通分量在搜索树中遇到的第一个结点，那么这个强连通分量的其余结点肯定是在搜索树中以 u 为根的子树中。结点 u 被称为这个强连通分量的根。
 
 反证法：假设有个结点 ![](data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 "v") 在该强连通分量中但是不在以 ![](data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 "u") 为根的子树中，那么 ![](data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 "u") 到 ![](data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 "v") 的路径中肯定有一条离开子树的边。但是这样的边只可能是横叉边或者反祖边，然而这两条边都要求指向的结点已经被访问过了，这就和 ![](data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 "u") 是第一个访问的结点矛盾了。得证。
 
-// todo 具体代码
 
 ###  Kosaraju 算法
-
 
 该算法依靠两次简单的 DFS 实现：
 
@@ -60,9 +68,8 @@
 
 第二次 DFS，对于反向后的图，以标号最大的顶点作为起点开始 DFS。这样遍历到的顶点集合就是一个强连通分量。对于所有未访问过的结点，选取标号最大的，重复上述过程。
 
-两次 DFS 结束后，强连通分量就找出来了，Kosaraju 算法的时间复杂度为 ![](data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 "O(n+m)")。
+两次 DFS 结束后，强连通分量就找出来了，Kosaraju 算法的时间复杂度为 $O(n+m)$ 。
 
-// todo 实现
 
 
 
