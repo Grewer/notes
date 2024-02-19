@@ -20,9 +20,9 @@ function useRequest<TData, TParams extends any[]>(
 ```
 
 `usRequest`  可接收三个参数，
-- `service`
-- `options`
-- `plugins`
+- `service`  请求， 一般是 promise
+- `options`  配置参数， 可通过参数控制请求的不同色模式
+- `plugins`  自定义插件， 目前 useRequest 的轮询， 依赖刷新，防抖，节流等等功能都是通过插件来实现的。
 
 最后返回内部包装的对象 `useRequestImplement` ：
 
@@ -45,3 +45,9 @@ function useRequest<TData, TParams extends any[]>(
   ] as Plugin<TData, TParams>[]);
 }
 ```
+
+如上述代码 `xxxPlugin`，通过插件的能力, 可自定义扩展 useRequest 的能力，它也内置了很多常见功能。 
+
+###  useRequestImplement
+
+我们先来看 useRequestImplement 的实现
