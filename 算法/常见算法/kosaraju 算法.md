@@ -1,4 +1,4 @@
-## 前言
+### 前言
 
 以前学习了算法，但是因为没有记录下来，最近又要重新开始学习了，这次就将我的学习经历汇总成文章，记录下来。
 
@@ -133,10 +133,13 @@ if __name__ == "__main__":
             print(scc)
 ```
 
+### 动画演示
 
+![[0093-scc-kosaraju.gif]]
 
+动画演示和标准的 `Kosaraju` 算法有点不一样：它是先 `DFS` 遍历顶点得到逆后序排序，然后再将有向图置为反向图，按照逆后序排序取出顶点，深度优先搜索反向图。结果和 `Kosaraju` 算法一致。
 
-## 引用
+### 引用、推荐
 
 - https://xie.infoq.cn/article/02144dc8c84e4b85cc9b27779
 - https://zh.wikipedia.org/wiki/%E5%9B%BE_(%E6%95%B0%E5%AD%A6)#%E6%9C%89%E5%90%91%E5%9B%BE
@@ -145,3 +148,4 @@ if __name__ == "__main__":
 - https://www.cnblogs.com/RioTian/p/14026585.html
 - https://www.youtube.com/watch?v=TyWtx7q2D7Y
 - https://www.youtube.com/watch?v=R6uoSjZ2imo
+- https://redspider110.github.io/2018/08/22/0093-algorithms-scc-kosaraju/
