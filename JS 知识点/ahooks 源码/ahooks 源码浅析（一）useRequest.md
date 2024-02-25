@@ -51,3 +51,70 @@ function useRequest<TData, TParams extends any[]>(
 ###  useRequestImplement
 
 我们先来看 useRequestImplement 的实现
+
+```tsx
+function useRequestImplement<TData, TParams extends any[]>(
+  service: Service<TData, TParams>,
+  options: Options<TData, TParams> = {},
+  plugins: Plugin<TData, TParams>[] = [],
+) {
+  const { manual = false, ...rest } = options;
+
+  // 整个的参数，同时给 manual 添加上默认值
+  const fetchOptions = {
+    manual,
+    ...rest,
+  };
+
+ // 返回当前最新值的, 避免闭包
+  const serviceRef = useLatest(service);
+
+  // 强行 reRender 的 hook
+  const update = useUpdate();
+
+ // 使用 useCreation 创建对象， 避免重复创建
+  const fetchInstance = useCreation(() => {
+   // 插件触发 onInit 静态方法，并且根据返回值， 过滤出初始状态
+    const initState = plugins.map((p) => p?.onInit?.(fetchOptions)).filter(Boolean);
+    // new 一个 Fetch, 具体在下面讲述
+    return new Fetch<TData, TParams>(
+      serviceRef,
+      fetchOptions,
+      update,
+      Object.assign({}, ...initState),
+    );
+  }, []);
+
+  fetchInstance.options = fetchOptions;
+  
+ 
+  fetchInstance.pluginImpls = plugins.map((p) => p(fetchInstance, fetchOptions));
+  // 参数的一些赋值，插件的初始化运行， 用一个闭包，返回各个插件的生命周期
+
+  useMount(() => {
+    if (!manual) {
+      // useCachePlugin can set fetchInstance.state.params from cache when init
+      const params = fetchInstance.state.params || options.defaultParams || [];
+      // @ts-ignore
+      fetchInstance.run(...params);
+    }
+  });
+
+  useUnmount(() => {
+    fetchInstance.cancel();
+  });
+
+  return {
+    loading: fetchInstance.state.loading,
+    data: fetchInstance.state.data,
+    error: fetchInstance.state.error,
+    params: fetchInstance.state.params || [],
+    cancel: useMemoizedFn(fetchInstance.cancel.bind(fetchInstance)),
+    refresh: useMemoizedFn(fetchInstance.refresh.bind(fetchInstance)),
+    refreshAsync: useMemoizedFn(fetchInstance.refreshAsync.bind(fetchInstance)),
+    run: useMemoizedFn(fetchInstance.run.bind(fetchInstance)),
+    runAsync: useMemoizedFn(fetchInstance.runAsync.bind(fetchInstance)),
+    mutate: useMemoizedFn(fetchInstance.mutate.bind(fetchInstance)),
+  } as Result<TData, TParams>;
+}
+```
