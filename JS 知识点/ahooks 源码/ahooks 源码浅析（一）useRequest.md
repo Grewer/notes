@@ -95,7 +95,7 @@ function useRequestImplement<TData, TParams extends any[]>(
     if (!manual) {
       // useCachePlugin can set fetchInstance.state.params from cache when init
       const params = fetchInstance.state.params || options.defaultParams || [];
-      // @ts-ignore
+      // 在初始化时， 如果没有设置 manual 为 true， 则直接运行
       fetchInstance.run(...params);
     }
   });
@@ -116,5 +116,97 @@ function useRequestImplement<TData, TParams extends any[]>(
     runAsync: useMemoizedFn(fetchInstance.runAsync.bind(fetchInstance)),
     mutate: useMemoizedFn(fetchInstance.mutate.bind(fetchInstance)),
   } as Result<TData, TParams>;
+}
+```
+
+接下来就是，最主要的请求部分 `Fetch`：
+
+```ts
+export default class Fetch<TData, TParams extends any[]> {
+	// 这里只展示他的核心代码
+  async runAsync(...params: TParams): Promise<TData> {
+    this.count += 1;
+    const currentCount = this.count;
+
+    const {
+      stopNow = false,
+      returnNow = false,
+      ...state
+    } = this.runPluginHandler('onBefore', params);
+
+    // stop request
+    if (stopNow) {
+      return new Promise(() => {});
+    }
+
+    this.setState({
+      loading: true,
+      params,
+      ...state,
+    });
+
+    // return now
+    if (returnNow) {
+      return Promise.resolve(state.data);
+    }
+
+    this.options.onBefore?.(params);
+
+    try {
+      // replace service
+      let { servicePromise } = this.runPluginHandler('onRequest', this.serviceRef.current, params);
+
+      if (!servicePromise) {
+        servicePromise = this.serviceRef.current(...params);
+      }
+
+      const res = await servicePromise;
+
+      if (currentCount !== this.count) {
+        // prevent run.then when request is canceled
+        return new Promise(() => {});
+      }
+
+      // const formattedResult = this.options.formatResultRef.current ? this.options.formatResultRef.current(res) : res;
+
+      this.setState({
+        data: res,
+        error: undefined,
+        loading: false,
+      });
+
+      this.options.onSuccess?.(res, params);
+      this.runPluginHandler('onSuccess', res, params);
+
+      this.options.onFinally?.(params, res, undefined);
+
+      if (currentCount === this.count) {
+        this.runPluginHandler('onFinally', params, res, undefined);
+      }
+
+      return res;
+    } catch (error) {
+      if (currentCount !== this.count) {
+        // prevent run.then when request is canceled
+        return new Promise(() => {});
+      }
+
+      this.setState({
+        error,
+        loading: false,
+      });
+
+      this.options.onError?.(error, params);
+      this.runPluginHandler('onError', error, params);
+
+      this.options.onFinally?.(params, undefined, error);
+
+      if (currentCount === this.count) {
+        this.runPluginHandler('onFinally', params, undefined, error);
+      }
+
+      throw error;
+    }
+  }
 }
 ```
