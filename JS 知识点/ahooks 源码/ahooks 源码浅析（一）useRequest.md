@@ -125,48 +125,54 @@ function useRequestImplement<TData, TParams extends any[]>(
 export default class Fetch<TData, TParams extends any[]> {
 	// 这里只展示他的核心代码
   async runAsync(...params: TParams): Promise<TData> {
+	// 记录请求次数
     this.count += 1;
     const currentCount = this.count;
 
+    // 运行所有插件里的  onBefore 事件， 如果 stopNow = true 则停止当前的请求
     const {
       stopNow = false,
       returnNow = false,
       ...state
     } = this.runPluginHandler('onBefore', params);
 
-    // stop request
+    // stop request  阻止请求
     if (stopNow) {
       return new Promise(() => {});
     }
-
+    
+    // loading 开始请求
     this.setState({
       loading: true,
       params,
       ...state,
     });
 
-    // return now
+    // 如果 returnNow = true 则立马返回 promise， 在缓存插件中会用到
     if (returnNow) {
       return Promise.resolve(state.data);
     }
 
+    // 运行生命周期函数
     this.options.onBefore?.(params);
 
     try {
-      // replace service
+      // 运行插件里的 onRequest , 在缓存插件里会使用缓存的请求
       let { servicePromise } = this.runPluginHandler('onRequest', this.serviceRef.current, params);
 
       if (!servicePromise) {
+       // 没有这个值则取默认传入的
         servicePromise = this.serviceRef.current(...params);
       }
 
       const res = await servicePromise;
 
       if (currentCount !== this.count) {
-        // prevent run.then when request is canceled
+        // 当请求被取消时，阻止 run.then
         return new Promise(() => {});
       }
 
+	 // 
       // const formattedResult = this.options.formatResultRef.current ? this.options.formatResultRef.current(res) : res;
 
       this.setState({
