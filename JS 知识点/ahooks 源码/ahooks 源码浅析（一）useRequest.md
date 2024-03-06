@@ -119,7 +119,7 @@ function useRequestImplement<TData, TParams extends any[]>(
 }
 ```
 
-接下来就是，最主要的请求部分 `Fetch`：
+接下来就是，最一个简单的请求部分 `Fetch` 包含一些插件生命周期的执行：
 
 ```ts
 export default class Fetch<TData, TParams extends any[]> {
@@ -172,7 +172,7 @@ export default class Fetch<TData, TParams extends any[]> {
         return new Promise(() => {});
       }
 
-	 // 
+	 // 原本 ahooks v2 版本中的 API， 可以在最后改变 res 的值， 之后再返回 onSuccess 中， 堵车因为类型定义问题，被放弃了
       // const formattedResult = this.options.formatResultRef.current ? this.options.formatResultRef.current(res) : res;
 
       this.setState({
@@ -181,6 +181,7 @@ export default class Fetch<TData, TParams extends any[]> {
         loading: false,
       });
 
+	  // 到这里是执行成功了，执行各个生命周期函数
       this.options.onSuccess?.(res, params);
       this.runPluginHandler('onSuccess', res, params);
 
@@ -193,7 +194,7 @@ export default class Fetch<TData, TParams extends any[]> {
       return res;
     } catch (error) {
       if (currentCount !== this.count) {
-        // prevent run.then when request is canceled
+        // 当请求被取消时，阻止 run.then
         return new Promise(() => {});
       }
 
@@ -202,17 +203,12 @@ export default class Fetch<TData, TParams extends any[]> {
         loading: false,
       });
 
-      this.options.onError?.(error, params);
-      this.runPluginHandler('onError', error, params);
-
-      this.options.onFinally?.(params, undefined, error);
-
-      if (currentCount === this.count) {
-        this.runPluginHandler('onFinally', params, undefined, error);
-      }
-
-      throw error;
+	 // 省略， 同 success 的执行，但是他执行的 error 事件
     }
   }
 }
 ```
+
+### 插件
+
+在 useRequest 中内部已经集成了很多插件， 这里就讲几个常用到的
