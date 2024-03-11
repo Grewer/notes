@@ -216,17 +216,13 @@ export default class Fetch<TData, TParams extends any[]> {
 useDebouncePlugin:
 
 ```tsx
-import type { DebouncedFunc, DebounceSettings } from 'lodash';
-import debounce from 'lodash/debounce';
-import { useEffect, useMemo, useRef } from 'react';
-import type { Plugin } from '../types';
-
 const useDebouncePlugin: Plugin<any, any[]> = (
   fetchInstance,
   { debounceWait, debounceLeading, debounceTrailing, debounceMaxWait },
 ) => {
   const debouncedRef = useRef<DebouncedFunc<any>>();
 
+ // 参数， 根据外部传参改变
   const options = useMemo(() => {
     const ret: DebounceSettings = {};
     if (debounceLeading !== undefined) {
@@ -241,10 +237,12 @@ const useDebouncePlugin: Plugin<any, any[]> = (
     return ret;
   }, [debounceLeading, debounceTrailing, debounceMaxWait]);
 
+
+ // 在初始化时， 或者参数变化时触发，
   useEffect(() => {
     if (debounceWait) {
       const _originRunAsync = fetchInstance.runAsync.bind(fetchInstance);
-
+// 使用 lodash 的函数来实现
       debouncedRef.current = debounce(
         (callback) => {
           callback();
@@ -253,8 +251,7 @@ const useDebouncePlugin: Plugin<any, any[]> = (
         options,
       );
 
-      // debounce runAsync should be promise
-      // https://github.com/lodash/lodash/issues/4400#issuecomment-834800398
+      // 覆写原有的 promise
       fetchInstance.runAsync = (...args) => {
         return new Promise((resolve, reject) => {
           debouncedRef.current?.(() => {
@@ -265,6 +262,7 @@ const useDebouncePlugin: Plugin<any, any[]> = (
         });
       };
 
+     // 离开页面 取消事件
       return () => {
         debouncedRef.current?.cancel();
         fetchInstance.runAsync = _originRunAsync;
@@ -282,6 +280,7 @@ const useDebouncePlugin: Plugin<any, any[]> = (
     },
   };
 };
-
-export default useDebouncePlugin;
 ```
+
+插件的写作逻辑主要就这三点
+1. 
