@@ -50,7 +50,7 @@ function useRequest<TData, TParams extends any[]>(
 
 ###  useRequestImplement
 
-我们先来看 useRequestImplement 的实现
+我们先来看 `useRequestImplement` 的实现
 
 ```tsx
 function useRequestImplement<TData, TParams extends any[]>(
@@ -283,10 +283,13 @@ const useDebouncePlugin: Plugin<any, any[]> = (
 ```
 
 插件的写作逻辑主要就这两点
-1. 利用 hooks， 编写各类请求逻辑、 缓存、维护
+1. 利用 `hooks`， 编写各类请求逻辑、 缓存、维护
 2. 利用利用各类生命周期钩子，实现触发机制
 
-在目前的官网中，并没有描述 useRequest 的插件，甚至都不知道还有这个传参， 通过此次源码的阅读，
+在目前的官网中，并没有描述 `useRequest` 的插件，甚至都不知道还有这个传参， 通过此次源码的阅读，我们可以利用此 API 编写我们自己想要的一些插件，对于代码的开发更加自由。
 ## 结语
 
-ahooks 是工作中最常用的工具库，了解他的原理，对于我们日常中的使用帮助较大，同时也能提前预见一些隐患，避免一些错误写法。
+`ahooks` 是工作中最常用的工具库，了解他的原理，对于我们日常中的使用帮助较大，同时也能提前预见一些隐患，避免一些错误写法。
+
+## 引用
+- https://ahooks.gitee.io/zh-CN/hooks/use-request/index
