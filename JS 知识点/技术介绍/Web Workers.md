@@ -12,9 +12,15 @@
 
 workers 和主线程间的数据传递通过这样的消息机制进行——双方都使用 `postMessage()` 方法发送各自的消息，使用 `onmessage` 事件处理函数来响应消息（消息被包含在 [`message`](https://developer.mozilla.org/zh-CN/docs/Web/API/BroadcastChannel/message_event) 事件的 data 属性中）。这个过程中数据并不是被共享而是被复制。
 
+## 专用和共享
+
+worker 目前分为专用和共享两种
+- 一个专用 worker 仅能被生成它的脚本所使用
+
 ## demo
 
-我们以 cra 创建的项目为例子：
+我们以一个简单的项目为例子：
+
 
 
 
