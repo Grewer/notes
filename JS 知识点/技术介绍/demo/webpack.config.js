@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const Copy = require('copy-webpack-plugin')
 
 module.exports = {
   entry: './src/index',
@@ -30,5 +31,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html',
     }),
+    new Copy({
+      patterns: ['./src/worker/*']
+    })
   ],
 };
