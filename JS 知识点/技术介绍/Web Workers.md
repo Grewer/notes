@@ -15,13 +15,58 @@ workers 和主线程间的数据传递通过这样的消息机制进行——双
 ## 专用和共享
 
 worker 目前分为专用和共享两种
-- 一个专用 worker 仅能被生成它的脚本所使用
 
+- 一个专用 worker 仅能被生成它的脚本所使用
+- 
 ## demo
 
 我们以一个简单的项目为例子：
 
+```jsx
+// App.jsx
 
+
+function App (){
+
+const workerRef = useRef()
+
+useEffect(()=>{
+	if (window.Worker) {
+	  const myWorker = new Worker("/src/worker/worker.js");
+	  console.log(myWorker);
+	  myWorker.onmessage = function(e) {
+		console.log('Message received from worker', e);
+	  }
+	  workerRef.current = myWorker
+	}
+}, [])
+
+
+return  <button onClick={()=> {
+	workerRef.current.postMessage([1, 2]);
+	console.log('Message posted to worker');
+}}>send to worker</button>
+}
+```
+
+这是 worker.js 的代码：
+
+```js
+onmessage = function(e) {
+    console.log('Worker: Message received from main script');
+    const result = e.data[0] * e.data[1];
+    if (isNaN(result)) {
+      postMessage('Please write two numbers');
+    } else {
+      const workerResult = 'Result: ' + result;
+      console.log('Worker: Posting message back to main script');
+      postMessage(workerResult);
+    }
+  }
+```
+
+
+## 兼容性
 
 
 ## 引用
