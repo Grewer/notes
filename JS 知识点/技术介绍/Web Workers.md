@@ -18,7 +18,7 @@ worker 目前分为专用和共享两种
 
 - 一个专用 worker 仅能被生成它的脚本所使用
 - 
-## demo
+### demo
 
 我们以一个简单的项目为例子：
 
@@ -36,16 +36,16 @@ useEffect(()=>{
 	  console.log(myWorker);
 	  myWorker.onmessage = function(e) {
 		console.log('Message received from worker', e);
-	  }
+	  }m
 	  workerRef.current = myWorker
 	}
 }, [])
 
 
 return  <button onClick={()=> {
-	workerRef.current.postMessage([1, 2]);
-	console.log('Message posted to worker');
-}}>send to worker</button>
+			workerRef.current.postMessage([1, 2]);
+			console.log('Message posted to worker');
+		}}>send to worker</button>
 }
 ```
 
@@ -64,6 +64,27 @@ onmessage = function(e) {
     }
   }
 ```
+
+在页面上点击按钮之后的打印：
+
+```
+Message posted to worker
+worker.js:2 Worker: Message received from main script
+worker.js:8 Worker: Posting message back to main script
+App.js:14 Message received from worker MessageEvent {…}
+```
+
+从这里可以看出 worker 的执行顺序
+
+本 demo 展现了在 worker 的代码中常用的两个变量/函数：
+
+- `onmessage`  全局变量， 通过赋值来让代码生效
+- `postMessage` 发送信息给主进程， 信息需要是 `String` 类型
+
+可以把 `worker` 文件里的 js 执行环境看做主进程中调用的环境
+
+### 终止
+
 
 
 ## 兼容性
