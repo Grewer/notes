@@ -138,9 +138,36 @@ importScripts("foo.js", "bar.js"); /* 引入两个脚本 */
 importScripts("//example.com/hello.js"); /* 你可以从其他来源导入脚本 */
 ```
 
+现在我在 worker 边上创建文件 `foo.js`
+
+```js
+const see = () => {
+    console.log('subWorker: I can see you')
+}
+```
+
+之后在 `worker.js` 中引用：
+
+```js
+importScripts("foo.js");
+
+onmessage = function(e) {
+    console.log('Worker: Message received from main script');
+    see();
+}
+```
+
+在 `subworker` 中的变量定义，不需要 `export` 和 `import`， 而是像全局变量一样定义即可，同样的使用也是如此。
+
+在 chrome 的 network 中，`subworker` 有清晰的调用痕迹和标识：
+
+![[2.png]]
+
 ## 共享 worker
 
+在使用共享worker 时，需要注意的是：
 
+> 如果共享 worker 可以被多个浏览上下文调用，所有这些浏览上下文必须属于同源（相同的协议，主机和端口号）。
 
 
 ## 数据
