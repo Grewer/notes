@@ -16,11 +16,14 @@ workers 和主线程间的数据传递通过这样的消息机制进行——双
 
 worker 目前分为专用和共享两种
 
-- 一个专用 worker 仅能被生成它的脚本所使用
-- 
-### demo
+专用：一个专用 worker 仅能被生成它的脚本所使用
+共享：一个共享 worker 可以被多个脚本使用——即使这些脚本正在被不同的 window、iframe 或者 worker 访问。
 
-我们以一个简单的项目为例子：
+区别：
+
+##  专用 worker
+
+我们以一个专用 worker的项目为例子：
 
 ```jsx
 // App.jsx
@@ -83,9 +86,64 @@ App.js:14 Message received from worker MessageEvent {…}
 
 可以把 `worker` 文件里的 js 执行环境看做主进程中调用的环境
 
-### 终止
+## 终止
+
+```
+myWorker.terminate();
+```
+
+worker 线程会被立即终止，记住只有某些组件使用时，需要调用卸载。
+
+## 错误处理
+
+在发生错误时，会自动调用 `onerror` 事件：
+
+```js
+// worker.js
+onmessage = function(e) {
+    console.log('Worker: Message received from main script');
+    const result = e.data[0] * e.data[1];
+
+    throw new Error('Ops Error')
+}
 
 
+App.tsx
+
+const myWorker = new Worker("/src/worker/worker.js");
+console.log(myWorker);
+myWorker.onmessage = function (e) {
+	console.log('Message received from worker', e);
+}
+myWorker.onerror = function (err) {
+	console.log(err);
+	err.preventDefault(); // 如果不阻止默认行为，则 Error 会传递到 console， 被全局错误监控捕获
+}
+```
+
+错误打印：
+
+![[1.png]]
+
+## subWorker
+
+如果需要，一个 worker 可以派生出无限的 worker， 我们称为 subWorker。
+
+Worker 线程能够访问一个全局函数 `importScripts()` 来引入脚本，该函数接受 0 个或者多个 URI 作为参数来引入资源；以下例子都是合法的：
+
+```js
+importScripts(); /* 什么都不引入 */
+importScripts("foo.js"); /* 只引入 "foo.js" */
+importScripts("foo.js", "bar.js"); /* 引入两个脚本 */
+importScripts("//example.com/hello.js"); /* 你可以从其他来源导入脚本 */
+```
+
+## 共享 worker
+
+
+
+
+## 数据
 
 ## 兼容性
 

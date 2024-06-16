@@ -1,6 +1,11 @@
+importScripts("foo.js");
+
 onmessage = function(e) {
     console.log('Worker: Message received from main script');
     const result = e.data[0] * e.data[1];
+
+    see();
+
     if (isNaN(result)) {
       postMessage('Please write two numbers');
     } else {
