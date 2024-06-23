@@ -170,6 +170,21 @@ onmessage = function(e) {
 > 如果共享 worker 可以被多个浏览上下文调用，所有这些浏览上下文必须属于同源（相同的协议，主机和端口号）。
 
 
+正如他的名字，共享 work 的使用场景是在多个浏览器 tab 的场景下，使用同一个网站，tab 之间的数据统一处理。
+
+## 生成
+
+```js
+const myWorker = new SharedWorker("worker.js");
+```
+
+和专用worker不同的是构造函数， 使用的是 SharedWorker
+
+当然，他的通信方式也不同：
+
+
+
+
 ## 数据
 
 ## 兼容性
