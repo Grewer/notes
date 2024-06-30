@@ -184,10 +184,16 @@ const myWorker = new SharedWorker("worker.js");
 
 
 
+在调试时需要注释，如果刷新页面 worker 代码一直不更新，需要把相关网站都关闭，只保留一个，才会更新对应代码（多个worker 连接着，就会使用缓存的 worker 代码）
+
 
 ## 数据
 
 ## 兼容性
+
+>获取 worker 中完整的方法列表，请参阅 [worker 可用的方法和接口](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Functions_and_classes_available_to_workers "此页面目前仅提供英文版本")。
+
+>你可以使用网站测试一个方法是否对 worker 可用： [https://worker-playground.glitch.me/](https://worker-playground.glitch.me/)。例如，如果你在 Firefox 84 的网站上输入 [EventSource](https://developer.mozilla.org/zh-CN/docs/Web/API/EventSource)，你会发现在 service worker 不支持这个方法，但在专用和共享 worker 中支持。
 
 
 ## 引用
