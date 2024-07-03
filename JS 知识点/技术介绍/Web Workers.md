@@ -182,6 +182,27 @@ const myWorker = new SharedWorker("worker.js");
 
 当然，他的通信方式也不同：
 
+```js
+
+const myWorker = new SharedWorker("/src/worker/shareWorker.js");
+
+myWorker.port.onmessage = function (e) {
+  // do something
+};
+```
+
+worker 中接收：
+
+```js
+onconnect = function (event) {
+    const port = event.ports[0];
+
+    port.onmessage = function (e) {
+        console.log(e);
+        // reveive e.data
+    };
+};
+```
 
 
 在调试时需要注释，如果刷新页面 worker 代码一直不更新，需要把相关网站都关闭，只保留一个，才会更新对应代码（多个worker 连接着，就会使用缓存的 worker 代码）
