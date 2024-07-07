@@ -172,7 +172,6 @@ onmessage = function(e) {
 
 正如他的名字，共享 work 的使用场景是在多个浏览器 tab 的场景下，使用同一个网站，tab 之间的数据统一处理。
 
-## 生成
 
 ```js
 const myWorker = new SharedWorker("worker.js");
@@ -205,12 +204,69 @@ onconnect = function (event) {
 ```
 
 
-在调试时需要注释，如果刷新页面 worker 代码一直不更新，需要把相关网站都关闭，只保留一个，才会更新对应代码（多个worker 连接着，就会使用缓存的 worker 代码）
+在调试时需要注释，如果刷新页面 worker 代码一直不更新，需要把相关网站都关闭，只保留一个，才会更新对应代码（多个worker 连接着，就会使用缓存的 worker 代码);
+
+## 嵌入式 webWorker
+
+web worker的代码可以进行 `inline` 处理，直接嵌到 HTML 中 
+
+```html
+    <script type="text/js-worker">
+      // 该脚本不会被 JS 引擎解析，因为它的 mime-type 是 text/js-worker。
+      onmessage = (event) => {
+        postMessage(myVar);
+      };
+      // 剩下的 worker 代码写到这里。
+    </script>
 
 
-## 数据
+ <script>
+      // 该脚本会被 JS 引擎解析，因为它的 mime-type 是 text/javascript。
+
+      // 过去存在 blob builder，但现在我们使用 Blob
+      const blob = new Blob(
+        Array.prototype.map.call(
+          document.querySelectorAll("script[type='text\/js-worker']"),
+          (script) => script.textContent,
+          { type: "text/javascript" },
+        ),
+      );
+
+      // 创建一个新的 document.worker 属性，包含所有 "text/js-worker" 脚本。
+      document.worker = new Worker(window.URL.createObjectURL(blob));
+
+      document.worker.onmessage = (event) => {
+        pageLog(`Received: ${event.data}`);
+      };
+
+      // 启动 worker。
+      window.onload = () => {
+        document.worker.postMessage("");
+      };
+    </script>
+
+```
+
+通过此方案可实现嵌入式的 webWorker
+
+
+## 其他
+
+- worker 并不受限于创建它的 document（或者父级 worker）的[内容安全策略](https://developer.mozilla.org/zh-CN/docs/Mozilla/Add-ons/WebExtensions/Content_Security_Policy)
+- 在主页面与 worker 之间传递的数据是通过**拷贝**，而不是共享
+
+除了 webWorker 之外，还有 [ServiceWorkers](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API) ， [Audio Worklet](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Audio_API#%E4%BD%BF%E7%94%A8_javascript_%E5%A4%84%E7%90%86%E9%9F%B3%E9%A2%91) 等等，后面单开文件来讲。
 
 ## 兼容性
+
+目前 webWorker 的兼容性:
+
+![[JS 知识点/技术介绍/images/3.png]]
+
+如果目标用户使用的是 web 端， 则兼容还是能接受的。
+
+由于是浏览器的特性，并不能通过 polyfill 填补，即使有也仍旧是在JS的主线程中完成的。
+
 
 >获取 worker 中完整的方法列表，请参阅 [worker 可用的方法和接口](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Functions_and_classes_available_to_workers "此页面目前仅提供英文版本")。
 
