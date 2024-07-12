@@ -123,13 +123,15 @@ myWorker.onerror = function (err) {
 
 错误打印：
 
-![[1.png]]
+![1.png](images%2F1.png)
 
 ## subWorker
 
 如果需要，一个 worker 可以派生出无限的 worker， 我们称为 subWorker。
 
-Worker 线程能够访问一个全局函数 `importScripts()` 来引入脚本，该函数接受 0 个或者多个 URI 作为参数来引入资源；以下例子都是合法的：
+Worker 线程能够访问一个全局函数 `importScripts()` 来引入脚本，该函数接受 0 个或者多个 URI 作为参数来引入资源；
+
+以下例子都是合法的：
 
 ```js
 importScripts(); /* 什么都不引入 */
@@ -247,7 +249,7 @@ web worker的代码可以进行 `inline` 处理，直接嵌到 HTML 中
 
 ```
 
-通过此方案可实现嵌入式的 webWorker
+通过此方案可实现嵌入式的 `webWorker`
 
 
 ## 其他
@@ -255,7 +257,7 @@ web worker的代码可以进行 `inline` 处理，直接嵌到 HTML 中
 - worker 并不受限于创建它的 document（或者父级 worker）的[内容安全策略](https://developer.mozilla.org/zh-CN/docs/Mozilla/Add-ons/WebExtensions/Content_Security_Policy)
 - 在主页面与 worker 之间传递的数据是通过**拷贝**，而不是共享
 
-除了 webWorker 之外，还有 [ServiceWorkers](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API) ， [Audio Worklet](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Audio_API#%E4%BD%BF%E7%94%A8_javascript_%E5%A4%84%E7%90%86%E9%9F%B3%E9%A2%91) 等等，后面单开文件来讲。
+除了 webWorker 之外，还有 [ServiceWorkers](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API) ， [Audio Worklet](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Audio_API#%E4%BD%BF%E7%94%A8_javascript_%E5%A4%84%E7%90%86%E9%9F%B3%E9%A2%91) 等等，后面单开文章来讲。
 
 ## 兼容性
 
@@ -265,7 +267,7 @@ web worker的代码可以进行 `inline` 处理，直接嵌到 HTML 中
 
 如果目标用户使用的是 web 端， 则兼容还是能接受的。
 
-由于是浏览器的特性，并不能通过 polyfill 填补，即使有也仍旧是在JS的主线程中完成的。
+由于是浏览器的特性，并不能通过 polyfill 填补，即使有, 也仍旧是在JS的主线程中完成的。 使用时还需要仔细斟酌.
 
 
 >获取 worker 中完整的方法列表，请参阅 [worker 可用的方法和接口](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Functions_and_classes_available_to_workers "此页面目前仅提供英文版本")。
