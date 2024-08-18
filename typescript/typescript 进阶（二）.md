@@ -1,4 +1,22 @@
 
+本文主要针对实际工作中的场景，来介绍 ts 的使用
+
+## 复用函数的类型
+
+在定义好一个函数之后， 如
+
+```ts
+function(params: {id: number; name: string}): {count:number;}[]{
+	// 省略...
+	return [{count:1}];
+}
+
+```
+
+在 ts 高阶函数的作用下，可以直接获取函数的参数和返回值类型
+
+
+
 ## 接口请求
 // ReturnType
 // Parameters
