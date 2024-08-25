@@ -6,7 +6,7 @@
 在定义好一个函数之后， 如
 
 ```ts
-function(params: {id: number; name: string}): {count:number;}[]{
+function foo(params: {id: number; name: string}): {count:number;}[]{
 	// 省略...
 	return [{count:1}];
 }
@@ -15,13 +15,21 @@ function(params: {id: number; name: string}): {count:number;}[]{
 
 在 ts 高阶函数的作用下，可以直接获取函数的参数和返回值类型
 
+```ts
+type IFooRet = ReturnType<typeof foo>
+// type IFooRet = {  
+//   count: number;  
+// }[]
+	
+type IFooParam = Parameters<typeof foo>
+//	type IFooParam = [params: {  
+// 		id: number;  
+// 		name: string;  
+// 	}]
 
+```
 
 ## 接口请求
-// ReturnType
-// Parameters
-
-https://jkchao.github.io/typescript-book-chinese/typings/generices.html#%E9%85%8D%E5%90%88-axios-%E4%BD%BF%E7%94%A8
 
 在我们常用的一种接口请求的场景中, 也需要覆盖 ts 的类型:
 
@@ -67,6 +75,12 @@ export function getUser() {
         .catch(err => console.error(err));
 }
 ```
+
+
+## 搭配使用
+
+在上述请求的场景中，搭配高阶函数，得到一些对应的类型
+
 
 
 
