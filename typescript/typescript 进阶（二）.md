@@ -70,29 +70,47 @@ async function test() {
 
 // 二是直接在这里就定义好
 export function getUser() {
-    return Ax.get<ResponseData<User>>('/user/get')
-        .then(res => res.data)
-        .catch(err => console.error(err));
+    return Ax.get<ResponseData<User>>('/user/get');
 }
 ```
 
+## 函数重载的问题
 
-## 搭配使用
-
-在上述请求的场景中，搭配高阶函数，得到一些对应的类型
-
-
-
-
-
-## 导入类型
+在使用重载时，需要注意顺序的问题：
 
 ```ts
-const data: import('./data').data
+declare function fn(x: unknown): unknown;
+
+declare function fn(x: HTMLElement): number;
+
+declare function fn(x: HTMLDivElement): string;
+
+var myElem: HTMLDivElement;
+
+var x = fn(myElem); // x: unknown
 ```
 
-## 函数重载的问题:
+在 ts 中，他的类型显示是这样的
+`function fn(x: unknown): unknown (+2 overloads)`
+当较早的重载比后面的重载“更通用”时，后一个重载实际上被隐藏并且无法被调用
 
+正确使用：
+
+```ts
+declare function fn(x: HTMLDivElement): string;
+
+declare function fn(x: HTMLElement): number;
+
+declare function fn(x: unknown): unknown;
+
+var myElem: HTMLDivElement;
+
+var x = fn(myElem); // x: string
+```
+
+
+
+详见：
 https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html
 
 
