@@ -114,13 +114,6 @@ var x = fn(myElem); // x: string
 https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html
 
 
-## 三方库类型
-
-https://www.typescriptlang.org/docs/handbook/declaration-files/templates/module-plugin-d-ts.html
-
-
-## 组合
-
 ### 简单组合
 
 简单的组合, 一个名字, 多种含义.
@@ -185,25 +178,99 @@ namespace C {
 let y: C.D; // OK
 ```
 
+通过此方案可扩展三方库
+
+## 在 JS 中使用类型校验
+
+众所周知，在 JS 中使用 jsdoc 也可被 ts 识别到类型， 并且有他的提示
+
+```js
+/** @type {number} */
+var x;
+
+x = 0; // OK
+x = true // 但是也不会报错
+```
+
+如果在文件的顶部加上说明：
+
+`@ts-check`
+
+```js
+
+// @ts-check
+
+/** @type {number} */
+var x;
+
+x = 0; // OK
+x = false; // Not OK
+```
+
+这样在编译时也会有 ts 的报错提醒，在 js 与 ts 共存的项目，或者 js 正在转 ts 项目中较为适用
 ## 类型仓库
 
-type-fest 类似
+在 npm 中有很多支持类型的库， 这里我推荐 [type-fest](https://github.com/sindresorhus/type-fest) 类似的还有很多，按情况使用
+
+
+
+这是合并两个类型使用的
+
+```ts
+import type {Merge} from 'type-fest';
+
+interface Foo {
+	[x: string]: unknown;
+	[x: number]: unknown;
+	foo: string;
+	bar: symbol;
+}
+
+type Bar = {
+	[x: number]: number;
+	[x: symbol]: unknown;
+	bar: Date;
+	baz: boolean;
+};
+
+export type FooBar = Merge<Foo, Bar>;
+// => {
+// 	[x: string]: unknown;
+// 	[x: number]: number;
+// 	[x: symbol]: unknown;
+// 	foo: string;
+// 	bar: Date;
+// 	baz: boolean;
+// }
+```
+
+
+这是控制至少有一个需要填写的参数
+
+```ts
+import type {RequireAtLeastOne} from 'type-fest';
+
+type Responder = {
+	text?: () => string;
+	json?: () => string;
+	secure?: boolean;
+};
+
+const responder: RequireAtLeastOne<Responder, 'text' | 'json'> = {
+	json: () => '{"message": "ok"}',
+	secure: true
+};
+```
 
 ## 类型体操 挑战
 
-github 的类型挑战
+在自己把握对于 ts 有足够认知之后，这里介绍下 [type-challenges](https://github.com/type-challenges/type-challenges)
+
+>本项目意在于让你更好的了解 TS 的类型系统，编写你自己的类型工具，或者只是单纯的享受挑战的乐趣！我们同时希望可以建立一个社区，在这里你可以提出你在实际环境中遇到的问题，或者帮助他人解答疑惑 - 这些问题也可能被选中成为题库的一部分！
 
 
+对于此感兴趣可以参与下， 论实用性的话，个人体感是在生产开发中，出现的概率微乎其微，最多使用类型库即可兼容
 
-
-TODO 
-
-
-any是基本类型，使用any时ts不会做类型检查，any也经常被用于官方类型中（例如：上面例子中的response.json()类型被TypeScript团队定义为Promise<any>类型）
-ts不会对any类型做类型检查，任何对any类型值的变更也不会被检查，这时候定位问题变得很困难（就和js 运行一样），只有当运行时的赋值和预期的一致的时候才不会出错。
-
-https://segmentfault.com/a/1190000042227498
-TypeScript鸭子类型（duck-typing） http://www.srcmini.com/3478.html
 
 引用:
 
