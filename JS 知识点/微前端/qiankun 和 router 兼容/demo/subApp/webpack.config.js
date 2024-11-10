@@ -3,7 +3,7 @@ const path = require('path');
 const packageName = require('./package.json').name;
 
 module.exports = {
-  entry: './src/index',
+  entry: './src/bootstrap',
   mode: 'development',
   target: 'web',
   devServer: {

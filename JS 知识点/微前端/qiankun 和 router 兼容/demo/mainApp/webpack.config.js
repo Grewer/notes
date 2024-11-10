@@ -16,9 +16,15 @@ module.exports = {
       }
     },
     port: 3001,
+    historyApiFallback: {
+      rewrites: [
+        { from: '/admin/*', to: '/index.html' }
+      ]
+    },
+    
   },
   output: {
-    publicPath: 'auto',
+    publicPath: '/',
   },
   module: {
     rules: [
