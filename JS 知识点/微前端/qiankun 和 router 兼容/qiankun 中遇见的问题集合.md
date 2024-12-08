@@ -163,7 +163,12 @@ document.body['appendChild'] = proxyAppendChild;
 
 按照正常情况来说， 微前端应用应该不需要保活，但是形式比人强，有些客户、需求就必须要这样做。
 
-主要的思路是挂载的 dom 
+主要的思路是挂载的 dom ，我这使用的是这个仓库：[react-activation](https://www.npmjs.com/package/react-activation) 来实现 keep alive
+
+最终将 dom 挂载到不被 `react-router` 影响的页面上即可。
+
+
+注意：即使页面不会显示，但是我们的应用里有 `react-router` 时，还会有对应的路由映射机制，某些特殊的路由判断需要去除，比如： 404 的判断等等
 
 
 
