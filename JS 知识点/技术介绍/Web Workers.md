@@ -163,7 +163,7 @@ onmessage = function(e) {
 
 在 chrome 的 network 中，`subworker` 有清晰的调用痕迹和标识：
 
-![[2.png]]
+![[JS 知识点/技术介绍/images/2.png]]
 
 ## 共享 worker
 
