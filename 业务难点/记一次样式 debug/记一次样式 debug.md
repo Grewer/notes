@@ -40,12 +40,16 @@ Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, lik
 
 我先将 antd modal 的 动画去除：
 
-```
+```jsx
 
-
+<Modal
+    transitionName=""
+    maskTransitionName=""
+    // ...其他属性
+>
+</Modal>
  
 ```
-
 
 打算上了线之后看看
 
@@ -85,19 +89,41 @@ z-index 是常见的属性被遮盖时的解决方案，所以这里我优先想
 ### transform
 在一起 iframe 中，我遇到过性能问题，此属性，就是用来启动硬件加速，让 modal 显示完整的方案之一
 
+现状的样式：
+
 ![[业务难点/记一次样式 debug/3.png]]
+
+
 这里我把背景色添加各类不同的颜色，方便做出判断：
 
 ![[业务难点/记一次样式 debug/4.png]]
 
 这样就很明显了，modal 的实际大小并没有被撑开，所以是什么属性没有起效呢
 
-这里尝试了几个：
 
+### 解决
 
+这里尝试了几个css属性的组合，最终还是定位的问题，添加如下css：
 
+```css
+.ant-modal-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  min-height: 100%;
+}
 
+.ant-modal-wrap {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 5%;
+  min-height: 100%;
+}
+```
 
+添加后，modal 的实际大小就被撑开了，点击也可以正常触发了
 
 
 
