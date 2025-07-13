@@ -20,6 +20,21 @@
     
     - 支持在不同设备、浏览器和状态下预览组件，确保响应式设计和兼容性。
 
+
+## 初始化
+
+```shell
+# 使用 cra 指令创建，也可以在已有的 demo
+npx create-react-app taskbox
+
+cd taskbox
+
+# Add Storybook:
+npx storybook init
+```
+
+
+
 #### **典型使用场景**
 
 - **组件驱动开发（CDD）**：先独立开发组件，再组装成应用。
@@ -30,8 +45,6 @@
 
 1. **安装配置**：在项目中集成 Storybook（如 `npx sb init`）。
 2. **编写故事**：为每个组件创建 “故事文件”，定义不同场景下的展示效果。
-    
-    jsx
     
     ```jsx
     // Button.stories.js
