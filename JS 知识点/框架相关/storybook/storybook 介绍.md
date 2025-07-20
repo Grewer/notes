@@ -24,14 +24,18 @@
 ## 初始化
 
 ```shell
-# 使用 cra 指令创建，也可以在已有的 demo
+# 使用 cra 指令创建，如果已有 demo， 可跳过
 npx create-react-app taskbox
 
 cd taskbox
 
-# Add Storybook:
+# Storybook 初始化
 npx storybook init
 ```
+
+> 注意：storybook 的运行需要 node 20 以上的版本
+
+在运行完毕之后会出现如下页面：
 
 
 
