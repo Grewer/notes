@@ -37,7 +37,97 @@ npx storybook init
 
 在运行完毕之后会出现如下页面：
 
+![[截屏2025-07-21 02.43.00.png]]
 
+用过组件库的朋友都很属性，就是一个组件的介绍网站，功能也很齐全
+
+
+我们再看下初始化之后添加的文件：
+![[截屏2025-08-10 02.34.17.png]]
+
+网站里的素材皆是来源于 stories，而网站里的内容来自于 xx.stories.js。
+
+button 组件：
+
+```JSX
+import PropTypes from 'prop-types';
+
+import './button.css';
+
+  
+
+/** Primary UI component for user interaction */
+
+export const Button = ({
+
+primary = false,
+
+backgroundColor = null,
+
+size = 'medium',
+
+label,
+
+...props
+
+}) => {
+
+const mode = primary ? 'storybook-button--primary' : 'storybook-button--secondary';
+
+return (
+
+<button
+
+type="button"
+
+className={['storybook-button', `storybook-button--${size}`, mode].join(' ')}
+
+style={backgroundColor && { backgroundColor }}
+
+{...props}
+
+>
+
+{label}
+
+</button>
+
+);
+
+};
+
+  
+
+Button.propTypes = {
+
+/** Is this the principal call to action on the page? */
+
+primary: PropTypes.bool,
+
+/** What background color to use */
+
+backgroundColor: PropTypes.string,
+
+/** How large should the button be? */
+
+size: PropTypes.oneOf(['small', 'medium', 'large']),
+
+/** Button contents */
+
+label: PropTypes.string.isRequired,
+
+/** Optional click handler */
+
+onClick: PropTypes.func,
+
+};
+```
+
+默认的组件会使用 proptypes 作为传参判断和警告
+
+但是我们也可以使用 typescript ：
+
+todo
 
 #### **典型使用场景**
 
