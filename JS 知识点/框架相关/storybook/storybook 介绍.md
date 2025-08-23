@@ -3,7 +3,7 @@
 
 **Storybook** 是一个用于开发和展示 UI 组件的工具，主要用于前端开发（如 React、Vue、Angular 等框架）。它允许开发者以独立、隔离的方式构建、测试和文档化组件，无需依赖完整的应用环境。
 
-#### **核心功能与优势**
+## **核心功能与优势**
 
 1. **组件隔离开发**
     
@@ -41,6 +41,8 @@ npx storybook init
 
 用过组件库的朋友都很属性，就是一个组件的介绍网站，功能也很齐全
 
+
+## 组件
 
 我们再看下初始化之后添加的文件：
 ![[截屏2025-08-10 02.34.17.png]]
@@ -127,37 +129,94 @@ onClick: PropTypes.func,
 
 但是我们也可以使用 typescript ：
 
-todo
+```tsx
+import './button.css';
 
-#### **典型使用场景**
+import { ButtonHTMLAttributes, ReactNode } from 'react';
 
-- **组件驱动开发（CDD）**：先独立开发组件，再组装成应用。
-- **设计系统维护**：统一管理团队的组件库，如按钮、表单、卡片等。
-- **文档自动化**：减少手动编写组件文档的工作量，代码即文档。
+  
 
-#### **简单工作流程**
+// 定义按钮尺寸类型
 
-1. **安装配置**：在项目中集成 Storybook（如 `npx sb init`）。
-2. **编写故事**：为每个组件创建 “故事文件”，定义不同场景下的展示效果。
-    
-    ```jsx
-    // Button.stories.js
-    import { Button } from './Button';
-    
-    export default {
-      title: 'UI/Button',
-      component: Button,
-    };
-    
-    export const Primary = () => <Button variant="primary">点击我</Button>;
-    export const Disabled = () => <Button variant="primary" disabled>禁用状态</Button>;
-    ```
-    
-      
-    
-3. **启动服务**：运行 `npm run storybook`，在浏览器中查看交互式组件库。
+type ButtonSize = 'small' | 'medium' | 'large';
 
-#### **主流工具与生态**
+  
+
+// 定义按钮组件的属性接口
+
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+
+/** Is this the principal call to action on the page? */
+
+primary?: boolean;
+
+/** What background color to use */
+
+backgroundColor?: string | null;
+
+/** How large should the button be? */
+
+size?: ButtonSize;
+
+/** Button contents */
+
+label: string | ReactNode;
+
+}
+
+  
+
+/** Primary UI component for user interaction */
+
+export const Button = ({
+
+primary = false,
+
+backgroundColor = null,
+
+size = 'medium',
+
+label,
+
+...props
+
+}: ButtonProps) => {
+
+const mode = primary ? 'storybook-button--primary' : 'storybook-button--secondary';
+
+return (
+
+<button
+
+type="button"
+
+className={['storybook-button', `storybook-button--${size}`, mode].join(' ')}
+
+style={backgroundColor ? { backgroundColor } : undefined}
+
+{...props}
+
+>
+
+{label}
+
+</button>
+
+);
+
+};
+```
+
+有相同的支持
+
+如果需要更复杂的组件之间，则再组件的基础上再进行堆叠即可
+
+## 部署
+
+使用指令 `storybook build` 即可对 story 进行构建，得到静态文件，将其部署到某个服务中即可，如  GitHub Action
+
+
+## **主流工具与生态**
 
 - **框架支持**：React、Vue、Angular、Svelte 等几乎所有前端框架。
 - **周边工具**：
@@ -166,4 +225,4 @@ todo
 
 #### **总结**
 
-Storybook 是前端开发中提升组件开发效率和可维护性的重要工具，尤其适合大型项目和团队协作。通过将组件可视化、文档化和交互式管理，它帮助开发者更专注于组件本身的质量，同时降低协作成本。
+Storybook 是前端开发中提升组件开发效率和可维护性的重要工具，尤其适合大型项目和团队协作，如果现在团队里缺少一个组件仓库，那么它就是一个可靠的选择。通过将组件可视化、文档化和交互式管理，它帮助开发者更专注于组件本身的质量，同时降低协作成本。

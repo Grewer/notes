@@ -47,6 +47,9 @@
     "eslint-plugin-storybook": "^9.0.17",
     "prop-types": "^15.8.1",
     "storybook": "^9.0.17",
-    "webpack": "^5.100.2"
+    "webpack": "^5.100.2",
+    "typescript": "^5.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0"
   }
 }
