@@ -141,6 +141,9 @@
         - ModuleFederation
             - index
 
+        - antvX6
+            - AntV X6 自定义算法布局
+
         - storybook
             - img
 
