@@ -119,6 +119,8 @@
             - index
 
     - 微前端
+        - 2025微前端框架全景对比
+
         - qiankun 和 router 兼容
             - qiankun 中遇见的问题集合
 
