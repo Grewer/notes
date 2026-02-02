@@ -349,7 +349,20 @@ export class RandomLayout {
 
 ## Demo 项目
 
-完整的自定义布局 Demo 包含三种实现：
+完整的自定义布局 Demo 包含五种实现，并在界面上提供布局切换与一键适配视图（Fit）功能。Demo 通过相同的数据结构（订单处理流程的节点与边）来比较不同布局效果，便于评估在业务流程图中的适用性。
+
+**Demo 的布局切换流程：**
+1. 清空现有节点与边
+2. 重新添加同一份流程数据
+3. 计算各布局的节点坐标
+4. 写入坐标并执行 zoomToFit
+
+**Demo 默认参数：**
+- Grid：cols=4, colWidth=200, rowHeight=150
+- Radial：center=(400,400), radius=300
+- Dagre：rankdir=TB, ranksep=60, nodesep=40
+- Force：center=(400,400), nodeStrength=-30, edgeLength=200, edgeStrength=0.1, iterations=500
+- Tree：direction=TB, nodeGap=80, levelGap=100, root=start
 
 ### 1. CustomGridLayout
 ```typescript
@@ -372,6 +385,30 @@ CustomRadialLayout.layoutSpiral(nodes, {...})
 // 特点：分层布局，最适合流程图
 // 参数：rankdir（方向）, ranksep, nodesep
 CustomDagreLayout.layout(nodes, edges, { rankdir: 'TB', ranksep: 60 })
+```
+
+### 4. CustomForceLayout
+```typescript
+// 特点：力导向，布局自然
+// 参数：center, nodeStrength, edgeLength, edgeStrength, iterations
+CustomForceLayout.layout(nodes, edges, {
+  center: { x: 400, y: 400 },
+  nodeStrength: -30,
+  edgeLength: 200,
+  edgeStrength: 0.1,
+  iterations: 500,
+})
+```
+
+### 5. CustomTreeLayout
+```typescript
+// 特点：树形层级结构，适合单向流程
+// 参数：direction, nodeGap, levelGap
+CustomTreeLayout.layout(nodes, edges, {
+  direction: 'TB',
+  nodeGap: 80,
+  levelGap: 100,
+}, 'start')
 ```
 
 ---
@@ -403,11 +440,13 @@ CustomDagreLayout.layout(nodes, edges, { rankdir: 'TB', ranksep: 60 })
 > A: 自定义布局只是改变节点坐标的计算方式，不涉及 X6 的渲染、交互等核心功能。X6 仍然负责图的绘制、事件处理等。
 
 **Q: 可以动态切换布局吗？**
-> A: 完全可以。只需清空现有布局，计算新的节点位置，再更新到 graph 即可：
+> A: 完全可以。Demo 的做法是清空节点与边，重新添加同一份数据，再计算布局并更新节点坐标，最后使用 zoomToFit 适配视图：
 > ```typescript
 > graph.clearCells()
-> // 添加新布局的节点
-> graph.zoomToFit()
+> graph.addNodes(nodes)
+> graph.addEdges(edges)
+> // 计算 positions 并 setPosition
+> graph.zoomToFit({ padding: 50 })
 > ```
 
 **Q: 大规模数据（>1000 节点）如何选择？**
