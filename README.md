@@ -6,6 +6,15 @@
 > 
 
 ## 目录
+- AI
+
+    <details>
+      <summary>点我展开</summary>
+
+    - sdd-specification
+
+    </details>
+            
 - CSS 知识点
 
     <details>
