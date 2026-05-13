@@ -13,6 +13,8 @@
 
     - sdd-specification
 
+    - 三种AI编码工作流深度对比-OpenSpec-Superpowers-GSD
+
     </details>
             
 - CSS 知识点
