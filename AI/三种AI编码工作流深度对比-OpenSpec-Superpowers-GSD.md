@@ -1,6 +1,6 @@
 # OpenSpec vs Superpowers vs GSD：三种 AI 编码工作流对比
 
-最近在折腾 AI coding 的工作流, 看到几个圈子里被反复推荐的工具: `OpenSpec`, `Superpowers`, `GSD`, 都说自己解决了 AI 编码的某类痛点, 但用起来到底有什么差别一直没拉通. 所以本文就是把这三个挨个跑了一遍, 记录下日常工作里到底应该用哪个, 以及怎么搭配用.
+最近翻 X 和 Reddit 看 AI coding 相关的讨论, 发现这几个工具被反复刷到: `OpenSpec`, `Superpowers`, `GSD`, 各自都说自己解决了 AI 编码里的某类痛点. 但具体用起来差在哪一直没拉通, 所以本期就来聊聊这三个工具, 把它们挨个装上跑了一遍, 顺手记录下日常工作里该选哪个, 以及怎么搭配着用.
 
 - OpenSpec: <https://github.com/Fission-AI/OpenSpec>
 - GSD: <https://github.com/gsd-build/get-shit-done>
@@ -16,7 +16,7 @@
 | GSD | 轻量上下文工程系统 | AI 做着做着就忘了 |
 | Superpowers | 完整开发方法论 | AI 不知道怎么做才对 |
 
-总的来说三者切的是 AI agent 可靠性的三个不同侧面, 不是替代关系, 是分层关系.
+总的来说这三个工具切的是 AI agent 可靠性的三个不同侧面, 真要选其实不冲突, 它们更像是分层的关系.
 
 ---
 
@@ -194,9 +194,9 @@ OpenSpec 的 archive 机制是它最大的杠杆 —— 半年后回头看一个
 
 ## 使用姿势 (按真实场景)
 
-光看维度对比还是没体感, 下面是几个具体场景里我会怎么选.
+光看维度对比还是没体感, 下面挑几个我们日常会遇到的场景, 看具体应该怎么选.
 
-### 场景一: 从 0 开始的个人项目
+### 个人项目从 0 起步
 
 `GSD` > `Superpowers` > `OpenSpec`.
 
@@ -207,9 +207,9 @@ OpenSpec 的 archive 机制是它最大的杠杆 —— 半年后回头看一个
 /gsd-ship 1
 ```
 
-`GSD` 最轻, 命令也最自然. `Superpowers` 也行, 它会强制你走 TDD, 喜欢这种纪律性的可以选. `OpenSpec` 对个人项目略重, 每个改动都要 propose 一下是个小负担.
+`GSD` 最轻, 命令名也最自然. `Superpowers` 也行, 它会强制走 TDD, 喜欢这种纪律性的可以选. `OpenSpec` 对个人项目略重, 每个改动都要先 propose 一下, 长期下来是个不小的负担.
 
-### 场景二: 加入老项目要做重构
+### 老项目要做重构
 
 `OpenSpec` > `GSD` > `Superpowers`.
 
@@ -221,15 +221,15 @@ openspec init
 /opsx:archive
 ```
 
-老代码重构最大的痛是后人 (包括半年后的自己) 不知道当时为什么这么改, OpenSpec 的 archive 直接把决策留痕到磁盘, 这事 `GSD` 的 `map-codebase` cover 不了 —— 它扫的是当前现状, 不是变更原因.
+老代码重构最大的痛是后人 (包括半年后的自己) 不知道当时为什么要这么改, OpenSpec 的 archive 直接把决策留痕到磁盘上, 这事 `GSD` 的 `map-codebase` cover 不了 —— 它扫的是当前现状, 不是变更原因.
 
-### 场景三: 团队协作, PR 要走 review
+### 团队协作 PR 要走 review
 
-`OpenSpec` 明显赢. 提 PR 之前 `proposal.md` / `design.md` 已经在 `openspec/changes/` 里了, reviewer 的顺序是 proposal (why) → design (how) → diff (what), 合并完 `/opsx:archive`. 整个过程都对人友好.
+`OpenSpec` 在这个场景下基本没对手. 提 PR 之前 `proposal.md` / `design.md` 已经躺在 `openspec/changes/` 里了, reviewer 的顺序是 proposal (why) → design (how) → diff (what), 合并完 `/opsx:archive` 收尾, 整个流程对人都很友好.
 
-`GSD` 的 artifact 是给 AI 看的, 不太适合做 review 输入. `Superpowers` 同理, plan 主要是给执行 agent 用的.
+`GSD` 的 artifact 是写给 AI reload 用的, 让 reviewer 看 `STATE.md` 没什么意义. `Superpowers` 同理, plan 主要给执行 agent 看.
 
-### 场景四: 复杂 bug 要根因分析
+### 复杂 bug 要根因分析
 
 `Superpowers` 几乎是唯一答案.
 
@@ -246,15 +246,15 @@ AI:  走 4 阶段:
 
 另外两个工具都没有专门的 debug 方法论, 这点 `Superpowers` 是独一份.
 
-### 场景五: 想让 agent 连续自主跑几小时
+### 想让 agent 连续自主跑几小时
 
 `Superpowers` > `GSD` > `OpenSpec`.
 
-`Superpowers` 的 `subagent-driven-development` 就是为这个设计的, 每 task 起新 agent + 两阶段 review, 主上下文不污染. `GSD` 的 `execute-phase` 也支持并行 wave, 但少了两阶段 review 这一环. `OpenSpec` 的 `apply` 是单线程顺序的, 跑不快.
+`Superpowers` 的 `subagent-driven-development` 就是为这事设计的, 每 task 起一个新 agent + 两阶段 review (先 spec 合规, 再代码质量), 主上下文不被污染, 实测可以连续跑 2-3 小时不偏离 plan. `GSD` 的 `execute-phase` 也支持并行 wave, 但少了两阶段 review 这一环, 跑长了质量就开始飘. `OpenSpec` 的 `apply` 是单线程顺序的, 跑不快也跑不长.
 
-### 场景六: 长对话跑到后面 AI 开始降智
+### 长对话跑到后面 AI 开始降智
 
-`GSD` 明显赢, 这就是它的本职工作. 5 大 artifact 就是为对抗 context rot 设计的, 新会话开起来第一件事是 reload `STATE.md` 和 `CONTEXT.md`, 瞬间同步.
+`GSD` 在这个场景下基本没对手, 这就是它的本职. 5 大 artifact 就是为对抗 context rot 设计的, 新会话开起来第一件事是 reload `STATE.md` 和 `CONTEXT.md`, 瞬间同步到上次的状态.
 
 ---
 
@@ -319,32 +319,6 @@ CLI:    openspec init   openspec update   openspec config profile
 
 ---
 
-## 决策树
-
-```text
-你最痛的问题是什么?
-│
-├─ AI 不知道要做什么 (需求模糊 / 设计混乱)
-│   └─→ OpenSpec
-│
-├─ AI 做着做着就忘了 (长对话降智 / 跨会话丢失上下文)
-│   └─→ GSD
-│
-├─ AI 不知道怎么做才对 (不写测试 / 过度设计 / 根因不分析)
-│   └─→ Superpowers
-│
-├─ 团队协作要 PR review / 长期审计
-│   └─→ OpenSpec
-│
-├─ 个人快速出活 + 多 AI 工具混用
-│   └─→ GSD
-│
-└─ 复杂 debug / 想 agent 自主跑几小时
-    └─→ Superpowers
-```
-
----
-
 ## 总结
 
 三个工具浅浅看下来:
@@ -354,4 +328,4 @@ CLI:    openspec init   openspec update   openspec config profile
 - 追 agent 自主度 + 执行纪律: `Superpowers`
 - 数周以上的长跑项目: 三个都装, 分层用
 
-总的来说我们日常选型的逻辑很简单, 看自己最痛的是哪一类问题, 是需求说不清, 是上下文撑不住, 还是行为不规范, 痛在哪挑哪个. 别一上来就三个全装, 先用最痛的那个跑两周, 再看要不要叠加, 这是个不错的尝试节奏.
+老生常谈一句, 选型这事看自己最痛的是哪一类问题, 痛在哪挑哪个就行. 别一上来就三个全装, 先用最痛的那个跑两周, 再看要不要叠加, 这是个不错的尝试节奏.
