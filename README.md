@@ -11,6 +11,8 @@
     <details>
       <summary>点我展开</summary>
 
+    - agent文件操作
+
     - sdd-specification
 
     - 三种AI编码工作流深度对比-OpenSpec-Superpowers-GSD
