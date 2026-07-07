@@ -17,6 +17,8 @@
 
     - 三种AI编码工作流深度对比-OpenSpec-Superpowers-GSD
 
+    - 聊聊 grill-me 和 grill-with-docs
+
     </details>
             
 - AI编写文章
